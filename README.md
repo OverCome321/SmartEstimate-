@@ -1,6 +1,6 @@
 # SmartEstimate
 
-![SmartEstimate Logo](![Uploading 7ad72584-81de-4a89-8837-b2f9a191c921.jpg…]())
+![Uploading 7ad72584-81de-4a89-8837-b2f9a191c921.jpg…]()
 
 ## О проекте
 
