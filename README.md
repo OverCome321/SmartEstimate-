@@ -1,6 +1,6 @@
 # SmartEstimate
 
-![Uploading 7ad72584-81de-4a89-8837-b2f9a191c921.jpg…]()
+![7ad72584-81de-4a89-8837-b2f9a191c921](https://github.com/user-attachments/assets/f779f98a-ccc1-4d03-97c6-2fe8f7f1eb36)
 
 ## О проекте
 
