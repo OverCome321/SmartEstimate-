@@ -56,3 +56,10 @@ SmartEstimate — это современное WPF-приложение для 
 - [ ] Интеграция с облачными хранилищами
 - [ ] API для интеграции с другими системами
 - [ ] Шаблоны смет и проектов
+      
+[План реализации SmartEstimate.pdf](https://github.com/user-attachments/files/20000861/SmartEstimate.pdf)
+
+[UI дизайн SmartEstimate.pdf](https://github.com/user-attachments/files/20000860/UI.SmartEstimate.pdf)
+
+
+
