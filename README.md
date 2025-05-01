@@ -1,6 +1,7 @@
 # SmartEstimate
 
 ![7ad72584-81de-4a89-8837-b2f9a191c921](https://github.com/user-attachments/assets/f9794999-dc1e-413b-a8fe-1c7d0965ac5f)
+![7ad72584-81de-4a89-8837-b2f9a191c921 (2)](https://github.com/user-attachments/assets/62b495a4-4011-49ef-96d7-293c99611a41)
 
 ## О проекте
 
