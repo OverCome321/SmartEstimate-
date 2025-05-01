@@ -47,8 +47,8 @@ SmartEstimate — это современное WPF-приложение для 
 ## Контакты
 
 - Электронная почта: info@smartestimate.com
-- Telegram (Никита): [@asap_wosap](https://t.me/asap_wosap)
-- Telegram (Игорь): [@glnjudd](https://t.me/glnjudd)
+- Telegram (Игорь): [@asap_wosap](https://t.me/asap_wosap)
+- Telegram (Никита): [@glnjudd](https://t.me/glnjudd)
 - GitHub: [SmartEstimate](https://github.com/OverCome321/SmartEstimate-)
 
 ## Планы развития
