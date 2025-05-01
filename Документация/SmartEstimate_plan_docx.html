@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>План разработки SmartEstimate</title>
+    <style>
+        body {
+            font-family: 'Calibri', sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+            color: #333;
+        }
+        h1 {
+            color: #2f5597;
+            font-size: 24pt;
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #2f5597;
+            padding-bottom: 8px;
+        }
+        h2 {
+            color: #2f5597;
+            font-size: 18pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #a9d1ff;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #2f5597;
+            font-size: 14pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .meta {
+            background-color: #f0f8ff;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #2f5597;
+        }
+        .meta p {
+            margin: 5px 0;
+        }
+        .tasks {
+            margin-left: 20px;
+        }
+        .task-title {
+            font-weight: bold;
+        }
+        .task-details {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        .results {
+            background-color: #f0f7ee;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border-left: 4px solid #6aab5c;
+        }
+        .results ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .team-roles {
+            margin-left: 20px;
+        }
+        .risk {
+            background-color: #fff6f6;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #d9534f;
+        }
+        .measures {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #5bc0de;
+        }
+        .conclusion {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>План разработки SmartEstimate</h1>
+    
+    <h2>Обзор</h2>
+    <p>Данный документ представляет собой подробный план разработки SmartEstimate — WPF-приложения для создания смет и коммерческих предложений. План разделен на семь этапов, каждый из которых включает задачи, сроки, результаты и роли команды.</p>
+    
+    <h2>Этап 1: Прототипирование UI</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 3 недели</p>
+        <p><strong>Цель:</strong> Разработка и прототипирование пользовательского интерфейса с использованием WPF и MahApps.Metro/Material Design in XAML.</p>
+        <p><strong>Команда:</strong> UI/UX-дизайнер, WPF-разработчик</p>
+        <p><strong>Инструменты:</strong> Figma, Visual Studio, MahApps.Metro, Material Design in XAML</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Сбор требований (2 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Определение ключевых экранов: Главная панель, Список клиентов, Создание проекта, Редактор смет, Предпросмотр PDF, Аналитика.</li>
+                <li>Определение пользовательских сценариев (например, создание новой сметы, экспорт в PDF).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Создание каркасов (вайрфреймов) (4 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Разработка низкоуровневых каркасов в Figma для всех ключевых экранов.</li>
+                <li>Утверждение каркасов с заинтересованными сторонами.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Высокоуровневые прототипы (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Создание высокоуровневых макетов с темами Material Design in XAML.</li>
+                <li>Обеспечение адаптивности интерфейса для разных разрешений экрана.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Реализация UI в WPF (6 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Настройка проекта WPF в .NET 8 с использованием паттерна MVVM и CommunityToolkit.Mvvm.</li>
+                <li>Реализация базовых компонентов интерфейса (панель навигации, кнопки, формы) с использованием MahApps.Metro.</li>
+                <li>Тестирование адаптивности и согласованности тем.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Каркасы и макеты в Figma.</li>
+            <li>Начальный проект WPF с каркасом интерфейса (навигация, базовые элементы).</li>
+            <li>Руководство по стилю UI (цвета, типографика, иконки).</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 2: База данных и авторизация</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 4 недели</p>
+        <p><strong>Цель:</strong> Настройка базы данных MSSQL и реализация авторизации пользователей.</p>
+        <p><strong>Команда:</strong> Бэкенд-разработчик, администратор базы данных, WPF-разработчик</p>
+        <p><strong>Инструменты:</strong> MSSQL Server, Entity Framework Core, ASP.NET Identity</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Проектирование базы данных (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Разработка схемы для Клиентов, Проектов, Смет, Заказов и Пользователей.</li>
+                <li>Определение связей (например, один-ко-многим между Клиентами и Проектами).</li>
+                <li>Создание ER-диаграммы.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Настройка базы данных (3 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Настройка экземпляра MSSQL Server (локально или Azure SQL для тестирования).</li>
+                <li>Реализация базы данных с использованием Entity Framework Core (подход Code-First).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Авторизация (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Реализация ASP.NET Identity для регистрации/входа пользователей.</li>
+                <li>Добавление ролевой авторизации (например, Админ, Редактор, Читатель).</li>
+                <li>Защита учетных данных с помощью хеширования bcrypt.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Интеграция с WPF (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Создание сервисного слоя для подключения WPF-приложения к базе данных через REST API или прямое использование EF Core.</li>
+                <li>Реализация экрана входа и управления сессиями пользователей в WPF.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Схема базы данных MSSQL и ER-диаграмма.</li>
+            <li>Функциональная система авторизации в WPF.</li>
+            <li>Сервисный слой для взаимодействия с базой данных.</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 3: Модуль расчета смет</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 5 недель</p>
+        <p><strong>Цель:</strong> Разработка основного функционала для создания и расчета смет.</p>
+        <p><strong>Команда:</strong> WPF-разработчик, бэкенд-разработчик</p>
+        <p><strong>Инструменты:</strong> .NET 8, CommunityToolkit.Mvvm, MSSQL</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Определение моделей (4 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Определение моделей для Проектов, Смет и Услуг (например, труд, материалы).</li>
+                <li>Реализация валидации данных (например, неотрицательные стоимости).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Логика расчетов (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Разработка логики для добавления услуг, расчета итогов, применения налогов/скидок.</li>
+                <li>Реализация моделей представления MVVM для создания смет.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Разработка UI (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Создание интерфейса редактора смет с динамическими полями (добавление/удаление услуг).</li>
+                <li>Добавление предварительного просмотра расчетов в реальном времени.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Интеграция с базой данных (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Сохранение смет в базу данных.</li>
+                <li>Реализация извлечения и редактирования существующих смет.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Полностью функциональный модуль создания смет.</li>
+            <li>Интерфейс для создания и редактирования смет.</li>
+            <li>Интеграция с базой данных для хранения смет.</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 4: Генератор PDF и отправка по email</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 4 недели</p>
+        <p><strong>Цель:</strong> Реализация генерации PDF-документов для коммерческих предложений и функционала отправки по email.</p>
+        <p><strong>Команда:</strong> WPF-разработчик, бэкенд-разработчик</p>
+        <p><strong>Инструменты:</strong> QuestPDF, SMTPClient, MSSQL</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Генерация PDF (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Настройка QuestPDF для создания брендированных PDF-документов.</li>
+                <li>Создание шаблонов для коммерческих предложений (логотип, заголовок, подвал).</li>
+                <li>Реализация динамической привязки данных смет.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Предпросмотр PDF (4 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Добавление окна предпросмотра PDF в WPF.</li>
+                <li>Разрешение сохранения PDF локально.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Интеграция email (6 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Настройка SMTP-клиента для отправки писем (например, Gmail, Outlook).</li>
+                <li>Реализация интерфейса для составления письма, включающего прикрепление PDF.</li>
+                <li>Добавление логирования отправленных писем в базу данных.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Тестирование (3 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Тестирование генерации PDF для смет разного объема.</li>
+                <li>Проверка доставки писем через разные почтовые сервисы.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Функционал генерации и предпросмотра PDF.</li>
+            <li>Отправка писем с прикрепленным PDF.</li>
+            <li>Логирование отправленных писем в базе данных.</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 5: Экспорт в Excel</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 3 недели</p>
+        <p><strong>Цель:</strong> Реализация экспорта смет в формат Excel.</p>
+        <p><strong>Команда:</strong> WPF-разработчик</p>
+        <p><strong>Инструменты:</strong> ClosedXML, MSSQL</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Логика экспорта (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Использование ClosedXML для генерации Excel-файлов из данных смет.</li>
+                <li>Создание настраиваемых шаблонов экспорта (включение/исключение столбцов).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Интеграция с UI (4 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Добавление кнопки "Экспорт в Excel" в редакторе смет.</li>
+                <li>Реализация диалога сохранения файла для Excel.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Тестирование (3 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Тестирование экспорта для больших наборов данных.</li>
+                <li>Проверка форматирования и точности данных.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Функционал экспорта в Excel.</li>
+            <li>Интерфейс для запуска экспорта.</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 6: Логирование и аналитика</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 4 недели</p>
+        <p><strong>Цель:</strong> Реализация логирования с помощью Serilog и аналитических панелей.</p>
+        <p><strong>Команда:</strong> Бэкенд-разработчик, WPF-разработчик, аналитик данных</p>
+        <p><strong>Инструменты:</strong> Serilog, Elasticsearch, Kibana, MSSQL</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Настройка логирования (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Настройка Serilog для логирования по всему приложению.</li>
+                <li>Настройка Elasticsearch и Kibana для хранения и визуализации логов.</li>
+                <li>Логирование ключевых событий (создание смет, генерация PDF).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Бэкенд аналитики (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Разработка запросов для анализа прибыльности, удержания клиентов и тенденций проектов.</li>
+                <li>Создание API-эндпоинтов для данных аналитики.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. UI аналитики (6 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Создание панелей WPF с графиками (с использованием LiveCharts2 или OxyPlot).</li>
+                <li>Отображение KPI: общий доход, средняя стоимость проекта.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Тестирование (2 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Проверка точности логов и отзывчивости панелей.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Система логирования с Serilog и Kibana.</li>
+            <li>Аналитические панели в WPF.</li>
+        </ul>
+    </div>
+    
+    <h2>Этап 7: Интеграция OpenAI и финальная сборка</h2>
+    <div class="meta">
+        <p><strong>Продолжительность:</strong> 4 недели</p>
+        <p><strong>Цель:</strong> Интеграция OpenAI API для интеллектуальных функций и финализация приложения.</p>
+        <p><strong>Команда:</strong> WPF-разработчик, бэкенд-разработчик, инженер по тестированию</p>
+        <p><strong>Инструменты:</strong> OpenAI API, .NET 8, Visual Studio</p>
+    </div>
+    
+    <h3>Задачи</h3>
+    <div class="tasks">
+        <p class="task-title">1. Интеграция OpenAI (7 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Подключение к OpenAI API для автоподсказок (например, названия услуг, оценка затрат).</li>
+                <li>Реализация NLP для разбора требований клиентов из текста.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">2. Доработка функций (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Улучшение UI/UX на основе отзывов пользователей.</li>
+                <li>Оптимизация производительности (например, ленивая загрузка для больших наборов данных).</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">3. Тестирование (5 дней)</p>
+        <div class="task-details">
+            <ul>
+                <li>Проведение сквозного тестирования (модульное, интеграционное, UI).</li>
+                <li>Тестирование функций ИИ на точность и задержку.</li>
+            </ul>
+        </div>
+        
+        <p class="task-title">4. Упаковка (3 дня)</p>
+        <div class="task-details">
+            <ul>
+                <li>Создание установщика для Windows с использованием MSIX.</li>
+                <li>Подготовка к подаче в Microsoft Store.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="results">
+        <h3>Результаты</h3>
+        <ul>
+            <li>Функции на базе ИИ (автоподсказки, NLP).</li>
+            <li>Финальная сборка приложения и установщик.</li>
+            <li>Пакет для отправки в Microsoft Store.</li>
+        </ul>
+    </div>
+    
+    <h2>Сводная таблица сроков</h2>
+    <table>
+        <tr>
+            <th>Этап</th>
+            <th>Продолжительность</th>
+            <th>Дата начала</th>
+            <th>Дата окончания</th>
+        </tr>
+        <tr>
+            <td>Прототипирование UI</td>
+            <td>3 недели</td>
+            <td>5 мая 2025</td>
+            <td>23 мая 2025</td>
+        </tr>
+        <tr>
+            <td>База данных и авторизация</td>
+            <td>4 недели</td>
+            <td>26 мая 2025</td>
+            <td>20 июня 2025</td>
+        </tr>
+        <tr>
+            <td>Расчет смет</td>
+            <td>5 недель</td>
+            <td>23 июня 2025</td>
+            <td>25 июля 2025</td>
+        </tr>
+        <tr>
+            <td>PDF и Email</td>
+            <td>4 недели</td>
+            <td>28 июля 2025</td>
+            <td>22 августа 2025</td>
+        </tr>
+        <tr>
+            <td>Экспорт в Excel</td>
+            <td>3 недели</td>
+            <td>25 августа 2025</td>
+            <td>12 сентября 2025</td>
+        </tr>
+        <tr>
+            <td>Логирование и аналитика</td>
+            <td>4 недели</td>
+            <td>15 сентября 2025</td>
+            <td>10 октября 2025</td>
+        </tr>
+        <tr>
+            <td>OpenAI и финальная сборка</td>
+            <td>4 недели</td>
+            <td>13 октября 2025</td>
+            <td>7 ноября 2025</td>
+        </tr>
+    </table>
+    <p><strong>Общая продолжительность:</strong> 27 недель (примерно 6,5 месяцев)</p>
+    
+    <h2>Роли команды</h2>
+    <div class="team-roles">
+        <p><strong>UI/UX-дизайнер:</strong> Каркасы, макеты, руководство по стилю.</p>
+        <p><strong>WPF-разработчик:</strong> Реализация UI, логика MVVM, интеграция фронтенда.</p>
+        <p><strong>Бэкенд-разработчик:</strong> База данных, API, логирование, интеграция OpenAI.</p>
+        <p><strong>Администратор базы данных:</strong> Настройка MSSQL, проектирование схемы.</p>
+        <p><strong>Аналитик данных:</strong> Запросы аналитики, дизайн панелей.</p>
+        <p><strong>Инженер по тестированию:</strong> Тестирование и исправление ошибок.</p>
+    </div>
+    
+    <h2>Риски и меры смягчения</h2>
+    
+    <div class="risk">
+        <p><strong>Риск:</strong> Задержки в интеграции OpenAI API из-за ограничений или изменений API.</p>
+    </div>
+    <div class="measures">
+        <p><strong>Меры:</strong> Раннее тестирование API на этапе 7 и кэширование ответов локально.</p>
+    </div>
+    
+    <div class="risk">
+        <p><strong>Риск:</strong> Проблемы с производительностью UI при больших наборах данных.</p>
+    </div>
+    <div class="measures">
+        <p><strong>Меры:</strong> Реализация виртуализации и ленивой загрузки в WPF.</p>
+    </div>
+    
+    <div class="risk">
+        <p><strong>Риск:</strong> Проблемы совместимости с версиями MSSQL.</p>
+    </div>
+    <div class="measures">
+        <p><strong>Меры:</strong> Использование Azure SQL для единообразной тестовой среды.</p>
+    </div>
+    
+    <div class="conclusion">
+        <h2>Заключение</h2>
+        <p>Данный план обеспечивает структурированный подход к разработке SmartEstimate, гарантируя систематическую реализацию всех функций. Регулярные проверки с заинтересованными сторонами и итеративное тестирование обеспечат высокое качество и соответствие бизнес-целям.</p>
+    </div>
+</body>
+</html>

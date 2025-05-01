@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концепции UI-дизайна SmartEstimate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #1976D2;
+            --accent-color: #FF4081;
+            --dark-primary: #0D47A1;
+            --light-primary: #BBDEFB;
+            --gray-light: #ECEFF1;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9eef2 100%);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        header {
+            background: var(--primary-color);
+            padding: 30px 20px;
+            color: white;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            overflow: hidden;
+            margin: -20px -20px 30px -20px;
+        }
+        
+        header:before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-primary) 100%);
+            z-index: -1;
+            transform: skewY(-2deg);
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 1s;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--accent-color);
+            animation: expandWidth 1.5s ease-out forwards;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        .section:hover {
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        strong {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        .color-sample {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            vertical-align: middle;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .color-sample:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .blue {
+            background-color: #1976D2;
+        }
+        
+        .pink {
+            background-color: #FF4081;
+        }
+        
+        ul, ol {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        li::before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+        
+        .subsection {
+            margin-left: 25px;
+            margin-top: 10px;
+            padding-left: 15px;
+            border-left: 2px solid var(--light-primary);
+        }
+        
+        .highlight {
+            background-color: rgba(255, 64, 129, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .icon {
+            margin-right: 5px;
+            color: var(--accent-color);
+        }
+        
+        .feature-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: var(--gray-light);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateX(5px);
+            background-color: var(--light-primary);
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--light-primary);
+            background-color: white;
+            border-radius: 0 0 12px 12px;
+            margin: 20px -20px -20px -20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-icon {
+            font-size: 24px;
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark-primary);
+            color: white;
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            margin: 10px 0;
+            height: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+            width: 0;
+            animation: progressAnimation 2s ease-out forwards;
+        }
+        
+        .color-palette {
+            display: flex;
+            margin: 15px 0;
+        }
+        
+        .color-box {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .color-box:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+        
+        @keyframes progressAnimation {
+            from {
+                width: 0;
+            }
+            to {
+                width: 75%;
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 15px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+        }
+        
+        /* Animation delays for staggered appearance */
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+        .section:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* Floating button */
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        .floating-button:hover {
+            transform: scale(1.1) rotate(360deg);
+            background-color: var(--primary-color);
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Концепции UI-дизайна SmartEstimate</h1>
+            <p>Современная стилизация интерфейса для платформы WPF</p>
+        </header>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-info-circle"></i></div>
+                <h2>Обзор документа</h2>
+            </div>
+            <p>
+                Данный документ описывает концепции дизайна пользовательского интерфейса для ключевых окон приложения SmartEstimate на платформе WPF. 
+                Дизайны используют <span class="highlight">Material Design in XAML</span> для создания современного и интуитивного интерфейса. 
+                Каждое окно включает описание, макет и детали стилизации.
+            </p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <p>Прогресс разработки дизайн-концепции: 75%</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-home"></i></div>
+                <h2>1. Главная панель</h2>
+                <span class="badge">Core</span>
+            </div>
+            
+            <p><strong>Назначение:</strong> Обзор последних проектов, клиентов и ключевых метрик.</p>
+            
+            <p><strong><i class="icon fas fa-layer-group"></i>Макет:</strong></p>
+            <ul>
+                <li><strong>Верхняя панель:</strong> Логотип приложения, меню навигации (Клиенты, Проекты, Аналитика, Настройки), профиль пользователя.</li>
+                <li><strong>Левая боковая панель:</strong> Быстрые действия (Новый проект, Новый клиент, Экспорт).</li>
+                <li><strong>Основное содержимое:</strong>
+                    <ul class="subsection">
+                        <li>Виджеты в виде карточек для последних проектов (название, клиент, статус).</li>
+                        <li>Карточки KPI (общий доход, активные проекты, ожидающие сметы).</li>
+                        <li>Линейный график тенденций доходов (с использованием LiveCharts2).</li>
+                    </ul>
+                </li>
+                <li><strong>Нижняя панель:</strong> Строка состояния с временем последней синхронизации и информацией о версии.</li>
+            </ul>
+            
+            <p><strong><i class="icon fas fa-palette"></i>Стилизация:</strong></p>
+            <ul>
+                <li><strong>Основной цвет:</strong> <span class="color-sample blue tooltip"><span class="tooltiptext">#1976D2</span></span> #1976D2 (синий).</li>
+                <li><strong>Акцентный цвет:</strong> <span class="color-sample pink tooltip"><span class="tooltiptext">#FF4081</span></span> #FF4081 (розовый).</li>
+                <li><strong>Типографика:</strong> Roboto, 14pt для текста, 20pt для заголовков.</li>
+                <li><strong>Карточки:</strong> Тень уровня 2, скругленные углы (8px).</li>
+            </ul>
+            
+            <div class="color-palette">
+                <div class="color-box" style="background-color: #1976D2"></div>
+                <div class="color-box" style="background-color: #FF4081"></div>
+                <div class="color-box" style="background-color: #0D47A1"></div>
+                <div class="color-box" style="background-color: #BBDEFB"></div>
+                <div class="color-box" style="background-color: #ECEFF1"></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <h2>2. Редактор смет</h2>
+                <span class="badge">Core</span>
+            </div>
+            
+            <p><strong>Назначение:</strong> Создание и редактирование смет с расчетами в реальном времени.</p>
+            
+            <p><strong><i class="icon fas fa-layer-group"></i>Макет:</strong></p>
+            <ul>
+                <li><strong>Верхняя панель:</strong> Кнопки Сохранить, Экспорт (PDF/Excel), Отправить по email.</li>
+                <li><strong>Основное содержимое:</strong>
+                    <ul class="subsection">
+                        <li>Поля формы: Название проекта, выпадающий список клиентов, дата выполнения.</li>
+                        <li>Динамическая таблица: Добавление/удаление услуг (описание, количество, цена за единицу, итог).</li>
+                        <li>Сводка: Подитог, налог, скидка, общий итог (обновляется в реальном времени).</li>
+                    </ul>
+                </li>
+                <li><strong>Правая боковая панель:</strong> Панель предварительного просмотра сводки сметы.</li>
+                <li><strong>Нижняя панель:</strong> Кнопки Отмена, Сохранить, Предпросмотр PDF.</li>
+            </ul>
+            
+            <p><strong><i class="icon fas fa-palette"></i>Стилизация:</strong></p>
+            <ul>
+                <li><strong>Таблица:</strong> Чередующиеся цвета строк (#FFFFFF, #F5F5F5).</li>
+                <li><strong>Кнопки:</strong> Залиты основным цветом для основных действий, контурные для второстепенных.</li>
+                <li><strong>Поля формы:</strong> Стиль с подчеркиванием и анимацией при фокусе.</li>
+            </ul>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                <div class="feature-text">
+                    <strong>Расчеты в реальном времени</strong>
+                    <p>Автоматически обновляемые суммы при изменении любых параметров</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-export"></i></div>
+                <div class="feature-text">
+                    <strong>Множественный экспорт</strong>
+                    <p>Поддержка форматов PDF и Excel</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-users"></i></div>
+                <h2>3. Список клиентов</h2>
+                <span class="badge">Core</span>
+            </div>
+            
+            <p><strong>Назначение:</strong> Отображение списка клиентов с возможностью поиска и быстрыми действиями.</p>
+            
+            <p><strong><i class="icon fas fa-layer-group"></i>Макет:</strong></p>
+            <ul>
+                <li><strong>Верхняя панель:</strong> Строка поиска, кнопка Новый клиент.</li>
+                <li><strong>Основное содержимое:</strong>
+                    <ul class="subsection">
+                        <li>Таблица данных: Столбцы для Имени, Email, Телефона, Последнего проекта.</li>
+                        <li>Контекстное меню: Просмотр деталей, Редактировать, Удалить.</li>
+                    </ul>
+                </li>
+                <li><strong>Правая боковая панель:</strong> Детали клиента (информация о выбранном клиенте, последние проекты).</li>
+                <li><strong>Нижняя панель:</strong> Элементы управления пагинацией.</li>
+            </ul>
+            
+            <p><strong><i class="icon fas fa-palette"></i>Стилизация:</strong></p>
+            <ul>
+                <li><strong>Таблица данных:</strong> Эффект наведения на строки (#E0E0E0).</li>
+                <li><strong>Строка поиска:</strong> Иконка лупы, скругленные углы.</li>
+                <li><strong>Боковая панель:</strong> Сворачиваемая с кнопкой переключения.</li>
+            </ul>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-search"></i></div>
+                <div class="feature-text">
+                    <strong>Умный поиск</strong>
+                    <p>Поиск по всем полям с автоматическими подсказками</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-chart-line"></i></div>
+                <h2>4. Панель аналитики</h2>
+                <span class="badge">Core</span>
+            </div>
+            
+            <p><strong>Назначение:</strong> Визуализация прибыльности, тенденций проектов и метрик клиентов.</p>
+            
+            <p><strong><i class="icon fas fa-layer-group"></i>Макет:</strong></p>
+            <ul>
+                <li><strong>Верхняя панель:</strong> Фильтр диапазона дат, кнопка Экспорт данных.</li>
+                <li><strong>Основное содержимое:</strong>
+                    <ul class="subsection">
+                        <li>Столбчатая диаграмма: Доход по месяцам.</li>
+                        <li>Круговая диаграмма: Типы проектов (например, строительство, ремонт).</li>
+                        <li>Карточки KPI: Средняя стоимость проекта, процент удержания клиентов.</li>
+                    </ul>
+                </li>
+                <li><strong>Нижняя панель:</strong> Кнопка Обновить данные.</li>
+            </ul>
+            
+            <p><strong><i class="icon fas fa-palette"></i>Стилизация:</strong></p>
+            <ul>
+                <li><strong>Диаграммы:</strong> Цветовая палитра (синий, розовый, зеленый, желтый).</li>
+                <li><strong>Карточки KPI:</strong> Жирные значения, иконки для контекста (например, знак доллара для дохода).</li>
+                <li><strong>Фильтры:</strong> Выпадающий список с эффектом Material Design.</li>
+            </ul>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="feature-text">
+                    <strong>Интерактивные диаграммы</strong>
+                    <p>С анимированными переходами и возможностью детализации</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-file-pdf"></i></div>
+                <h2>5. Окно предпросмотра PDF</h2>
+                <span class="badge">Support</span>
+            </div>
+            
+            <p><strong>Назначение:</strong> Отображение предварительного просмотра сгенерированного коммерческого предложения в формате PDF.</p>
+            
+            <p><strong><i class="icon fas fa-layer-group"></i>Макет:</strong></p>
+            <ul>
+                <li><strong>Верхняя панель:</strong> Кнопки Сохранить PDF, Отправить по email.</li>
+                <li><strong>Основное содержимое:</strong> Встроенный просмотрщик PDF (с использованием предпросмотра QuestPDF).</li>
+                <li><strong>Правая боковая панель:</strong> Метаданные PDF (размер файла, количество страниц).</li>
+                <li><strong>Нижняя панель:</strong> Кнопка Закрыть.</li>
+            </ul>
+            
+            <p><strong><i class="icon fas fa-palette"></i>Стилизация:</strong></p>
+            <ul>
+                <li><strong>Просмотрщик PDF:</strong> С рамкой и легкой тенью.</li>
+                <li><strong>Кнопки:</strong> Центрированные, крупные (высота 48px).</li>
+                <li><strong>Метаданные:</strong> Компактные, серый фон.</li>
+            </ul>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-envelope"></i></div>
+                <div class="feature-text">
+                    <strong>Прямая отправка</strong>
+                    <p>Отправка PDF напрямую клиенту через интерфейс</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-compass"></i></div>
+                <h2>Принципы дизайна</h2>
+            </div>
+            <ul>
+                <li><strong>Согласованность:</strong> Использование рекомендаций Material Design для цветов, типографики и анимаций.</li>
+                <li><strong>Доступность:</strong> Обеспечение высокого контраста (соотношение 4.5:1), навигации с клавиатуры и поддержки экранных читалок.</li>
+                
+                <li><strong>Адаптивность:</strong> Проектирование интерфейса для различных разрешений экрана с использованием Grid и адаптивных единиц измерения. Элементы управления подстраиваются под доступное пространство, сохраняя оптимальный пользовательский опыт на мониторах разных размеров. Масштабирование шрифтов и отступов в зависимости от DPI устройства.</li>
+                <li><strong>Эффективность:</strong> Минимизация количества действий для выполнения частых задач. Быстрый доступ к основным функциям через контекстные меню и горячие клавиши.</li>
+                <li><strong>Обратная связь:</strong> Анимации и визуальные эффекты для подтверждения действий пользователя. Индикаторы загрузки для длительных операций.</li>
+                <li><strong>Понятность:</strong> Использование знакомых паттернов интерфейса и явных визуальных подсказок. Минимальное когнитивное напряжение при взаимодействии с приложением.</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-code"></i></div>
+                <h2>Технические аспекты</h2>
+            </div>
+            
+            <p><strong>Реализация с использованием:</strong></p>
+            <ul>
+                <li><strong>Material Design In XAML Toolkit:</strong> Для базовой стилизации элементов управления WPF.</li>
+                <li><strong>LiveCharts2:</strong> Для отображения диаграмм и графиков с анимацией.</li>
+                <li><strong>MahApps.Metro:</strong> Для дополнительных элементов управления и стилей окон.</li>
+                <li><strong>QuestPDF:</strong> Для генерации и предпросмотра документов PDF.</li>
+            </ul>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                <div class="feature-text">
+                    <strong>Темная тема</strong>
+                    <p>Поддержка светлой и темной темы с автоматическим переключением</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-swatchbook"></i></div>
+                <div class="feature-text">
+                    <strong>Настраиваемая палитра</strong>
+                    <p>Возможность изменения основных цветов в настройках</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-tasks"></i></div>
+                <h2>План реализации</h2>
+            </div>
+            
+            <p><strong>Приоритеты разработки:</strong></p>
+            <ol>
+                <li>Редактор смет (основной функционал)</li>
+                <li>Главная панель (навигация и обзор)</li>
+                <li>Список клиентов</li>
+                <li>Панель аналитики</li>
+                <li>Окно предпросмотра PDF</li>
+            </ol>
+            
+            <p><strong>Следующие шаги:</strong></p>
+            <ul>
+                <li>Согласование цветовой палитры и типографики</li>
+                <li>Создание набора стилей и словаря ресурсов</li>
+                <li>Прототипирование основных экранов</li>
+                <li>Тестирование удобства использования (UX)</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Документ концепции UI-дизайна SmartEstimate &copy; 2025. Версия 1.0</p>
+            <a href="#" class="btn btn-outline">Запросить обновление</a>
+        </footer>
+    </div>
+    
+    <div class="floating-button">
+        <i class="fas fa-comment"></i>
+    </div>
+    
+    <div class="scroll-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <script>
+        // Показать кнопку прокрутки вверх при прокрутке
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                document.querySelector(".scroll-to-top").classList.add("show");
+            } else {
+                document.querySelector(".scroll-to-top").classList.remove("show");
+            }
+        };
+        
+        // Обработчик нажатия кнопки прокрутки вверх
+        document.querySelector(".scroll-to-top").addEventListener("click", function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Обработчик нажатия плавающей кнопки
+        document.querySelector(".floating-button").addEventListener("click", function() {
+            alert("Для обратной связи по дизайну свяжитесь с командой разработки!");
+        });
+        
+        // Анимация для разделов при прокрутке
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = "1";
+                        entry.target.style.transform = "translateY(0)";
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
