@@ -63,5 +63,8 @@ SmartEstimate — это современное WPF-приложение для 
 
 [UI дизайн SmartEstimate.pdf](https://github.com/user-attachments/files/20000860/UI.SmartEstimate.pdf)
 
+## 🌐 Веб-документация (UI-макеты и дизайн)
+
+[Открыть UI-дизайн](https://overcome321.github.io/SmartEstimate-/Документация/UI%20дизайн%20SmartEstimate.html)
 
 
