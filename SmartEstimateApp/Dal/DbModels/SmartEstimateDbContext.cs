@@ -17,10 +17,16 @@ namespace Dal.DbModels
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .ValueGeneratedOnAdd()
+                      .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired();
                 entity.Property(e => e.CreatedAt).IsRequired();
                 entity.Property(e => e.LastLogin).IsRequired(false);
+
                 entity.HasOne(e => e.Role)
                       .WithMany()
                       .HasForeignKey(e => e.RoleId)
@@ -32,8 +38,14 @@ namespace Dal.DbModels
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .ValueGeneratedOnAdd()
+                      .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Name).IsRequired();
             });
         }
+
     }
 }

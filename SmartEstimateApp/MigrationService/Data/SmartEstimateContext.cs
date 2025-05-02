@@ -16,9 +16,17 @@ namespace MigrationService.Data
         public DbSet<EstimateTemplate> EstimateTemplates { get; set; }
         public DbSet<TemplateItem> TemplateItems { get; set; }
         public DbSet<FileMetadata> FileMetadata { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var idProperty = entityType.FindProperty("Id");
+                if (idProperty != null && idProperty.ClrType == typeof(Guid))
+                {
+                    idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+                    idProperty.SetDefaultValueSql("NEWID()");
+                }
+            }
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithMany()
@@ -61,7 +69,6 @@ namespace MigrationService.Data
                 .WithOne(f => f.Estimate)
                 .HasForeignKey(f => f.EstimateId)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
             modelBuilder.Entity<Estimate>()
                 .HasIndex(e => e.Number)
