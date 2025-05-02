@@ -76,11 +76,6 @@ namespace Dal.Layers
         {
             IQueryable<User> query = _context.Users;
 
-            if (!string.IsNullOrEmpty(searchParams.Username))
-            {
-                query = query.Where(u => u.Username.Contains(searchParams.Username));
-            }
-
             if (!string.IsNullOrEmpty(searchParams.Email))
             {
                 query = query.Where(u => u.Email.Contains(searchParams.Email));
