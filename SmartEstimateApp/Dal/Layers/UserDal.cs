@@ -1,48 +1,67 @@
-﻿using Common.Convert;
+﻿using AutoMapper;
+using Common.Convert;
 using Common.Search;
 using Dal.DbModels;
+using Dal.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Dal.Layers
 {
-    public class UserDal : BaseDal<User, User, Guid, UserSearchParams, UserConvertParams>
+    public class UserDal : BaseDal<Dal.DbModels.User, Entities.User, Guid, UserSearchParams, UserConvertParams>, IUserDal
     {
         private readonly SmartEstimateDbContext _context;
-
-        public UserDal(SmartEstimateDbContext context)
+        private readonly IMapper _mapper;
+        public UserDal(SmartEstimateDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _mapper = mapper;
         }
-
         protected override bool RequiresUpdatesAfterObjectSaving => false;
 
-        protected override async Task<Guid> AddOrUpdateInternalAsync(User entity)
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == id);
+        }
+
+        public async Task<bool> ExistsAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> RoleExistsAsync(Guid roleId)
+        {
+            return await _context.Roles.AnyAsync(r => r.Id == roleId);
+        }
+
+        protected override async Task<Guid> AddOrUpdateInternalAsync(Entities.User entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            bool exists = await _context.Users.AnyAsync(u => u.Id == entity.Id);
+            var dbUser = MapToDbUser(entity);
+            bool exists = await _context.Users.AnyAsync(u => u.Id == dbUser.Id);
             if (exists)
             {
-                await UpdateBeforeSavingAsync(entity, entity, true);
-                _context.Users.Update(entity);
+                await UpdateBeforeSavingAsync(entity, dbUser, true);
+                _context.Users.Update(dbUser);
             }
             else
             {
-                entity.Id = entity.Id == Guid.Empty ? Guid.NewGuid() : entity.Id;
-                entity.CreatedAt = DateTime.UtcNow;
-                await UpdateBeforeSavingAsync(entity, entity, false);
-                await _context.Users.AddAsync(entity);
+                dbUser.Id = dbUser.Id == Guid.Empty ? Guid.NewGuid() : dbUser.Id;
+                await UpdateBeforeSavingAsync(entity, dbUser, false);
+                await _context.Users.AddAsync(dbUser);
             }
 
-            return entity.Id;
+            return dbUser.Id;
         }
 
-        protected override async Task<IList<Guid>> AddOrUpdateInternalAsync(IList<User> entities)
+        protected override async Task<IList<Guid>> AddOrUpdateInternalAsync(IList<Entities.User> entities)
         {
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
+            if (!entities.Any())
+                return new List<Guid>();
 
             var ids = new List<Guid>();
             foreach (var entity in entities)
@@ -53,32 +72,33 @@ namespace Dal.Layers
             return ids;
         }
 
-        protected override async Task UpdateBeforeSavingAsync(User entity, User dbObject, bool exists)
+        protected override Task UpdateBeforeSavingAsync(Entities.User entity, Dal.DbModels.User dbObject, bool exists)
         {
             if (!exists)
             {
                 dbObject.CreatedAt = DateTime.UtcNow;
             }
+            return Task.CompletedTask;
         }
 
-        protected override async Task<IList<User>> BuildEntitiesListAsync(IQueryable<User> dbObjects, UserConvertParams convertParams, bool isFull)
+        protected override async Task<IList<Entities.User>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.User> dbObjects, UserConvertParams convertParams, bool isFull)
         {
-            var query = dbObjects;
+            var query = dbObjects.AsNoTracking();
+
             if (convertParams?.IncludeRole == true || isFull)
             {
                 query = query.Include(u => u.Role);
             }
 
-            return await query.ToListAsync();
+            var dbUsers = await query.ToListAsync();
+            return dbUsers.Select(MapToEntityUser).ToList();
         }
 
-        protected override IQueryable<User> BuildDbQuery(UserSearchParams searchParams)
+        protected override IQueryable<Dal.DbModels.User> BuildDbQuery(UserSearchParams searchParams)
         {
-            IQueryable<User> query = _context.Users;
-
             if (!string.IsNullOrEmpty(searchParams.Email))
             {
-                query = query.Where(u => u.Email.Contains(searchParams.Email));
+                query = query.Where(u => u.Email.ToLower().Contains(searchParams.Email.ToLower()));
             }
 
             if (searchParams.RoleId.HasValue)
@@ -89,7 +109,7 @@ namespace Dal.Layers
             return query;
         }
 
-        protected override async Task<int> CountAsync(IQueryable<User> query)
+        protected override async Task<int> CountAsync(IQueryable<Dal.DbModels.User> query)
         {
             return await query.CountAsync();
         }
@@ -115,22 +135,22 @@ namespace Dal.Layers
             }
         }
 
-        protected override IQueryable<User> Where(Expression<Func<User, bool>> predicate)
+        protected override IQueryable<Dal.DbModels.User> Where(Expression<Func<Dal.DbModels.User, bool>> predicate)
         {
             return _context.Users.Where(predicate);
         }
 
-        protected override Expression<Func<User, Guid>> GetIdByDbObjectExpression()
+        protected override Expression<Func<Dal.DbModels.User, Guid>> GetIdByDbObjectExpression()
         {
             return u => u.Id;
         }
 
-        protected override Expression<Func<User, Guid>> GetIdByEntityExpression()
+        protected override Expression<Func<Entities.User, Guid>> GetIdByEntityExpression()
         {
             return u => u.Id;
         }
 
-        protected override async Task<bool> DeleteAsync(Expression<Func<User, bool>> predicate)
+        protected override async Task<bool> DeleteAsync(Expression<Func<Dal.DbModels.User, bool>> predicate)
         {
             var users = await _context.Users.Where(predicate).ToListAsync();
             if (!users.Any())
@@ -141,9 +161,19 @@ namespace Dal.Layers
             return true;
         }
 
-        protected override IQueryable<User> ApplyDefaultSorting(IQueryable<User> query)
+        protected override IQueryable<Dal.DbModels.User> ApplyDefaultSorting(IQueryable<Dal.DbModels.User> query)
         {
             return query.OrderBy(u => u.CreatedAt);
+        }
+
+        private Dal.DbModels.User MapToDbUser(Entities.User entity)
+        {
+            return _mapper.Map<Dal.DbModels.User>(entity);
+        }
+
+        private Entities.User MapToEntityUser(Dal.DbModels.User dbUser)
+        {
+            return _mapper.Map<Entities.User>(dbUser);
         }
     }
 }
