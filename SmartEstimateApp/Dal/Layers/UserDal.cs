@@ -96,8 +96,6 @@ namespace Dal.Layers
 
         protected override IQueryable<Dal.DbModels.User> BuildDbQuery(UserSearchParams searchParams)
         {
-            IQueryable<Dal.DbModels.User> query = _context.Users;
-
             if (!string.IsNullOrEmpty(searchParams.Email))
             {
                 query = query.Where(u => u.Email.ToLower().Contains(searchParams.Email.ToLower()));
