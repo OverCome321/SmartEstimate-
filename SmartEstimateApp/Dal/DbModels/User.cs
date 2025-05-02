@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MigrationService.Models
+namespace Dal.DbModels
 {
     public class User
     {

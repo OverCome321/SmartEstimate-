@@ -12,8 +12,8 @@ using MigrationService.Data;
 namespace MigrationService.Migrations
 {
     [DbContext(typeof(SmartEstimateContext))]
-    [Migration("20250501175629_AddedNewChanges")]
-    partial class AddedNewChanges
+    [Migration("20250502110834_UpdateUserRoleAndRemoveLogs")]
+    partial class UpdateUserRoleAndRemoveLogs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,34 +24,6 @@ namespace MigrationService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MigrationService.Models.AuditLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AuditLogs");
-                });
 
             modelBuilder.Entity("MigrationService.Models.Client", b =>
                 {
@@ -109,42 +81,6 @@ namespace MigrationService.Migrations
                     b.ToTable("Clients");
                 });
 
-            modelBuilder.Entity("MigrationService.Models.EmailLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ErrorMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("EstimateId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsSuccessful")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Recipient")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("SentAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EstimateId");
-
-                    b.ToTable("EmailLogs");
-                });
-
             modelBuilder.Entity("MigrationService.Models.Estimate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -162,7 +98,7 @@ namespace MigrationService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasDefaultValue("USD");
+                        .HasDefaultValue("RUB");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -352,6 +288,21 @@ namespace MigrationService.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("MigrationService.Models.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("MigrationService.Models.TemplateItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -408,45 +359,17 @@ namespace MigrationService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("Editor");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("MigrationService.Models.AuditLog", b =>
-                {
-                    b.HasOne("MigrationService.Models.User", "User")
-                        .WithMany("AuditLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MigrationService.Models.EmailLog", b =>
-                {
-                    b.HasOne("MigrationService.Models.Estimate", "Estimate")
-                        .WithMany("EmailLogs")
-                        .HasForeignKey("EstimateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Estimate");
                 });
 
             modelBuilder.Entity("MigrationService.Models.Estimate", b =>
@@ -510,6 +433,17 @@ namespace MigrationService.Migrations
                     b.Navigation("Template");
                 });
 
+            modelBuilder.Entity("MigrationService.Models.User", b =>
+                {
+                    b.HasOne("MigrationService.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("MigrationService.Models.Client", b =>
                 {
                     b.Navigation("Estimates");
@@ -519,8 +453,6 @@ namespace MigrationService.Migrations
 
             modelBuilder.Entity("MigrationService.Models.Estimate", b =>
                 {
-                    b.Navigation("EmailLogs");
-
                     b.Navigation("Files");
 
                     b.Navigation("Items");
@@ -534,11 +466,6 @@ namespace MigrationService.Migrations
             modelBuilder.Entity("MigrationService.Models.Project", b =>
                 {
                     b.Navigation("Estimates");
-                });
-
-            modelBuilder.Entity("MigrationService.Models.User", b =>
-                {
-                    b.Navigation("AuditLogs");
                 });
 #pragma warning restore 612, 618
         }

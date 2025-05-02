@@ -32,7 +32,7 @@ namespace MigrationService.Models
         public Project? Project { get; set; }
 
         public List<EstimateItem> Items { get; set; } = new List<EstimateItem>();
-        public List<EmailLog> EmailLogs { get; set; } = new List<EmailLog>();
+
         public List<FileMetadata> Files { get; set; } = new List<FileMetadata>();
     }
 }

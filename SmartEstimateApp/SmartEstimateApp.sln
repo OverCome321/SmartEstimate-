@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartEstimateApp", "SmartEs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "MigrationService\MigrationService.csproj", "{794A42F8-9F45-4462-946C-75D5D51BA0E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dal", "Dal\Dal.csproj", "{C55DBA28-C22F-40FE-9933-A16CD0848398}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{D5E21681-44B6-4E16-8F20-58B933663C22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{794A42F8-9F45-4462-946C-75D5D51BA0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{794A42F8-9F45-4462-946C-75D5D51BA0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{794A42F8-9F45-4462-946C-75D5D51BA0E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55DBA28-C22F-40FE-9933-A16CD0848398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55DBA28-C22F-40FE-9933-A16CD0848398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55DBA28-C22F-40FE-9933-A16CD0848398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55DBA28-C22F-40FE-9933-A16CD0848398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5E21681-44B6-4E16-8F20-58B933663C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5E21681-44B6-4E16-8F20-58B933663C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5E21681-44B6-4E16-8F20-58B933663C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5E21681-44B6-4E16-8F20-58B933663C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

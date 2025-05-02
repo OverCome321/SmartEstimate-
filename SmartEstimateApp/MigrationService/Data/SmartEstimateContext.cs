@@ -12,15 +12,20 @@ namespace MigrationService.Data
         public DbSet<EstimateItem> EstimateItems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
-        public DbSet<EmailLog> EmailLogs { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<EstimateTemplate> EstimateTemplates { get; set; }
         public DbSet<TemplateItem> TemplateItems { get; set; }
         public DbSet<FileMetadata> FileMetadata { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Существующие связи
             modelBuilder.Entity<Client>()
                 .HasMany(c => c.Estimates)
                 .WithOne(e => e.Client)
@@ -45,19 +50,6 @@ namespace MigrationService.Data
                 .HasForeignKey(i => i.EstimateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.AuditLogs)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Estimate>()
-                .HasMany(e => e.EmailLogs)
-                .WithOne(el => el.Estimate)
-                .HasForeignKey(el => el.EstimateId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
             modelBuilder.Entity<EstimateTemplate>()
                 .HasMany(t => t.Items)
                 .WithOne(ti => ti.Template)
@@ -69,6 +61,7 @@ namespace MigrationService.Data
                 .WithOne(f => f.Estimate)
                 .HasForeignKey(f => f.EstimateId)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<Estimate>()
                 .HasIndex(e => e.Number)
@@ -95,15 +88,11 @@ namespace MigrationService.Data
 
             modelBuilder.Entity<Estimate>()
                 .Property(e => e.Currency)
-                .HasDefaultValue("USD");
+                .HasDefaultValue("RUB");
 
             modelBuilder.Entity<Project>()
                 .Property(p => p.Status)
                 .HasDefaultValue("Active");
-
-            modelBuilder.Entity<User>()
-                .Property(u => u.Role)
-                .HasDefaultValue("Editor");
         }
     }
 }
