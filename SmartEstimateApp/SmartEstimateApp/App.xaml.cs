@@ -1,7 +1,11 @@
 ﻿using Bl.DI;
+using Bl.Interfaces;
 using Dal.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartEstimateApp.Models;
+using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.IO;
 using System.Windows;
@@ -35,7 +39,18 @@ namespace SmartEstimateApp
 
             services.AddDataAccess(configuration);
 
-            services.AddScoped<MainWindow>();
+            services.AddSingleton<MainWindow>();
+
+            services.AddSingleton<CurrentUser>(provider => CurrentUser.Instance);
+
+            services.AddScoped<LoginPage>();
+            services.AddScoped<RegisterPage>();
+
+            services.AddScoped<INavigationService>(provider =>
+            {
+                var mainWindow = provider.GetService<MainWindow>();
+                return new NavigationService(provider, mainWindow.MainFrame);
+            });
 
             ServiceProvider = services.BuildServiceProvider();
 
