@@ -9,12 +9,11 @@ namespace Dal.Interfaces
     public interface IClientDal : IBaseDal<Client, long, ClientSearchParams, object>
     {
         /// <summary>
-        /// Проверяет существование клиента по ID и UserId
+        /// Проверяет существование клиента по ID 
         /// </summary>
         /// <param name="id">Идентификатор клиента</param>
-        /// <param name="userId">Идентификатор пользователя</param>
         /// <returns>True, если клиент существует для указанного пользователя, иначе False</returns>
-        Task<bool> ExistsAsync(long id, long userId);
+        Task<bool> ExistsAsync(long id);
 
         /// <summary>
         /// Проверяет существование клиента по email и UserId

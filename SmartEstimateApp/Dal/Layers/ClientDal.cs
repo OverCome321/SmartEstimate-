@@ -32,35 +32,12 @@ namespace Dal.Layers
         protected override bool RequiresUpdatesAfterObjectSaving => false;
 
         /// <summary>
-        /// Проверяет существование клиента по ID для указанного пользователя
-        /// </summary>
-        /// <param name="id">Идентификатор клиента</param>
-        /// <returns>True, если клиент существует, иначе False</returns>
-        public async Task<bool> ExistsAsync(long id)
-        {
-            throw new InvalidOperationException("Method requires UserId to check existence.");
-        }
-
-        /// <summary>
         /// Проверяет существование клиента по ID и UserId
         /// </summary>
         /// <param name="id">Идентификатор клиента</param>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <returns>True, если клиент существует для указанного пользователя, иначе False</returns>
-        public async Task<bool> ExistsAsync(long id, long userId)
-        {
-            return await _context.Clients.AnyAsync(c => c.Id == id && c.UserId == userId);
-        }
-
-        /// <summary>
-        /// Проверяет существование клиента по email для указанного пользователя
-        /// </summary>
-        /// <param name="email">Email клиента</param>
-        /// <returns>True, если клиент с таким email существует, иначе False</returns>
-        public async Task<bool> ExistsAsync(string email)
-        {
-            throw new InvalidOperationException("Method requires UserId to check existence.");
-        }
+        public async Task<bool> ExistsAsync(long id) => await _context.Clients.AnyAsync(c => c.Id == id);
 
         /// <summary>
         /// Проверяет существование клиента по email и UserId
@@ -68,20 +45,7 @@ namespace Dal.Layers
         /// <param name="email">Email клиента</param>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <returns>True, если клиент с таким email существует для указанного пользователя, иначе False</returns>
-        public async Task<bool> ExistsAsync(string email, long userId)
-        {
-            return await _context.Clients.AnyAsync(c => c.Email == email && c.UserId == userId);
-        }
-
-        /// <summary>
-        /// Проверяет существование клиента по телефону для указанного пользователя
-        /// </summary>
-        /// <param name="phone">Телефон клиента</param>
-        /// <returns>True, если клиент с таким телефоном существует, иначе False</returns>
-        public async Task<bool> ExistsPhoneAsync(string phone)
-        {
-            throw new InvalidOperationException("Method requires UserId to check existence.");
-        }
+        public async Task<bool> ExistsAsync(string email, long userId) => await _context.Clients.AnyAsync(c => c.Email == email && c.UserId == userId);
 
         /// <summary>
         /// Проверяет существование клиента по телефону и UserId
@@ -89,10 +53,7 @@ namespace Dal.Layers
         /// <param name="phone">Телефон клиента</param>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <returns>True, если клиент с таким телефоном существует для указанного пользователя, иначе False</returns>
-        public async Task<bool> ExistsPhoneAsync(string phone, long userId)
-        {
-            return await _context.Clients.AnyAsync(c => c.Phone == phone && c.UserId == userId);
-        }
+        public async Task<bool> ExistsPhoneAsync(string phone, long userId) => await _context.Clients.AnyAsync(c => c.Phone == phone && c.UserId == userId);
 
         /// <summary>
         /// Добавляет или обновляет клиента в базе данных
@@ -105,7 +66,7 @@ namespace Dal.Layers
                 throw new ArgumentNullException(nameof(entity));
 
             var dbClient = MapToDbClient(entity);
-            bool exists = dbClient.Id > 0 && await ExistsAsync(dbClient.Id, dbClient.UserId);
+            bool exists = dbClient.Id > 0 && await ExistsAsync(dbClient.Id);
 
             if (exists)
             {
