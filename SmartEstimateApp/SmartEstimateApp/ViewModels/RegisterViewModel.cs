@@ -1,11 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using Bl.Interfaces;
+﻿using Bl.Interfaces;
 using Entities;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
 {
@@ -85,10 +85,9 @@ namespace SmartEstimateApp.ViewModels
 
                 var user = new User
                 {
-                    Id = Guid.NewGuid(),
                     Email = Email,
                     PasswordHash = Password,
-                    Role = new Role { Id = Guid.Parse("33113CD9-F607-49D9-BB70-FEB5A4AD3B75"), Name = "Пользователь" },
+                    Role = new Role { Id = 1, Name = "User" },
                     CreatedAt = DateTime.Now,
                     LastLogin = DateTime.Now
                 };
@@ -108,9 +107,9 @@ namespace SmartEstimateApp.ViewModels
         }
 
         private bool CanRegister() => !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(ConfirmPassword);
-        
-        private void NavigateToLogin() =>_navigationService.NavigateTo<LoginPage>();
-        
+
+        private void NavigateToLogin() => _navigationService.NavigateTo<LoginPage>();
+
         private void ShowError(string message)
         {
             ErrorMessage = message;

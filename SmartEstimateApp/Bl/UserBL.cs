@@ -20,15 +20,23 @@ namespace Bl
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="UserBL"/>
         /// </summary>
-        /// <param name="userDal">Data Access Layer для пользователей</param>
-        /// <param name="options">Опции бизнес-логики (опционально)</param>
+        /// <param name="userDal">Слой доступа к данным для пользователей</param>
+        /// <param name="options">Настройки бизнес-логики (опционально)</param>
         public UserBL(IUserDal userDal, IOptions<BusinessLogicOptions> options = null)
         {
             _userDal = userDal ?? throw new ArgumentNullException(nameof(userDal));
             _options = options?.Value ?? new BusinessLogicOptions();
         }
 
-        public async Task<Guid> AddOrUpdateAsync(User entity)
+        /// <summary>
+        /// Добавляет или обновляет сущность пользователя
+        /// </summary>
+        /// <param name="entity">Сущность пользователя для добавления или обновления</param>
+        /// <returns>Идентификатор добавленного или обновленного пользователя</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null</exception>
+        /// <exception cref="ArgumentException">Выбрасывается, если email некорректен или роль не указана</exception>
+        /// <exception cref="InvalidOperationException">Выбрасывается, если email уже существует</exception>
+        public async Task<long> AddOrUpdateAsync(User entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -39,7 +47,7 @@ namespace Bl
             if (!IsValidEmail(entity.Email))
                 throw new ArgumentException(ErrorMessages.EmailInvalidFormat, nameof(entity.Email));
 
-            if (entity.Role == null || entity.Role.Id == Guid.Empty)
+            if (entity.Role == null || entity.Role.Id == 0)
                 throw new ArgumentException(ErrorMessages.RoleNotSpecified, nameof(entity.Role));
 
             if (string.IsNullOrEmpty(entity.PasswordHash))
@@ -49,45 +57,76 @@ namespace Bl
                 ValidatePassword(entity.PasswordHash);
 
             if (await _userDal.ExistsAsync(entity.Email))
-                throw new InvalidOperationException(string.Format(ErrorMessages.EmailAlreadyExists, entity.Email));
+                throw new InvalidOperationException(ErrorMessages.EmailAlreadyExists);
 
             entity.PasswordHash = PasswordHasher.HashPassword(entity.PasswordHash);
 
-            if (entity.Id == Guid.Empty)
+            if (entity.Id == 0)
             {
                 entity.CreatedAt = DateTime.Now;
             }
 
             return await _userDal.AddOrUpdateAsync(entity);
         }
-        public Task<bool> ExistsAsync(Guid id)
-        {
-            return _userDal.ExistsAsync(id);
-        }
-        public Task<bool> ExistsAsync(string email)
-        {
-            return _userDal.ExistsAsync(email);
-        }
-        public Task<User> GetAsync(Guid id, bool includeRole = false)
+
+        /// <summary>
+        /// Проверяет существование пользователя по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя для проверки</param>
+        /// <returns>True, если пользователь существует, иначе false</returns>
+        public Task<bool> ExistsAsync(long id) => _userDal.ExistsAsync(id);
+
+        /// <summary>
+        /// Проверяет существование пользователя по email
+        /// </summary>
+        /// <param name="email">Email для проверки</param>
+        /// <returns>True, если пользователь существует, иначе false</returns>
+        public Task<bool> ExistsAsync(string email) => _userDal.ExistsAsync(email);
+
+        /// <summary>
+        /// Получает пользователя по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <param name="includeRole">Включать ли информацию о роли</param>
+        /// <returns>Сущность пользователя</returns>
+        public Task<User> GetAsync(long id, bool includeRole = false)
         {
             var convertParams = includeRole ? new UserConvertParams { IncludeRole = true } : null;
             return _userDal.GetAsync(id, convertParams);
         }
-        public Task<bool> DeleteAsync(Guid id)
-        {
-            return _userDal.DeleteAsync(id);
-        }
+
+        /// <summary>
+        /// Удаляет пользователя по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя для удаления</param>
+        /// <returns>True, если удаление успешно, иначе false</returns>
+        public Task<bool> DeleteAsync(long id) => _userDal.DeleteAsync(id);
+
+
+        /// <summary>
+        /// Получает пользователей на основе параметров поиска пользователей
+        /// </summary>
+        /// <param name="searchParams">Параметры поиска пользователей</param>
+        /// <param name="includeRole">Включать ли информацию о роли</param>
+        /// <returns>Результат поиска с пользователями</returns>
         public Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = false)
         {
             var convertParams = includeRole ? new UserConvertParams { IncludeRole = true } : null;
             return _userDal.GetAsync(searchParams, convertParams);
         }
+
+        /// <summary>
+        /// Проверяет учетные данные пользователя
+        /// </summary>
+        /// <param name="email">Email пользователя</param>
+        /// <param name="password">Пароль пользователя</param>
+        /// <returns>Сущность пользователя, если данные верны, иначе null</returns>
         public async Task<User?> VerifyPasswordAsync(string email, string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
-            var searchParams = new UserSearchParams { Email = email };
+            var searchParams = new UserSearchParams(email);
             var dalResult = await _userDal.GetAsync(searchParams);
             var user = dalResult.Objects.FirstOrDefault();
 
@@ -98,16 +137,18 @@ namespace Bl
 
             return null;
         }
+
         /// <summary>
         /// Проверяет сложность пароля согласно настройкам
         /// </summary>
         /// <param name="password">Пароль для проверки</param>
+        /// <exception cref="ArgumentException">Выбрасывается, если пароль не соответствует требованиям</exception>
         private void ValidatePassword(string password)
         {
             if (password.Length < _options.MinPasswordLength)
             {
                 throw new ArgumentException(
-                    $"Пароль должен содержать не менее {_options.MinPasswordLength} символов",
+                    string.Format(ErrorMessages.PasswordTooShort, _options.MinPasswordLength),
                     nameof(password));
             }
 
@@ -120,14 +161,17 @@ namespace Bl
                 if (!hasDigit || !hasLetter || !hasSpecial)
                 {
                     throw new ArgumentException(
-                        "Пароль должен содержать буквы, цифры и специальные символы",
+                        ErrorMessages.ComplexPasswordRequired,
                         nameof(password));
                 }
             }
         }
+
         /// <summary>
-        /// Проверяет валидность формата email
+        /// Проверяет формат email
         /// </summary>
+        /// <param name="email">Email для проверки</param>
+        /// <returns>True, если формат email валиден, иначе false</returns>
         private bool IsValidEmail(string email)
         {
             try

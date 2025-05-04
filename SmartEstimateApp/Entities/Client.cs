@@ -1,18 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MigrationService.Models
+﻿namespace Entities
 {
     public class Client
     {
         public long Id { get; set; }
 
-        [Required, MaxLength(100)]
         public string Name { get; set; }
 
-        [EmailAddress, MaxLength(100)]
         public string? Email { get; set; }
 
-        [Phone, MaxLength(20)]
         public string? Phone { get; set; }
 
         public string? Address { get; set; }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Common.Convert;
 using Common.Search;
 using Dal.DbModels;
 using Dal.Interfaces;
@@ -9,19 +8,20 @@ using System.Linq.Expressions;
 namespace Dal.Layers
 {
     /// <summary>
-    /// Класс доступа к данным пользователей
+    /// Класс доступа к данным клиентов
     /// </summary>
-    public class UserDal : BaseDal<Dal.DbModels.User, Entities.User, long, UserSearchParams, UserConvertParams>, IUserDal
+    public class ClientDal : BaseDal<Dal.DbModels.Client, Entities.Client, long, ClientSearchParams, object>, IClientDal
     {
         private readonly SmartEstimateDbContext _context;
+
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Конструктор класса UserDal
+        /// Конструктор класса ClientDal
         /// </summary>
         /// <param name="context">Контекст базы данных</param>
         /// <param name="mapper">Маппер для преобразования между моделями</param>
-        public UserDal(SmartEstimateDbContext context, IMapper mapper)
+        public ClientDal(SmartEstimateDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper;
@@ -33,61 +33,61 @@ namespace Dal.Layers
         protected override bool RequiresUpdatesAfterObjectSaving => false;
 
         /// <summary>
-        /// Проверяет существование пользователя по ID
+        /// Проверяет существование клиента по ID
         /// </summary>
-        /// <param name="id">Идентификатор пользователя</param>
-        /// <returns>True, если пользователь существует, иначе False</returns>
-        public async Task<bool> ExistsAsync(long id) => await _context.Users.AnyAsync(u => u.Id == id);
+        /// <param name="id">Идентификатор клиента</param>
+        /// <returns>True, если клиент существует, иначе False</returns>
+        public async Task<bool> ExistsAsync(long id) => await _context.Clients.AnyAsync(c => c.Id == id);
 
         /// <summary>
-        /// Проверяет существование пользователя по email
+        /// Проверяет существование клиента по email
         /// </summary>
-        /// <param name="email">Email пользователя</param>
-        /// <returns>True, если пользователь с таким email существует, иначе False</returns>
-        public async Task<bool> ExistsAsync(string email) => await _context.Users.AnyAsync(u => u.Email == email);
+        /// <param name="email">Email клиента</param>
+        /// <returns>True, если клиент с таким email существует, иначе False</returns>
+        public async Task<bool> ExistsAsync(string email) => await _context.Clients.AnyAsync(c => c.Email == email);
 
         /// <summary>
-        /// Проверяет существование роли по ID
+        /// Проверяет существование клиента по phone
         /// </summary>
-        /// <param name="roleId">Идентификатор роли</param>
-        /// <returns>True, если роль существует, иначе False</returns>
-        public async Task<bool> RoleExistsAsync(long roleId) => await _context.Roles.AnyAsync(r => r.Id == roleId);
+        /// <param name="phone">phone клиента</param>
+        /// <returns>True, если клиент с таким phone существует, иначе False</returns>
+        public async Task<bool> ExistsPhoneAsync(string phone) => await _context.Clients.AnyAsync(c => c.Phone == phone);
 
         /// <summary>
-        /// Добавляет или обновляет пользователя в базе данных
+        /// Добавляет или обновляет клиента в базе данных
         /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <returns>Идентификатор сохраненного пользователя</returns>
-        protected override async Task<long> AddOrUpdateInternalAsync(Entities.User entity)
+        /// <param name="entity">Сущность клиента</param>
+        /// <returns>Идентификатор сохраненного клиента</returns>
+        protected override async Task<long> AddOrUpdateInternalAsync(Entities.Client entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var dbUser = MapToDbUser(entity);
-            bool exists = dbUser.Id > 0 && await _context.Users.AnyAsync(u => u.Id == dbUser.Id);
+            var dbClient = MapToDbClient(entity);
+            bool exists = dbClient.Id > 0 && await _context.Clients.AnyAsync(c => c.Id == dbClient.Id);
 
             if (exists)
             {
-                await UpdateBeforeSavingAsync(entity, dbUser, true);
-                _context.Users.Update(dbUser);
+                await UpdateBeforeSavingAsync(entity, dbClient, true);
+                _context.Clients.Update(dbClient);
             }
             else
             {
                 // При использовании идентификатора типа long с Identity, 
                 // нет необходимости генерировать ID вручную
-                await UpdateBeforeSavingAsync(entity, dbUser, false);
-                await _context.Users.AddAsync(dbUser);
+                await UpdateBeforeSavingAsync(entity, dbClient, false);
+                await _context.Clients.AddAsync(dbClient);
             }
 
-            return dbUser.Id;
+            return dbClient.Id;
         }
 
         /// <summary>
-        /// Добавляет или обновляет список пользователей в базе данных
+        /// Добавляет или обновляет список клиентов в базе данных
         /// </summary>
-        /// <param name="entities">Список сущностей пользователей</param>
-        /// <returns>Список идентификаторов сохраненных пользователей</returns>
-        protected override async Task<IList<long>> AddOrUpdateInternalAsync(IList<Entities.User> entities)
+        /// <param name="entities">Список сущностей клиентов</param>
+        /// <returns>Список идентификаторов сохраненных клиентов</returns>
+        protected override async Task<IList<long>> AddOrUpdateInternalAsync(IList<Entities.Client> entities)
         {
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
@@ -106,10 +106,10 @@ namespace Dal.Layers
         /// <summary>
         /// Выполняет обновление объекта перед сохранением
         /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <param name="dbObject">DB модель пользователя</param>
-        /// <param name="exists">Флаг существования пользователя в БД</param>
-        protected override Task UpdateBeforeSavingAsync(Entities.User entity, Dal.DbModels.User dbObject, bool exists)
+        /// <param name="entity">Сущность клиента</param>
+        /// <param name="dbObject">DB модель клиента</param>
+        /// <param name="exists">Флаг существования клиента в БД</param>
+        protected override Task UpdateBeforeSavingAsync(Entities.Client entity, Dal.DbModels.Client dbObject, bool exists)
         {
             if (!exists)
             {
@@ -119,23 +119,17 @@ namespace Dal.Layers
         }
 
         /// <summary>
-        /// Строит список сущностей пользователей на основе запроса к базе данных
+        /// Строит список сущностей клиентов на основе запроса к базе данных
         /// </summary>
         /// <param name="dbObjects">Запрос к БД</param>
         /// <param name="convertParams">Параметры конвертации</param>
         /// <param name="isFull">Флаг полной загрузки</param>
-        /// <returns>Список сущностей пользователей</returns>
-        protected override async Task<IList<Entities.User>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.User> dbObjects, UserConvertParams convertParams, bool isFull)
+        /// <returns>Список сущностей клиентов</returns>
+        protected override async Task<IList<Entities.Client>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.Client> dbObjects, object? convertParams, bool isFull)
         {
             var query = dbObjects.AsNoTracking();
-
-            if (convertParams?.IncludeRole == true || isFull)
-            {
-                query = query.Include(u => u.Role);
-            }
-
-            var dbUsers = await query.ToListAsync();
-            return dbUsers.Select(MapToEntityUser).ToList();
+            var dbClients = await query.ToListAsync();
+            return dbClients.Select(MapToEntityClient).ToList();
         }
 
         /// <summary>
@@ -143,18 +137,22 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="searchParams">Параметры поиска</param>
         /// <returns>Запрос к БД</returns>
-        protected override IQueryable<Dal.DbModels.User> BuildDbQuery(UserSearchParams searchParams)
+        protected override IQueryable<Dal.DbModels.Client> BuildDbQuery(ClientSearchParams searchParams)
         {
-            IQueryable<Dal.DbModels.User> query = _context.Users;
+            IQueryable<Dal.DbModels.Client> query = _context.Clients;
 
             if (!string.IsNullOrEmpty(searchParams.Email))
             {
-                query = query.Where(u => u.Email.ToLower().Contains(searchParams.Email.ToLower()));
+                query = query.Where(c => c.Email.ToLower().Contains(searchParams.Email.ToLower()));
             }
 
-            if (searchParams.RoleId.HasValue)
+            if (!string.IsNullOrEmpty(searchParams.Name))
             {
-                query = query.Where(u => u.RoleId == searchParams.RoleId.Value);
+                query = query.Where(c => c.Name.ToLower().Contains(searchParams.Name.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchParams.Phone))
+            {
+                query = query.Where(c => c.Phone.ToLower().Contains(searchParams.Phone.ToLower()));
             }
 
             return query;
@@ -165,7 +163,7 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="query">Запрос к БД</param>
         /// <returns>Количество записей</returns>
-        protected override async Task<int> CountAsync(IQueryable<Dal.DbModels.User> query) => await query.CountAsync();
+        protected override async Task<int> CountAsync(IQueryable<Dal.DbModels.Client> query) => await query.CountAsync();
 
         /// <summary>
         /// Сохраняет изменения в базе данных
@@ -199,13 +197,13 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="predicate">Предикат для фильтрации</param>
         /// <returns>True, если удаление выполнено успешно, иначе False</returns>
-        protected override async Task<bool> DeleteAsync(Expression<Func<Dal.DbModels.User, bool>> predicate)
+        protected override async Task<bool> DeleteAsync(Expression<Func<Dal.DbModels.Client, bool>> predicate)
         {
-            var users = await _context.Users.Where(predicate).ToListAsync();
-            if (!users.Any())
+            var clients = await _context.Clients.Where(predicate).ToListAsync();
+            if (!clients.Any())
                 return false;
 
-            _context.Users.RemoveRange(users);
+            _context.Clients.RemoveRange(clients);
             await SaveChangesAsync();
             return true;
         }
@@ -215,39 +213,39 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="predicate">Предикат для фильтрации</param>
         /// <returns>Отфильтрованный запрос</returns>
-        protected override IQueryable<Dal.DbModels.User> Where(Expression<Func<Dal.DbModels.User, bool>> predicate) => _context.Users.Where(predicate);
+        protected override IQueryable<Dal.DbModels.Client> Where(Expression<Func<Dal.DbModels.Client, bool>> predicate) => _context.Clients.Where(predicate);
 
         /// <summary>
         /// Возвращает выражение для получения ID из DB модели
         /// </summary>
         /// <returns>Выражение для получения ID</returns>
-        protected override Expression<Func<Dal.DbModels.User, long>> GetIdByDbObjectExpression() => u => u.Id;
+        protected override Expression<Func<Dal.DbModels.Client, long>> GetIdByDbObjectExpression() => c => c.Id;
 
         /// <summary>
         /// Возвращает выражение для получения ID из сущности
         /// </summary>
         /// <returns>Выражение для получения ID</returns>
-        protected override Expression<Func<Entities.User, long>> GetIdByEntityExpression() => u => u.Id;
+        protected override Expression<Func<Entities.Client, long>> GetIdByEntityExpression() => c => c.Id;
 
         /// <summary>
         /// Применяет сортировку по умолчанию
         /// </summary>
         /// <param name="query">Запрос к БД</param>
         /// <returns>Отсортированный запрос</returns>
-        protected override IQueryable<Dal.DbModels.User> ApplyDefaultSorting(IQueryable<Dal.DbModels.User> query) => query.OrderBy(u => u.CreatedAt);
+        protected override IQueryable<Dal.DbModels.Client> ApplyDefaultSorting(IQueryable<Dal.DbModels.Client> query) => query.OrderBy(c => c.CreatedAt);
 
         /// <summary>
         /// Преобразует сущность в DB модель
         /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <returns>DB модель пользователя</returns>
-        private Dal.DbModels.User MapToDbUser(Entities.User entity) => _mapper.Map<Dal.DbModels.User>(entity);
+        /// <param name="entity">Сущность клиента</param>
+        /// <returns>DB модель клиента</returns>
+        private Dal.DbModels.Client MapToDbClient(Entities.Client entity) => _mapper.Map<Dal.DbModels.Client>(entity);
 
         /// <summary>
         /// Преобразует DB модель в сущность
         /// </summary>
-        /// <param name="dbUser">DB модель пользователя</param>
-        /// <returns>Сущность пользователя</returns>
-        private Entities.User MapToEntityUser(Dal.DbModels.User dbUser) => _mapper.Map<Entities.User>(dbUser);
+        /// <param name="dbClient">DB модель клиента</param>
+        /// <returns>Сущность клиента</returns>
+        private Entities.Client MapToEntityClient(Dal.DbModels.Client dbClient) => _mapper.Map<Entities.Client>(dbClient);
     }
 }
