@@ -18,6 +18,8 @@ namespace Dal.DI
 
             services.AddScoped<IUserDal, UserDal>();
 
+            services.AddScoped<IClientDal, ClientDal>();
+
             return services;
         }
     }

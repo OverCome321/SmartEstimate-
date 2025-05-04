@@ -57,9 +57,14 @@ namespace MigrationService.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Clients");
                 });
@@ -274,6 +279,17 @@ namespace MigrationService.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("MigrationService.Models.Client", b =>
+                {
+                    b.HasOne("MigrationService.Models.User", "User")
+                        .WithMany("Clients")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MigrationService.Models.Estimate", b =>
                 {
                     b.HasOne("MigrationService.Models.Client", "Client")
@@ -333,6 +349,11 @@ namespace MigrationService.Migrations
             modelBuilder.Entity("MigrationService.Models.Project", b =>
                 {
                     b.Navigation("Estimates");
+                });
+
+            modelBuilder.Entity("MigrationService.Models.User", b =>
+                {
+                    b.Navigation("Clients");
                 });
 #pragma warning restore 612, 618
         }

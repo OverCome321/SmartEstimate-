@@ -9,23 +9,27 @@ namespace Dal.Interfaces
     public interface IClientDal : IBaseDal<Client, long, ClientSearchParams, object>
     {
         /// <summary>
-        /// Проверяет существование клиента по ID
+        /// Проверяет существование клиента по ID и UserId
         /// </summary>
         /// <param name="id">Идентификатор клиента</param>
-        /// <returns>True, если клиент существует, иначе False</returns>
-        Task<bool> ExistsAsync(long id);
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>True, если клиент существует для указанного пользователя, иначе False</returns>
+        Task<bool> ExistsAsync(long id, long userId);
 
         /// <summary>
-        /// Проверяет существование клиента по email
+        /// Проверяет существование клиента по email и UserId
         /// </summary>
         /// <param name="email">Email клиента</param>
-        /// <returns>True, если клиент с таким email существует, иначе False</returns>
-        Task<bool> ExistsAsync(string email);
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>True, если клиент с таким email существует для указанного пользователя, иначе False</returns>
+        Task<bool> ExistsAsync(string email, long userId);
+
         /// <summary>
-        /// Проверяет существование клиента по phone
+        /// Проверяет существование клиента по телефону и UserId
         /// </summary>
-        /// <param name="phone">Phone клиента</param>
-        /// <returns>True, если клиент с таким phone существует, иначе False</returns>
-        Task<bool> ExistsPhoneAsync(string phone);
+        /// <param name="phone">Телефон клиента</param>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>True, если клиент с таким телефоном существует для указанного пользователя, иначе False</returns>
+        Task<bool> ExistsPhoneAsync(string phone, long userId);
     }
 }

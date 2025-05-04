@@ -28,6 +28,12 @@ namespace MigrationService.Data
                 .HasForeignKey(u => u.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Clients)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Project>()
                 .HasMany(p => p.Estimates)
                 .WithOne(e => e.Project)

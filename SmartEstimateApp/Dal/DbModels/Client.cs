@@ -22,5 +22,8 @@ namespace Dal.DbModels
         public DateTime? UpdatedAt { get; set; }
 
         public int Status { get; set; }
+
+        public long UserId { get; set; }
+        public User User { get; set; }
     }
 }

@@ -19,5 +19,7 @@ namespace Dal.DbModels
         public DateTime CreatedAt { get; set; }
 
         public DateTime? LastLogin { get; set; }
+
+        public ICollection<Client> Clients { get; set; } = new List<Client>();
     }
 }

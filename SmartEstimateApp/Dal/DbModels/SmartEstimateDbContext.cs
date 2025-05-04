@@ -75,6 +75,10 @@ namespace Dal.DbModels
                       .IsRequired(false);
                 entity.Property(e => e.Status)
                       .IsRequired();
+                entity.HasOne(c => c.User)
+                      .WithMany(u => u.Clients)
+                      .HasForeignKey(c => c.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
                 entity.HasIndex(e => e.Email);
             });
         }
