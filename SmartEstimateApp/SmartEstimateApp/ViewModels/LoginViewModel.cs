@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using Bl.Interfaces;
+﻿using Bl.Interfaces;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
 {
@@ -86,9 +84,6 @@ namespace SmartEstimateApp.ViewModels
                 }
                 _currentUser.SetUser(user);
 
-                MessageBox.Show($"Вход выполнен успешно! Добро пожаловать, {_currentUser.User.Email}",
-                    "Успешный вход", MessageBoxButton.OK, MessageBoxImage.Information);
-
             }
             catch (Exception ex)
             {
@@ -101,9 +96,9 @@ namespace SmartEstimateApp.ViewModels
         }
 
         private bool CanLogin() => !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
-        
+
         private void NavigateToRegister() => _navigationService.NavigateTo<RegisterPage>();
-        
+
 
         private void ShowError(string message)
         {

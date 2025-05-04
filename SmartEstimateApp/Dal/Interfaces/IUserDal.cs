@@ -4,15 +4,30 @@ using Entities;
 
 namespace Dal.Interfaces
 {
-    public interface IUserDal
+    /// <summary>
+    /// Интерфейс доступа к данным пользователей
+    /// </summary>
+    public interface IUserDal : IBaseDal<User, long, UserSearchParams, UserConvertParams>
     {
-        Task<Guid> AddOrUpdateAsync(User entity);
-        Task<IList<Guid>> AddOrUpdateAsync(IList<User> entities);
-        Task<User> GetAsync(Guid id, UserConvertParams? convertParams = null);
-        Task<bool> DeleteAsync(Guid id);
-        Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, UserConvertParams? convertParams = null);
-        Task<bool> ExistsAsync(Guid id);
+        /// <summary>
+        /// Проверяет существование пользователя по ID
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <returns>True, если пользователь существует, иначе False</returns>
+        Task<bool> ExistsAsync(long id);
+
+        /// <summary>
+        /// Проверяет существование пользователя по email
+        /// </summary>
+        /// <param name="email">Email пользователя</param>
+        /// <returns>True, если пользователь с таким email существует, иначе False</returns>
         Task<bool> ExistsAsync(string email);
-        Task<bool> RoleExistsAsync(Guid roleId);
+
+        /// <summary>
+        /// Проверяет существование роли по ID
+        /// </summary>
+        /// <param name="roleId">Идентификатор роли</param>
+        /// <returns>True, если роль существует, иначе False</returns>
+        Task<bool> RoleExistsAsync(long roleId);
     }
 }

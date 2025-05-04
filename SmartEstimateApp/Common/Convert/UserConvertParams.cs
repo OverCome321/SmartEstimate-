@@ -4,5 +4,4 @@
     {
         public bool IncludeRole { get; set; }
     }
-
 }

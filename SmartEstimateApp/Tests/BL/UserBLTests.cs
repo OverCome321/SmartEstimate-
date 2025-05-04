@@ -34,38 +34,38 @@ namespace Tests.BL
 
         /// <summary>
         /// Проверяет успешное добавление или обновление валидного пользователя.
-        /// Что делаем: Создаем валидного пользователя, настраиваем мок для проверки отсутствия email и возврата Guid.
-        /// Что ожидаем: Метод возвращает Guid, переданный DAL, и метод AddOrUpdateAsync вызывается один раз.
-        /// Зачем нужен тест: Убеждаемся, что метод корректно сохраняет нового пользователя и возвращает его идентификатор.
+        /// Что делаем: Создаем валидного пользователя, настраиваем мок для отсутствия email и возврата ID.
+        /// Что ожидаем: Метод возвращает ID от DAL, метод AddOrUpdateAsync вызывается один раз.
+        /// Зачем нужен: Убеждаемся, что метод корректно сохраняет пользователя и возвращает его идентификатор.
         /// </summary>
         [Fact]
-        public async Task AddOrUpdateAsync_ValidUser_ReturnsGuid()
+        public async Task AddOrUpdateAsync_ValidUser_ReturnsId()
         {
             // Arrange
             var user = new User
             {
-                Id = Guid.Empty,
+                Id = 0,
                 Email = "test@example.com",
                 PasswordHash = "ComplexPass123!",
-                Role = new Role { Id = Guid.NewGuid() }
+                Role = new Role { Id = 1 }
             };
-            var expectedGuid = Guid.NewGuid();
+            const long expectedId = 1;
             _userDalMock.Setup(d => d.ExistsAsync(user.Email)).ReturnsAsync(false);
-            _userDalMock.Setup(d => d.AddOrUpdateAsync(It.IsAny<User>())).ReturnsAsync(expectedGuid);
+            _userDalMock.Setup(d => d.AddOrUpdateAsync(It.IsAny<User>())).ReturnsAsync(expectedId);
 
             // Act
             var result = await _userBL.AddOrUpdateAsync(user);
 
             // Assert
-            Assert.Equal(expectedGuid, result);
+            Assert.Equal(expectedId, result);
             _userDalMock.Verify(d => d.AddOrUpdateAsync(It.IsAny<User>()), Times.Once());
         }
 
         /// <summary>
         /// Проверяет обработку случая, когда передан null вместо пользователя.
-        /// Что делаем: Вызываем метод AddOrUpdateAsync с null в качестве аргумента.
+        /// Что делаем: Вызываем AddOrUpdateAsync с null.
         /// Что ожидаем: Метод выбрасывает ArgumentNullException.
-        /// Зачем нужен тест: Убеждаемся, что метод корректно обрабатывает некорректный входной параметр.
+        /// Зачем нужен: Убеждаемся, что метод корректно обрабатывает некорректный входной параметр.
         /// </summary>
         [Fact]
         public async Task AddOrUpdateAsync_NullUser_ThrowsArgumentNullException()
@@ -75,26 +75,27 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет обработку случая, когда email пользователя пустой.
+        /// Проверяет обработку пустого email.
         /// Что делаем: Создаем пользователя с пустым email и вызываем AddOrUpdateAsync.
-        /// Что ожидаем: Метод выбрасывает ArgumentException.
-        /// Зачем нужен тест: Проверяем валидацию email в методе, чтобы убедиться, что пустой email не допускается.
+        /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением EmailEmpty.
+        /// Зачем нужен: Проверяем валидацию email, чтобы убедиться, что пустой email не допускается.
         /// </summary>
         [Fact]
         public async Task AddOrUpdateAsync_EmptyEmail_ThrowsArgumentException()
         {
             // Arrange
-            var user = new User { Email = "", PasswordHash = "ComplexPass123!", Role = new Role { Id = Guid.NewGuid() } };
+            var user = new User { Email = "", PasswordHash = "ComplexPass123!", Role = new Role { Id = 1 } };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            Assert.Equal(ErrorMessages.EmailEmpty, exception.Message);
         }
 
         /// <summary>
-        /// Проверяет обработку случая, когда email пользователя имеет неверный формат.
+        /// Проверяет обработку неверного формата email.
         /// Что делаем: Создаем пользователя с невалидным email и вызываем AddOrUpdateAsync.
-        /// Что ожидаем: Метод выбрасывает ArgumentException.
-        /// Зачем нужен тест: Убеждаемся, что метод проверяет формат email и отклоняет невалидные значения.
+        /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением EmailInvalidFormat.
+        /// Зачем нужен: Убеждаемся, что метод проверяет формат email и отклоняет невалидные значения.
         /// </summary>
         [Fact]
         public async Task AddOrUpdateAsync_InvalidEmail_ThrowsArgumentException()
@@ -104,18 +105,19 @@ namespace Tests.BL
             {
                 Email = "invalid-email",
                 PasswordHash = "ComplexPass123!",
-                Role = new Role { Id = Guid.NewGuid() }
+                Role = new Role { Id = 1 }
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            Assert.Equal(ErrorMessages.EmailInvalidFormat, exception.Message);
         }
 
         /// <summary>
-        /// Проверяет обработку случая, когда email уже существует в системе.
-        /// Что делаем: Создаем пользователя и настраиваем мок, чтобы он указывал на существование email.
-        /// Что ожидаем: Метод выбрасывает InvalidOperationException.
-        /// Зачем нужен тест: Проверяем, что метод не позволяет создавать дубликаты пользователей с одинаковым email.
+        /// Проверяет обработку существующего email.
+        /// Что делаем: Создаем пользователя, мок указывает, что email уже существует.
+        /// Что ожидаем: Метод выбрасывает InvalidOperationException с сообщением EmailAlreadyExists.
+        /// Зачем нужен: Проверяем, что метод не допускает дубликаты email.
         /// </summary>
         [Fact]
         public async Task AddOrUpdateAsync_EmailExists_ThrowsInvalidOperationException()
@@ -125,19 +127,20 @@ namespace Tests.BL
             {
                 Email = "test@example.com",
                 PasswordHash = "ComplexPass123!",
-                Role = new Role { Id = Guid.NewGuid() }
+                Role = new Role { Id = 1 }
             };
             _userDalMock.Setup(d => d.ExistsAsync(user.Email)).ReturnsAsync(true);
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _userBL.AddOrUpdateAsync(user));
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _userBL.AddOrUpdateAsync(user));
+            Assert.Equal(ErrorMessages.EmailAlreadyExists, exception.Message);
         }
 
         /// <summary>
-        /// Проверяет обработку случая, когда пароль пользователя слишком слабый.
+        /// Проверяет обработку слабого пароля.
         /// Что делаем: Создаем пользователя с коротким паролем и вызываем AddOrUpdateAsync.
-        /// Что ожидаем: Метод выбрасывает ArgumentException.
-        /// Зачем нужен тест: Убеждаемся, что метод проверяет сложность пароля согласно настройкам.
+        /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением PasswordTooShort.
+        /// Зачем нужен: Убеждаемся, что метод проверяет сложность пароля.
         /// </summary>
         [Fact]
         public async Task AddOrUpdateAsync_WeakPassword_ThrowsArgumentException()
@@ -147,19 +150,43 @@ namespace Tests.BL
             {
                 Email = "test@example.com",
                 PasswordHash = "weak",
-                Role = new Role { Id = Guid.NewGuid() }
+                Role = new Role { Id = 1 }
             };
             _userDalMock.Setup(d => d.ExistsAsync(user.Email)).ReturnsAsync(false);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            Assert.Equal(string.Format(ErrorMessages.PasswordTooShort, _defaultOptions.MinPasswordLength), exception.Message);
         }
 
         /// <summary>
-        /// Проверяет успешную верификацию пользователя с правильными учетными данными.
-        /// Что делаем: Создаем пользователя, настраиваем мок для возврата результата поиска по email, вызываем VerifyPasswordAsync.
-        /// Что ожидаем: Метод возвращает объект пользователя с указанным email.
-        /// Зачем нужен тест: Проверяем, что метод корректно верифицирует пользователя при правильном пароле.
+        /// Проверяет обработку несложного пароля при требовании сложности.
+        /// Что делаем: Создаем пользователя с паролем без сложности и вызываем AddOrUpdateAsync.
+        /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением ComplexPasswordRequired.
+        /// Зачем нужен: Проверяем валидацию сложного пароля.
+        /// </summary>
+        [Fact]
+        public async Task AddOrUpdateAsync_NonComplexPassword_ThrowsArgumentException()
+        {
+            // Arrange
+            var user = new User
+            {
+                Email = "test@example.com",
+                PasswordHash = "SimplePassword",
+                Role = new Role { Id = 1 }
+            };
+            _userDalMock.Setup(d => d.ExistsAsync(user.Email)).ReturnsAsync(false);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
+            Assert.Equal(ErrorMessages.ComplexPasswordRequired, exception.Message);
+        }
+
+        /// <summary>
+        /// Проверяет успешную верификацию пользователя с правильными данными.
+        /// Что делаем: Создаем пользователя, настраиваем мок для возврата результата поиска, вызываем VerifyPasswordAsync.
+        /// Что ожидаем: Метод возвращает пользователя с указанным email.
+        /// Зачем нужен: Убеждаемся, что метод корректно верифицирует пользователя.
         /// </summary>
         [Fact]
         public async Task VerifyPasswordAsync_ValidCredentials_ReturnsUser()
@@ -183,10 +210,10 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет обработку неверного пароля при верификации пользователя.
-        /// Что делаем: Создаем пользователя, настраиваем мок для возврата результата поиска, вызываем VerifyPasswordAsync с неверным паролем.
+        /// Проверяет обработку неверного пароля при верификации.
+        /// Что делаем: Создаем пользователя, настраиваем мок, вызываем VerifyPasswordAsync с неверным паролем.
         /// Что ожидаем: Метод возвращает null.
-        /// Зачем нужен тест: Убеждаемся, что метод корректно отклоняет неверные учетные данные.
+        /// Зачем нужен: Убеждаемся, что метод отклоняет неверные учетные данные.
         /// </summary>
         [Fact]
         public async Task VerifyPasswordAsync_InvalidPassword_ReturnsNull()
@@ -210,16 +237,16 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет проверку существования пользователя по идентификатору.
-        /// Что делаем: Настраиваем мок для возврата true при проверке существования пользователя по ID, вызываем ExistsAsync.
+        /// Проверяет проверку существования пользователя по ID.
+        /// Что делаем: Настраиваем мок для возврата true, вызываем ExistsAsync.
         /// Что ожидаем: Метод возвращает true.
-        /// Зачем нужен тест: Убеждаемся, что метод корректно проверяет наличие пользователя по идентификатору.
+        /// Зачем нужен: Убеждаемся, что метод корректно проверяет наличие пользователя по ID.
         /// </summary>
         [Fact]
         public async Task ExistsAsync_ById_ReturnsTrue()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            const long id = 1;
             _userDalMock.Setup(d => d.ExistsAsync(id)).ReturnsAsync(true);
 
             // Act
@@ -230,17 +257,17 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет получение пользователя по идентификатору с включением роли.
+        /// Проверяет получение пользователя по ID с включением роли.
         /// Что делаем: Создаем пользователя, настраиваем мок для возврата пользователя с ролью, вызываем GetAsync с includeRole=true.
-        /// Что ожидаем: Метод возвращает объект пользователя с указанным ID и непустой ролью.
-        /// Зачем нужен тест: Проверяем, что метод корректно получает пользователя с данными о роли.
+        /// Что ожидаем: Метод возвращает пользователя с указанным ID и непустой ролью.
+        /// Зачем нужен: Проверяем корректное получение пользователя с данными роли.
         /// </summary>
         [Fact]
         public async Task GetAsync_ByIdWithRole_ReturnsUser()
         {
             // Arrange
-            var id = Guid.NewGuid();
-            var user = new User { Id = id, Email = "test@example.com", Role = new Role { Id = Guid.NewGuid() } };
+            const long id = 1;
+            var user = new User { Id = id, Email = "test@example.com", Role = new Role { Id = 2 } };
             var convertParams = new UserConvertParams { IncludeRole = true };
             _userDalMock.Setup(d => d.GetAsync(id, It.Is<UserConvertParams>(p => p.IncludeRole == true)))
                 .ReturnsAsync(user);
@@ -255,16 +282,16 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет удаление пользователя по идентификатору.
+        /// Проверяет удаление пользователя по ID.
         /// Что делаем: Настраиваем мок для возврата true при удалении, вызываем DeleteAsync.
         /// Что ожидаем: Метод возвращает true.
-        /// Зачем нужен тест: Убеждаемся, что метод корректно удаляет пользователя.
+        /// Зачем нужен: Убеждаемся, что метод корректно удаляет пользователя.
         /// </summary>
         [Fact]
         public async Task DeleteAsync_ValidId_ReturnsTrue()
         {
             // Arrange
-            var id = Guid.NewGuid();
+            const long id = 1;
             _userDalMock.Setup(d => d.DeleteAsync(id)).ReturnsAsync(true);
 
             // Act
@@ -275,17 +302,17 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет получение списка пользователей с параметрами поиска и включением роли.
-        /// Что делаем: Создаем параметры поиска, настраиваем мок для возврата результата поиска, вызываем GetAsync с includeRole=true.
-        /// Что ожидаем: Метод возвращает SearchResult с одним пользователем, соответствующим параметрам, и непустой ролью.
-        /// Зачем нужен тест: Проверяем, что метод корректно выполняет поиск пользователей с учетом параметров и ролей.
+        /// Проверяет получение списка пользователей с параметрами поиска и ролью.
+        /// Что делаем: Создаем параметры поиска, настраиваем мок для возврата результата, вызываем GetAsync с includeRole=true.
+        /// Что ожидаем: Метод возвращает SearchResult с одним пользователем и непустой ролью.
+        /// Зачем нужен: Проверяем корректный поиск пользователей с учетом параметров и ролей.
         /// </summary>
         [Fact]
         public async Task GetAsync_WithSearchParams_ReturnsSearchResult()
         {
             // Arrange
             var searchParams = new UserSearchParams { Email = "test@example.com" };
-            var user = new User { Id = Guid.NewGuid(), Email = "test@example.com", Role = new Role { Id = Guid.NewGuid() } };
+            var user = new User { Id = 1, Email = "test@example.com", Role = new Role { Id = 2 } };
             var searchResult = new SearchResult<User> { Objects = new[] { user }, Total = 1 };
             var convertParams = new UserConvertParams { IncludeRole = true };
             _userDalMock.Setup(d => d.GetAsync(It.Is<UserSearchParams>(p => p.Email == searchParams.Email), It.Is<UserConvertParams>(p => p.IncludeRole == true)))
@@ -300,6 +327,19 @@ namespace Tests.BL
             Assert.Single(result.Objects);
             Assert.Equal(user.Email, result.Objects.First().Email);
             Assert.NotNull(result.Objects.First().Role);
+        }
+
+        /// <summary>
+        /// Проверяет обработку null параметров поиска.
+        /// Что делаем: Вызываем GetAsync с null параметрами поиска.
+        /// Что ожидаем: Метод выбрасывает ArgumentNullException.
+        /// Зачем нужен: Убеждаемся в корректной валидации параметров поиска.
+        /// </summary>
+        [Fact]
+        public async Task GetAsync_NullSearchParams_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _userBL.GetAsync(null, true));
         }
     }
 }
