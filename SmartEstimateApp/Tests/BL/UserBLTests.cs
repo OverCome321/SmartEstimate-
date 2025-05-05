@@ -88,7 +88,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
-            Assert.Equal(ErrorMessages.EmailEmpty, exception.Message);
+            Assert.Equal(ErrorMessages.EmailEmpty + " (Parameter 'Email')", exception.Message);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
-            Assert.Equal(ErrorMessages.EmailInvalidFormat, exception.Message);
+            Assert.Equal(ErrorMessages.EmailInvalidFormat + " (Parameter 'Email')", exception.Message);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
-            Assert.Equal(string.Format(ErrorMessages.PasswordTooShort, _defaultOptions.MinPasswordLength), exception.Message);
+            Assert.Equal(string.Format(ErrorMessages.PasswordTooShort + " (Parameter 'password')", _defaultOptions.MinPasswordLength), exception.Message);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _userBL.AddOrUpdateAsync(user));
-            Assert.Equal(ErrorMessages.ComplexPasswordRequired, exception.Message);
+            Assert.Equal(ErrorMessages.ComplexPasswordRequired + " (Parameter 'password')", exception.Message);
         }
 
         /// <summary>

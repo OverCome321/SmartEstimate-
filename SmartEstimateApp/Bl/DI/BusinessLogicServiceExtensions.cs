@@ -16,6 +16,7 @@ namespace Bl.DI
         public static IServiceCollection AddBusinessLogic(this IServiceCollection services)
         {
             services.AddScoped<IUserBL, UserBL>();
+            services.AddScoped<IClientBL, ClientBL>();
             return services;
         }
         /// <summary>

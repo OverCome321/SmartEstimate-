@@ -1,5 +1,6 @@
 ﻿using Bl.DI;
 using Bl.Interfaces;
+using Bl.Managers;
 using Common.Convert;
 using Common.Search;
 using Common.Security;
@@ -44,7 +45,7 @@ namespace Bl
             if (string.IsNullOrWhiteSpace(entity.Email))
                 throw new ArgumentException(ErrorMessages.EmailEmpty, nameof(entity.Email));
 
-            if (!IsValidEmail(entity.Email))
+            if (!Validation.IsValidEmail(entity.Email))
                 throw new ArgumentException(ErrorMessages.EmailInvalidFormat, nameof(entity.Email));
 
             if (entity.Role == null || entity.Role.Id == 0)
@@ -54,7 +55,7 @@ namespace Bl
                 throw new ArgumentException(ErrorMessages.PasswordEmpty, nameof(entity.PasswordHash));
 
             if (_options.EnableExtendedValidation)
-                ValidatePassword(entity.PasswordHash);
+                Validation.ValidatePassword(entity.PasswordHash, _options);
 
             if (await _userDal.ExistsAsync(entity.Email))
                 throw new InvalidOperationException(ErrorMessages.EmailAlreadyExists);
@@ -111,6 +112,10 @@ namespace Bl
         /// <returns>Результат поиска с пользователями</returns>
         public Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = false)
         {
+            if (searchParams == null)
+            {
+                throw new ArgumentNullException(nameof(searchParams));
+            }
             var convertParams = includeRole ? new UserConvertParams { IncludeRole = true } : null;
             return _userDal.GetAsync(searchParams, convertParams);
         }
@@ -138,51 +143,5 @@ namespace Bl
             return null;
         }
 
-        /// <summary>
-        /// Проверяет сложность пароля согласно настройкам
-        /// </summary>
-        /// <param name="password">Пароль для проверки</param>
-        /// <exception cref="ArgumentException">Выбрасывается, если пароль не соответствует требованиям</exception>
-        private void ValidatePassword(string password)
-        {
-            if (password.Length < _options.MinPasswordLength)
-            {
-                throw new ArgumentException(
-                    string.Format(ErrorMessages.PasswordTooShort, _options.MinPasswordLength),
-                    nameof(password));
-            }
-
-            if (_options.RequireComplexPassword)
-            {
-                bool hasDigit = password.Any(char.IsDigit);
-                bool hasLetter = password.Any(char.IsLetter);
-                bool hasSpecial = password.Any(c => !char.IsLetterOrDigit(c));
-
-                if (!hasDigit || !hasLetter || !hasSpecial)
-                {
-                    throw new ArgumentException(
-                        ErrorMessages.ComplexPasswordRequired,
-                        nameof(password));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Проверяет формат email
-        /// </summary>
-        /// <param name="email">Email для проверки</param>
-        /// <returns>True, если формат email валиден, иначе false</returns>
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var mailAddress = new System.Net.Mail.MailAddress(email);
-                return mailAddress.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }

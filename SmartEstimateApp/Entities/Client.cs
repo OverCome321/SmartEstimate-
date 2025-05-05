@@ -17,5 +17,7 @@
         public DateTime? UpdatedAt { get; set; }
 
         public int Status { get; set; }
+
+        public User User { get; set; }
     }
 }
