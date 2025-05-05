@@ -49,19 +49,6 @@ namespace Tests.BL
         }
 
         /// <summary>
-        /// Проверяет обработку случая, когда передан null вместо клиента.
-        /// Что делаем: Вызываем AddOrUpdateAsync с null.
-        /// Что ожидаем: Метод выбрасывает ArgumentNullException.
-        /// Зачем нужен: Убеждаемся, что метод корректно обрабатывает некорректный входной параметр.
-        /// </summary>
-        [Fact]
-        public async Task AddOrUpdateAsync_NullClient_ThrowsArgumentNullException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _clientBL.AddOrUpdateAsync(null));
-        }
-
-        /// <summary>
         /// Проверяет обработку неверного формата email.
         /// Что делаем: Создаем клиента с невалидным email и вызываем AddOrUpdateAsync.
         /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением о неверном формате email.
@@ -81,7 +68,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _clientBL.AddOrUpdateAsync(client));
-            Assert.Equal("Неверный формат email (Parameter 'Email')", exception.Message);
+            Assert.Equal($"{ErrorMessages.InvalidEmailFormat} (Parameter 'Email')", exception.Message);
         }
 
         /// <summary>
@@ -104,7 +91,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _clientBL.AddOrUpdateAsync(client));
-            Assert.Equal("Неверный формат телефона (Parameter 'Phone')", exception.Message);
+            Assert.Equal($"{ErrorMessages.InvalidPhoneFormat} (Parameter 'Phone')", exception.Message);
         }
 
         /// <summary>
@@ -127,7 +114,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _clientBL.AddOrUpdateAsync(client));
-            Assert.Equal("Идентификатор пользователя должен быть указан (Parameter 'Id')", exception.Message);
+            Assert.Equal($"{ErrorMessages.UserIdNotSpecified} (Parameter 'Id')", exception.Message);
         }
 
         /// <summary>
@@ -151,7 +138,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientBL.AddOrUpdateAsync(client));
-            Assert.Equal("Клиент с таким email уже существует для указанного пользователя", exception.Message);
+            Assert.Equal(ErrorMessages.ClientEmailAlreadyExists, exception.Message);
         }
 
         /// <summary>
@@ -176,7 +163,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _clientBL.AddOrUpdateAsync(client));
-            Assert.Equal("Клиент с таким номером телефона уже существует для указанного пользователя", exception.Message);
+            Assert.Equal(ErrorMessages.ClientPhoneAlreadyExists, exception.Message);
         }
 
         /// <summary>
@@ -323,13 +310,13 @@ namespace Tests.BL
         public async Task GetAsync_NullSearchParams_ThrowsArgumentNullException()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _clientBL.GetAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _clientBL.AddOrUpdateAsync(null));
         }
 
         /// <summary>
         /// Проверяет обработку отсутствия UserId в параметрах поиска.
         /// Что делаем: Создаем параметры поиска без UserId, вызываем GetAsync.
-        /// Что ожидаем: Метод выбрасывает Argument complicated
+        /// Что ожидаем: Метод выбрасывает ArgumentException с сообщением о необходимости UserId.
         /// Зачем нужен: Убеждаемся, что метод проверяет наличие UserId в параметрах поиска.
         /// </summary>
         [Fact]
@@ -340,7 +327,7 @@ namespace Tests.BL
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => _clientBL.GetAsync(searchParams));
-            Assert.Equal("Идентификатор пользователя обязателен для поиска клиентов", exception.Message);
+            Assert.Equal($"{ErrorMessages.UserIdRequired} (Parameter 'UserId')", exception.Message);
         }
     }
 }

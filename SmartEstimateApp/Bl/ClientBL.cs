@@ -28,27 +28,27 @@ namespace Bl
         /// <param name="entity">Сущность клиента для добавления или обновления</param>
         /// <returns>Идентификатор добавленного или обновленного клиента</returns>
         /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null</exception>
-        /// <exception cref="ArgumentException">Выбрасывается, если email или телефон некорректны</exception>
+        /// <exception cref="ArgumentException">Выбрасывается, если email, телефон или идентификатор пользователя некорректны</exception>
         /// <exception cref="InvalidOperationException">Выбрасывается, если email или телефон уже существуют</exception>
         public async Task<long> AddOrUpdateAsync(Client entity)
         {
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
+                throw new ArgumentNullException(nameof(entity), ErrorMessages.ClientEntityNull);
 
             if (!string.IsNullOrWhiteSpace(entity.Email) && !Validation.IsValidEmail(entity.Email))
-                throw new ArgumentException("Неверный формат email", nameof(entity.Email));
+                throw new ArgumentException(ErrorMessages.InvalidEmailFormat, nameof(entity.Email));
 
             if (!string.IsNullOrWhiteSpace(entity.Phone) && !Validation.IsValidPhone(entity.Phone))
-                throw new ArgumentException("Неверный формат телефона", nameof(entity.Phone));
+                throw new ArgumentException(ErrorMessages.InvalidPhoneFormat, nameof(entity.Phone));
 
             if (entity.Id == 0)
-                throw new ArgumentException("Идентификатор пользователя должен быть указан", nameof(entity.Id));
+                throw new ArgumentException(ErrorMessages.UserIdNotSpecified, nameof(entity.Id));
 
             if (await _clientDal.ExistsAsync(entity.Email, entity.User.Id))
-                throw new InvalidOperationException("Клиент с таким email уже существует для указанного пользователя");
+                throw new InvalidOperationException(ErrorMessages.ClientEmailAlreadyExists);
 
             if (await _clientDal.ExistsPhoneAsync(entity.Phone, entity.User.Id))
-                throw new InvalidOperationException("Клиент с таким номером телефона уже существует для указанного пользователя");
+                throw new InvalidOperationException(ErrorMessages.ClientPhoneAlreadyExists);
 
             if (entity.Id == 0)
             {
@@ -101,13 +101,15 @@ namespace Bl
         /// </summary>
         /// <param name="searchParams">Параметры поиска</param>
         /// <returns>Результат поиска с клиентами</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если параметры поиска null</exception>
+        /// <exception cref="ArgumentException">Выбрасывается, если идентификатор пользователя не указан</exception>
         public Task<SearchResult<Client>> GetAsync(ClientSearchParams searchParams)
         {
             if (searchParams == null)
                 throw new ArgumentNullException(nameof(searchParams));
 
             if (!searchParams.UserId.HasValue)
-                throw new ArgumentException("Идентификатор пользователя обязателен для поиска клиентов");
+                throw new ArgumentException(ErrorMessages.UserIdRequired, nameof(searchParams.UserId));
 
             return _clientDal.GetAsync(searchParams, null);
         }

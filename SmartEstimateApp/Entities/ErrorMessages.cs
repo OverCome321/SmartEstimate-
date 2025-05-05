@@ -11,5 +11,15 @@
         public const string PasswordTooShort = "Пароль должен содержать не менее {0} символов";
         public const string ComplexPasswordRequired = "Пароль должен содержать буквы, цифры и специальные символы";
         #endregion
+
+        #region Client
+        public const string UserIdRequired = "Идентификатор пользователя обязателен для поиска клиентов.";
+        public const string ClientEntityNull = "Сущность клиента не может быть null.";
+        public const string InvalidEmailFormat = "Неверный формат email.";
+        public const string InvalidPhoneFormat = "Неверный формат телефона.";
+        public const string UserIdNotSpecified = "Идентификатор пользователя должен быть указан.";
+        public const string ClientEmailAlreadyExists = "Клиент с таким email уже существует для указанного пользователя.";
+        public const string ClientPhoneAlreadyExists = "Клиент с таким номером телефона уже существует для указанного пользователя.";
+        #endregion
     }
 }
