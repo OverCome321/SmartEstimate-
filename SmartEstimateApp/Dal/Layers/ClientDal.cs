@@ -113,7 +113,7 @@ namespace Dal.Layers
         {
             if (!exists)
             {
-                dbObject.CreatedAt = DateTime.UtcNow;
+                dbObject.CreatedAt = DateTime.Now;
             }
             return Task.CompletedTask;
         }
@@ -144,7 +144,7 @@ namespace Dal.Layers
             // Фильтрация по UserId обязательна
             if (!searchParams.UserId.HasValue)
             {
-                throw new ArgumentException("UserId is required for client search.");
+                throw new ArgumentNullException(nameof(searchParams.UserId));
             }
             query = query.Where(c => c.UserId == searchParams.UserId.Value);
 

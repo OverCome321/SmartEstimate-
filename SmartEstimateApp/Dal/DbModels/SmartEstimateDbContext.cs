@@ -7,9 +7,12 @@ namespace Dal.DbModels
     /// </summary>
     public class SmartEstimateDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Client> Clients { get; set; }
+        public DbSet<Estimate> Estimates { get; set; }
+        public DbSet<EstimateItem> EstimateItems { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         /// <summary>
         /// Конструктор контекста базы данных
@@ -80,6 +83,94 @@ namespace Dal.DbModels
                       .HasForeignKey(c => c.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
                 entity.HasIndex(e => e.Email);
+            });
+
+            modelBuilder.Entity<Project>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).UseIdentityColumn();
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.CreatedAt).IsRequired();
+                entity.Property(e => e.UpdatedAt).IsRequired(false);
+                entity.Property(e => e.Status).IsRequired();
+
+                entity.HasOne(p => p.Client)
+                      .WithMany()
+                      .HasForeignKey(p => p.ClientId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Estimate>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                      .UseIdentityColumn();
+                entity.Property(e => e.Number)
+                      .IsRequired()
+                      .HasMaxLength(50);
+                entity.Property(e => e.CreatedAt)
+                      .IsRequired();
+                entity.Property(e => e.UpdatedAt)
+                      .IsRequired(false);
+                entity.Property(e => e.ValidUntil)
+                      .IsRequired(false);
+                entity.Property(e => e.Subtotal)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.TaxRate)
+                      .IsRequired()
+                      .HasColumnType("decimal(5,2)");
+                entity.Property(e => e.TaxAmount)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.DiscountRate)
+                      .IsRequired()
+                      .HasColumnType("decimal(5,2)");
+                entity.Property(e => e.DiscountAmount)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.TotalAmount)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Currency)
+                      .HasMaxLength(10);
+                entity.Property(e => e.Status)
+                      .IsRequired()
+                      .HasMaxLength(50);
+                entity.HasOne(e => e.Project)
+                      .WithMany(p => p.Estimates)
+                      .HasForeignKey(e => e.ProjectId)
+                      .OnDelete(DeleteBehavior.Restrict)
+                      .IsRequired(false);
+                entity.HasIndex(e => e.Number).IsUnique();
+            });
+
+            modelBuilder.Entity<EstimateItem>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                      .UseIdentityColumn();
+                entity.Property(e => e.Description)
+                      .IsRequired()
+                      .HasMaxLength(500);
+                entity.Property(e => e.Quantity)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.UnitPrice)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.TotalPrice)
+                      .IsRequired()
+                      .HasColumnType("decimal(18,2)");
+                entity.Property(e => e.Category)
+                      .HasMaxLength(100);
+                entity.Property(e => e.DisplayOrder)
+                      .IsRequired();
+                entity.HasOne(e => e.Estimate)
+                      .WithMany(e => e.Items)
+                      .HasForeignKey(e => e.EstimateId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

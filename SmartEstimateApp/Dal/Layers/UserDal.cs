@@ -113,7 +113,7 @@ namespace Dal.Layers
         {
             if (!exists)
             {
-                dbObject.CreatedAt = DateTime.UtcNow;
+                dbObject.CreatedAt = DateTime.Now;
             }
             return Task.CompletedTask;
         }

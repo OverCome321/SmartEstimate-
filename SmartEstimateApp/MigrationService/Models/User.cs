@@ -21,5 +21,6 @@ namespace MigrationService.Models
         public DateTime? LastLogin { get; set; }
 
         public ICollection<Client> Clients { get; set; } = new List<Client>();
+
     }
 }

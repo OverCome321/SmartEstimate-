@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MigrationService.Models
+namespace Dal.DbModels
 {
     public class Estimate
     {
@@ -20,13 +20,9 @@ namespace MigrationService.Models
 
         [MaxLength(10)]
         public string Currency { get; set; }
-
         public string Status { get; set; }
-
         public long? ProjectId { get; set; }
-
         public Project? Project { get; set; }
-
         public List<EstimateItem> Items { get; set; } = new List<EstimateItem>();
     }
 }
