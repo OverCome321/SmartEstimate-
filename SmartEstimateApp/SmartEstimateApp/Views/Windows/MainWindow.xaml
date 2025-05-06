@@ -1,12 +1,15 @@
-﻿<Window
-    x:Class="SmartEstimateApp.Views.Windows.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:SmartEstimateApp"
-    mc:Ignorable="d"
-    Title="SmartEstimateApp" Height="600" Width="800">
+﻿<Window x:Class="SmartEstimateApp.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SmartEstimateApp"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="SmartEstimateApp" Height="720" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F1F4F8" Icon="/Resources/smart-estimate-icon-for-calculating.ico">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,28 +18,37 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Меню и информация о пользователе -->
-        <Grid Grid.Row="0" Background="#2C3E50">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <!-- Заголовок с меню и пользователем -->
+        <Border Grid.Row="0" Style="{StaticResource HeaderBorderStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Smart Estimate App" Foreground="White" FontSize="18" 
-                       FontWeight="Bold" Margin="15,10" VerticalAlignment="Center"/>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10">
-                <TextBlock x:Name="UserNameTextBlock" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            </StackPanel>
-        </Grid>
+                <StackPanel Orientation="Horizontal" Margin="20,13">
+                    <materialDesign:PackIcon Kind="Calculator" 
+                                            Foreground="White"
+                                            Width="24" Height="24"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,10,0"/>
+                    <TextBlock Text="Умный счетчик смет" Style="{StaticResource HeaderTextStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Основной контент -->
-        <Frame x:Name="MainFrameU" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+        <Border Grid.Row="1" Margin="20,10,20,10" Background="White" CornerRadius="10">
+            <Frame x:Name="MainFrameU" NavigationUIVisibility="Hidden"/>
+        </Border>
 
         <!-- Строка состояния -->
-        <StatusBar Grid.Row="2" Background="#ECF0F1">
+        <StatusBar Grid.Row="2" Style="{StaticResource ModernStatusBarStyle}">
             <StatusBarItem>
-                <TextBlock x:Name="StatusTextBlock" Text="Готово"/>
+                <TextBlock x:Name="StatusTextBlock" Text="Готово" Margin="15,0"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
+                <TextBlock Text="{Binding Source={x:Static System:DateTime.Now}, StringFormat='dd.MM.yyyy HH:mm'}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
