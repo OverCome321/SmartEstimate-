@@ -29,6 +29,6 @@ namespace Bl.Interfaces
         /// </summary>
         /// <param name="searchParams">Параметры поиска</param>
         /// <returns>Результат поиска с клиентами</returns>
-        Task<SearchResult<Client>> GetAsync(ClientSearchParams searchParams);
+        Task<SearchResult<Client>> GetAsync(ClientSearchParams searchParams, bool includeRelated = true);
     }
 }

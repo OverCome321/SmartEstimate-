@@ -34,7 +34,7 @@ namespace Dal.Interfaces
         /// <param name="id">Идентификатор сущности</param>
         /// <param name="convertParams">Параметры конвертации</param>
         /// <returns>Найденная сущность или null</returns>
-        Task<TEntity> GetAsync(TObjectId id, TConvertParams convertParams = null);
+        Task<TEntity> GetAsync(TObjectId id, bool isFull = true);
 
         /// <summary>
         /// Удаляет сущность по идентификатору
@@ -49,6 +49,6 @@ namespace Dal.Interfaces
         /// <param name="searchParams">Параметры поиска</param>
         /// <param name="convertParams">Параметры конвертации</param>
         /// <returns>Результат поиска с пагинацией</returns>
-        Task<SearchResult<TEntity>> GetAsync(TSearchParams searchParams, TConvertParams? convertParams = null);
+        Task<SearchResult<TEntity>> GetAsync(TSearchParams searchParams, bool isFull = true);
     }
 }

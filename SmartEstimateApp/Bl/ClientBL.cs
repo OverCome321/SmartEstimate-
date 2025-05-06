@@ -87,7 +87,7 @@ namespace Bl
         /// <param name="id">Идентификатор клиента</param>
         /// <param name="includeRelated">Включать ли связанные данные</param>
         /// <returns>Сущность клиента</returns>
-        public Task<Client> GetAsync(long id, bool includeRelated = false) => _clientDal.GetAsync(id, null);
+        public Task<Client> GetAsync(long id, bool includeRelated = false) => _clientDal.GetAsync(id, includeRelated);
 
         /// <summary>
         /// Удаляет клиента по идентификатору
@@ -103,7 +103,7 @@ namespace Bl
         /// <returns>Результат поиска с клиентами</returns>
         /// <exception cref="ArgumentNullException">Выбрасывается, если параметры поиска null</exception>
         /// <exception cref="ArgumentException">Выбрасывается, если идентификатор пользователя не указан</exception>
-        public Task<SearchResult<Client>> GetAsync(ClientSearchParams searchParams)
+        public Task<SearchResult<Client>> GetAsync(ClientSearchParams searchParams, bool includeRelated = true)
         {
             if (searchParams == null)
                 throw new ArgumentNullException(nameof(searchParams));
@@ -111,7 +111,7 @@ namespace Bl
             if (!searchParams.UserId.HasValue)
                 throw new ArgumentException(ErrorMessages.UserIdRequired, nameof(searchParams.UserId));
 
-            return _clientDal.GetAsync(searchParams, null);
+            return _clientDal.GetAsync(searchParams, includeRelated);
         }
     }
 }

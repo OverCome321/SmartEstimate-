@@ -11,7 +11,7 @@ namespace Dal.Layers
     /// <summary>
     /// Класс доступа к данным пользователей
     /// </summary>
-    public class UserDal : BaseDal<Dal.DbModels.User, Entities.User, long, UserSearchParams, UserConvertParams>, IUserDal
+    public class UserDal : BaseDal<Dal.DbModels.User, Entities.User, long, UserSearchParams, ConvertParams>, IUserDal
     {
         private readonly SmartEstimateDbContext _context;
         private readonly IMapper _mapper;
@@ -125,11 +125,11 @@ namespace Dal.Layers
         /// <param name="convertParams">Параметры конвертации</param>
         /// <param name="isFull">Флаг полной загрузки</param>
         /// <returns>Список сущностей пользователей</returns>
-        protected override async Task<IList<Entities.User>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.User> dbObjects, UserConvertParams convertParams, bool isFull)
+        protected override async Task<IList<Entities.User>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.User> dbObjects, bool isFull)
         {
             var query = dbObjects.AsNoTracking();
 
-            if (convertParams?.IncludeRole == true || isFull)
+            if (isFull)
             {
                 query = query.Include(u => u.Role);
             }

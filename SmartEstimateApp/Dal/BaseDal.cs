@@ -66,10 +66,10 @@ namespace Dal
         /// <param name="id">Идентификатор сущности</param>
         /// <param name="convertParams">Параметры конвертации</param>
         /// <returns>Найденная сущность или null</returns>
-        public virtual async Task<TEntity> GetAsync(TObjectId id, TConvertParams convertParams = null)
+        public virtual async Task<TEntity> GetAsync(TObjectId id, bool isFull = true)
         {
             var query = Where(GetCheckDbObjectIdExpression(id)).Take(1);
-            return (await BuildEntitiesListAsync(query, convertParams, true)).FirstOrDefault();
+            return (await BuildEntitiesListAsync(query, isFull)).FirstOrDefault();
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Dal
         /// <param name="searchParams">Параметры поиска</param>
         /// <param name="convertParams">Параметры конвертации</param>
         /// <returns>Результат поиска с пагинацией</returns>
-        public virtual async Task<SearchResult<TEntity>> GetAsync(TSearchParams searchParams, TConvertParams? convertParams = null)
+        public virtual async Task<SearchResult<TEntity>> GetAsync(TSearchParams searchParams, bool isFull = true)
         {
             var query = BuildDbQuery(searchParams);
             query = ApplyDefaultSorting(query);
@@ -118,7 +118,7 @@ namespace Dal
             if (searchParams.ObjectsCount.HasValue)
                 query = query.Take(searchParams.ObjectsCount.Value);
 
-            result.Objects = await BuildEntitiesListAsync(query, convertParams, false);
+            result.Objects = await BuildEntitiesListAsync(query, isFull);
             return result;
         }
 
@@ -166,7 +166,7 @@ namespace Dal
         /// <param name="convertParams">Параметры конвертации</param>
         /// <param name="isFull">Флаг полной загрузки</param>
         /// <returns>Список сущностей</returns>
-        protected abstract Task<IList<TEntity>> BuildEntitiesListAsync(IQueryable<TDbObject> dbObjects, TConvertParams? convertParams, bool isFull);
+        protected abstract Task<IList<TEntity>> BuildEntitiesListAsync(IQueryable<TDbObject> dbObjects, bool isFull);
 
         /// <summary>
         /// Подсчитывает количество записей, соответствующих запросу

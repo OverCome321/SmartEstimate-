@@ -7,7 +7,7 @@ namespace Dal.Interfaces
     /// <summary>
     /// Интерфейс доступа к данным пользователей
     /// </summary>
-    public interface IUserDal : IBaseDal<User, long, UserSearchParams, UserConvertParams>
+    public interface IUserDal : IBaseDal<User, long, UserSearchParams, ConvertParams>
     {
         /// <summary>
         /// Проверяет существование пользователя по ID

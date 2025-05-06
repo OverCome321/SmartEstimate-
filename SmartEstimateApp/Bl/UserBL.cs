@@ -1,7 +1,6 @@
 ﻿using Bl.DI;
 using Bl.Interfaces;
 using Bl.Managers;
-using Common.Convert;
 using Common.Search;
 using Common.Security;
 using Dal.Interfaces;
@@ -90,11 +89,8 @@ namespace Bl
         /// <param name="id">Идентификатор пользователя</param>
         /// <param name="includeRole">Включать ли информацию о роли</param>
         /// <returns>Сущность пользователя</returns>
-        public Task<User> GetAsync(long id, bool includeRole = false)
-        {
-            var convertParams = includeRole ? new UserConvertParams { IncludeRole = true } : null;
-            return _userDal.GetAsync(id, convertParams);
-        }
+        public Task<User> GetAsync(long id, bool includeRole = false) => _userDal.GetAsync(id, includeRole);
+
 
         /// <summary>
         /// Удаляет пользователя по идентификатору
@@ -110,14 +106,13 @@ namespace Bl
         /// <param name="searchParams">Параметры поиска пользователей</param>
         /// <param name="includeRole">Включать ли информацию о роли</param>
         /// <returns>Результат поиска с пользователями</returns>
-        public Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = false)
+        public Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = true)
         {
             if (searchParams == null)
             {
                 throw new ArgumentNullException(nameof(searchParams));
             }
-            var convertParams = includeRole ? new UserConvertParams { IncludeRole = true } : null;
-            return _userDal.GetAsync(searchParams, convertParams);
+            return _userDal.GetAsync(searchParams, includeRole);
         }
 
         /// <summary>

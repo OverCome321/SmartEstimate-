@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Convert;
 using Common.Search;
 using Dal.DbModels;
 using Dal.Interfaces;
@@ -10,7 +11,7 @@ namespace Dal.Layers
     /// <summary>
     /// Класс доступа к данным проектов
     /// </summary>
-    public class ProjectDal : BaseDal<Dal.DbModels.Project, Entities.Project, long, ProjectSearchParams, object>, IProjectDal
+    public class ProjectDal : BaseDal<Dal.DbModels.Project, Entities.Project, long, ProjectSearchParams, ConvertParams>, IProjectDal
     {
         private readonly SmartEstimateDbContext _context;
         private readonly IMapper _mapper;
@@ -199,7 +200,7 @@ namespace Dal.Layers
         /// <param name="convertParams">Параметры конвертации</param>
         /// <param name="isFull">Флаг полной загрузки</param>
         /// <returns>Список сущностей проектов</returns>
-        protected override async Task<IList<Entities.Project>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.Project> dbObjects, object? convertParams, bool isFull)
+        protected override async Task<IList<Entities.Project>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.Project> dbObjects, bool isFull)
         {
             var query = dbObjects.AsNoTracking();
             if (isFull)

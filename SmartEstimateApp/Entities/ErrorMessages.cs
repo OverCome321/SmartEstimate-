@@ -21,5 +21,12 @@
         public const string ClientEmailAlreadyExists = "Клиент с таким email уже существует для указанного пользователя.";
         public const string ClientPhoneAlreadyExists = "Клиент с таким номером телефона уже существует для указанного пользователя.";
         #endregion
+
+        #region Projects
+        public const string ProjectEntityNull = "Сущность проекта не может быть пустой";
+        public const string ProjectNameRequired = "Название проекта обязательно";
+        public const string ClientIdNotSpecified = "Идентификатор клиента не указан";
+        public const string ProjectNameAlreadyExists = "Проект с таким названием уже существует у этого клиента";
+        #endregion
     }
 }

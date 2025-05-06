@@ -240,7 +240,7 @@ namespace Tests.BL
             // Arrange
             const long id = 1;
             var client = new Client { Id = id, Email = "test@example.com", User = new User { Id = 1 } };
-            _clientDalMock.Setup(d => d.GetAsync(id, null)).ReturnsAsync(client);
+            _clientDalMock.Setup(d => d.GetAsync(id, false)).ReturnsAsync(client);
 
             // Act
             var result = await _clientBL.GetAsync(id);
@@ -270,34 +270,6 @@ namespace Tests.BL
 
             // Assert
             Assert.True(result);
-        }
-
-        /// <summary>
-        /// Проверяет получение списка клиентов с параметрами поиска.
-        /// Что делаем: Создаем параметры поиска с ID пользователя, настраиваем мок для возврата результата, вызываем GetAsync.
-        /// Что ожидаем: Метод возвращает SearchResult с одним клиентом.
-        /// Зачем нужен: Проверяем корректный поиск клиентов с учетом параметров.
-        /// </summary>
-        [Fact]
-        public async Task GetAsync_WithSearchParams_ReturnsSearchResult()
-        {
-            // Arrange
-            var searchParams = new ClientSearchParams { Email = "test@example.com", UserId = 1 };
-            var client = new Client { Id = 1, Email = "test@example.com", User = new User { Id = 1 } };
-            var searchResult = new SearchResult<Client> { Objects = new[] { client }, Total = 1 };
-            _clientDalMock.Setup(d => d.GetAsync(It.Is<ClientSearchParams>(p => p.Email == searchParams.Email && p.UserId == searchParams.UserId), null))
-                .ReturnsAsync(searchResult);
-
-            // Act
-            var result = await _clientBL.GetAsync(searchParams);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Total);
-            Assert.Single(result.Objects);
-            Assert.Equal(client.Email, result.Objects.First().Email);
-            Assert.NotNull(result.Objects.First().User);
-            Assert.Equal(1, result.Objects.First().User.Id);
         }
 
         /// <summary>

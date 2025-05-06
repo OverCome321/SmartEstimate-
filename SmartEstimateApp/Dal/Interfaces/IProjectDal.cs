@@ -1,4 +1,5 @@
-﻿using Common.Search;
+﻿using Common.Convert;
+using Common.Search;
 using Entities;
 
 namespace Dal.Interfaces
@@ -6,7 +7,7 @@ namespace Dal.Interfaces
     /// <summary>
     /// Интерфейс доступа к данным проектов
     /// </summary>
-    public interface IProjectDal : IBaseDal<Project, long, ProjectSearchParams, object>
+    public interface IProjectDal : IBaseDal<Project, long, ProjectSearchParams, ConvertParams>
     {
         /// <summary>
         /// Проверяет существование проекта по ID

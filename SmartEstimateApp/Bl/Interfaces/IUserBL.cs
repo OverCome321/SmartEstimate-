@@ -29,6 +29,6 @@ namespace Bl.Interfaces
         /// <param name="searchParams">Параметры поиска</param>
         /// <param name="includeRole">Включать ли связанные роль</param>
         /// <returns>Результат поиска с сущностями</returns>
-        Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = false);
+        Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = true);
     }
 }

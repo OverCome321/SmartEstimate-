@@ -17,6 +17,7 @@ namespace Bl.DI
         {
             services.AddScoped<IUserBL, UserBL>();
             services.AddScoped<IClientBL, ClientBL>();
+            services.AddScoped<IProjectBL, ProjectBL>();
             return services;
         }
         /// <summary>

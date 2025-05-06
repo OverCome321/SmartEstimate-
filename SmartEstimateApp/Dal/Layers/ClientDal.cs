@@ -125,7 +125,7 @@ namespace Dal.Layers
         /// <param name="convertParams">Параметры конвертации</param>
         /// <param name="isFull">Флаг полной загрузки</param>
         /// <returns>Список сущностей клиентов</returns>
-        protected override async Task<IList<Entities.Client>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.Client> dbObjects, object? convertParams, bool isFull)
+        protected override async Task<IList<Entities.Client>> BuildEntitiesListAsync(IQueryable<Dal.DbModels.Client> dbObjects, bool isFull)
         {
             var query = dbObjects.AsNoTracking();
             var dbClients = await query.ToListAsync();

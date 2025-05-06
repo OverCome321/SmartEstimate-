@@ -20,6 +20,8 @@ namespace Dal.DI
 
             services.AddScoped<IClientDal, ClientDal>();
 
+            services.AddScoped<IProjectDal, ProjectDal>();
+
             return services;
         }
     }

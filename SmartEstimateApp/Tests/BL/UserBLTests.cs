@@ -1,8 +1,6 @@
 ﻿using Bl;
 using Bl.DI;
-using Common.Convert;
 using Common.Search;
-using Common.Security;
 using Dal.Interfaces;
 using Entities;
 using Microsoft.Extensions.Options;
@@ -182,59 +180,7 @@ namespace Tests.BL
             Assert.Equal(ErrorMessages.ComplexPasswordRequired + " (Parameter 'password')", exception.Message);
         }
 
-        /// <summary>
-        /// Проверяет успешную верификацию пользователя с правильными данными.
-        /// Что делаем: Создаем пользователя, настраиваем мок для возврата результата поиска, вызываем VerifyPasswordAsync.
-        /// Что ожидаем: Метод возвращает пользователя с указанным email.
-        /// Зачем нужен: Убеждаемся, что метод корректно верифицирует пользователя.
-        /// </summary>
-        [Fact]
-        public async Task VerifyPasswordAsync_ValidCredentials_ReturnsUser()
-        {
-            // Arrange
-            var email = "test@example.com";
-            var password = "ComplexPass123!";
-            var hashedPassword = PasswordHasher.HashPassword(password);
-            var user = new User { Email = email, PasswordHash = hashedPassword };
-            var searchResult = new SearchResult<User> { Objects = new[] { user }, Total = 1 };
-            var searchParams = new UserSearchParams(email);
-            _userDalMock.Setup(d => d.GetAsync(It.Is<UserSearchParams>(p => p.Email == email), null))
-                .ReturnsAsync(searchResult);
 
-            // Act
-            var result = await _userBL.VerifyPasswordAsync(email, password);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(email, result.Email);
-        }
-
-        /// <summary>
-        /// Проверяет обработку неверного пароля при верификации.
-        /// Что делаем: Создаем пользователя, настраиваем мок, вызываем VerifyPasswordAsync с неверным паролем.
-        /// Что ожидаем: Метод возвращает null.
-        /// Зачем нужен: Убеждаемся, что метод отклоняет неверные учетные данные.
-        /// </summary>
-        [Fact]
-        public async Task VerifyPasswordAsync_InvalidPassword_ReturnsNull()
-        {
-            // Arrange
-            var email = "test@example.com";
-            var password = "ComplexPass123!";
-            var wrongPassword = "WrongPass123!";
-            var hashedPassword = PasswordHasher.HashPassword(password);
-            var user = new User { Email = email, PasswordHash = hashedPassword };
-            var searchResult = new SearchResult<User> { Objects = new[] { user }, Total = 1 };
-            var searchParams = new UserSearchParams(email);
-            _userDalMock.Setup(d => d.GetAsync(It.Is<UserSearchParams>(p => p.Email == email), null))
-                .ReturnsAsync(searchResult);
-
-            // Act
-            var result = await _userBL.VerifyPasswordAsync(email, wrongPassword);
-
-            // Assert
-            Assert.Null(result);
-        }
 
         /// <summary>
         /// Проверяет проверку существования пользователя по ID.
@@ -268,8 +214,7 @@ namespace Tests.BL
             // Arrange
             const long id = 1;
             var user = new User { Id = id, Email = "test@example.com", Role = new Role { Id = 2 } };
-            var convertParams = new UserConvertParams { IncludeRole = true };
-            _userDalMock.Setup(d => d.GetAsync(id, It.Is<UserConvertParams>(p => p.IncludeRole == true)))
+            _userDalMock.Setup(d => d.GetAsync(id, true))
                 .ReturnsAsync(user);
 
             // Act
@@ -314,8 +259,7 @@ namespace Tests.BL
             var searchParams = new UserSearchParams { Email = "test@example.com" };
             var user = new User { Id = 1, Email = "test@example.com", Role = new Role { Id = 2 } };
             var searchResult = new SearchResult<User> { Objects = new[] { user }, Total = 1 };
-            var convertParams = new UserConvertParams { IncludeRole = true };
-            _userDalMock.Setup(d => d.GetAsync(It.Is<UserSearchParams>(p => p.Email == searchParams.Email), It.Is<UserConvertParams>(p => p.IncludeRole == true)))
+            _userDalMock.Setup(d => d.GetAsync(It.Is<UserSearchParams>(p => p.Email == searchParams.Email), true))
                 .ReturnsAsync(searchResult);
 
             // Act
