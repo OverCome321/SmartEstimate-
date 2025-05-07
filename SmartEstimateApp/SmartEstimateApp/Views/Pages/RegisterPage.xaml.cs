@@ -1,4 +1,5 @@
 ﻿using Bl.Interfaces;
+using SmartEstimateApp.Manager;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.ViewModels;
@@ -12,10 +13,10 @@ namespace SmartEstimateApp.Views.Pages
     {
         private readonly RegisterViewModel _viewModel;
 
-        public RegisterPage(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow)
+        public RegisterPage(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel)
         {
             InitializeComponent();
-            _viewModel = new RegisterViewModel(userBL, navigationService, currentUser, mainWindow);
+            _viewModel = new RegisterViewModel(userBL, navigationService, currentUser, mainWindow, credentialsManager, mainWindowViewModel);
             DataContext = _viewModel;
         }
 

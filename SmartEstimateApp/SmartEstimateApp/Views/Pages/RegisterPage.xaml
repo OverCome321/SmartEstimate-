@@ -15,7 +15,7 @@
             <StackPanel VerticalAlignment="Center" Width="600">
                 <TextBlock Text="Регистрация" Style="{StaticResource TitleStyle}"/>
 
-                <StackPanel Margin="0,30,0,0">
+                <StackPanel Margin="0,10,0,0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                         <materialDesign:PackIcon Kind="Email" Style="{StaticResource IconStyle}"/>
                         <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}"/>
@@ -40,6 +40,10 @@
                     </StackPanel>
                     <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource PasswordFieldStyle}"
                                 PasswordChanged="ConfirmPasswordBox_PasswordChanged"/>
+                </StackPanel>               
+                <StackPanel Margin="0,15,0,0">
+                    <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}" 
+                              IsChecked="{Binding RememberMe}"/>
                 </StackPanel>
 
                 <Button Content="Зарегистрироваться" Style="{StaticResource LoginButtonStyle}" 

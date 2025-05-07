@@ -7,10 +7,9 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Авторизация" Height="720" Width="1000"
+        Title="Авторизация" Height="780" Width="1000"
         WindowStartupLocation="CenterScreen"
         Background="#F1F4F8" Icon="/Resources/smart-estimate-icon-for-calculating.ico">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,13 +24,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Orientation="Horizontal" Margin="20,13">
                     <materialDesign:PackIcon Kind="Calculator" 
-                                            Foreground="White"
-                                            Width="24" Height="24"
-                                            VerticalAlignment="Center"
-                                            Margin="0,0,10,0"/>
+                                             Foreground="White"
+                                             Width="24" Height="24"
+                                             VerticalAlignment="Center"
+                                             Margin="0,0,10,0"/>
                     <TextBlock Text="Умный счетчик смет" Style="{StaticResource HeaderTextStyle}"/>
                 </StackPanel>
             </Grid>
@@ -42,13 +40,76 @@
             <Frame x:Name="MainFrameU" NavigationUIVisibility="Hidden"/>
         </Border>
 
+        <!-- Индикатор загрузки -->
+        <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
+                             Background="Transparent"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch">
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                         Value="0"
+                         IsIndeterminate="True"
+                         Width="50"
+                         Height="50"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+        </materialDesign:Card>
+
         <!-- Строка состояния -->
-        <StatusBar Grid.Row="2" Style="{StaticResource ModernStatusBarStyle}">
+        <StatusBar Grid.Row="2" x:Name="StatusBar">
+            <StatusBar.Style>
+                <Style TargetType="StatusBar" BasedOn="{StaticResource ModernStatusBarStyle}">
+                    <Setter Property="Background" Value="White"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
+                                                        To="#D32F2F" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
+                                                        To="White" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StatusBar.Style>
             <StatusBarItem>
-                <TextBlock x:Name="StatusTextBlock" Text="Готово" Margin="15,0"/>
+                <TextBlock Margin="15,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="Готово"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                                    <Setter Property="Text" Value="{Binding ErrorMessage}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
-                <TextBlock Text="{Binding Source={x:Static System:DateTime.Now}, StringFormat='dd.MM.yyyy HH:mm'}"/>
+                <TextBlock x:Name="DateTimeDisplay" Text="{Binding CurrentDateTime}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StatusBarItem>
         </StatusBar>
     </Grid>

@@ -29,7 +29,7 @@
                         <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}"/>
                     </StackPanel>
                     <PasswordBox x:Name="PwdPassword" Style="{StaticResource PasswordFieldStyle}"
-                                PasswordChanged="PasswordBox_PasswordChanged"/>
+                                 PasswordChanged="PasswordBox_PasswordChanged"/>
                 </StackPanel>
 
                 <Grid Margin="0,10,0,0">
@@ -37,10 +37,11 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}"/>
+                    <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}" 
+                              IsChecked="{Binding RememberMe}"/>
                     <TextBlock Grid.Column="1" Text="Забыли пароль?" 
-                              Style="{StaticResource ForgotPasswordStyle}"
-                              Cursor="Hand"/>
+                               Style="{StaticResource ForgotPasswordStyle}"
+                               Cursor="Hand"/>
                 </Grid>
 
                 <Button Content="Войти" Style="{StaticResource LoginButtonStyle}" 

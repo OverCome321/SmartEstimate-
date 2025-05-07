@@ -1,21 +1,22 @@
 ﻿using Bl.Interfaces;
 using SmartEstimateApp.Commands;
+using SmartEstimateApp.Manager;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
-using System.Windows;
 using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
 {
     public class LoginViewModel : PropertyChangedBase
     {
-        #region Fields
         private readonly IUserBL _userBL;
         private readonly INavigationService _navigationService;
         private readonly CurrentUser _currentUser;
         private readonly MainWindow _mainWindow;
+        private readonly CredentialsManager _credentialsManager;
+        private readonly MainWindowViewModel _mainWindowViewModel;
 
         private string _email;
         public string Email
@@ -23,6 +24,7 @@ namespace SmartEstimateApp.ViewModels
             get => _email;
             set => SetProperty(ref _email, value, nameof(Email));
         }
+
         private string _password;
         public string Password
         {
@@ -30,75 +32,62 @@ namespace SmartEstimateApp.ViewModels
             set => SetProperty(ref _password, value, nameof(Password));
         }
 
-        private string _errorMessage;
-        public string ErrorMessage
+        private bool _rememberMe;
+        public bool RememberMe
         {
-            get => _errorMessage;
-            set => SetProperty(ref _errorMessage, value, nameof(ErrorMessage));
+            get => _rememberMe;
+            set => SetProperty(ref _rememberMe, value, nameof(RememberMe));
         }
-        private Visibility _errorVisibility;
-        public Visibility ErrorVisibility
-        {
-            get => _errorVisibility;
-            set => SetProperty(ref _errorVisibility, value, nameof(ErrorVisibility));
-        }
-        private Visibility _loadingVisibility;
-        public Visibility LoadingVisibility
-        {
-            get => _loadingVisibility;
-            set => SetProperty(ref _loadingVisibility, value, nameof(LoadingVisibility));
-        }
-        #endregion
-        #region Commands
+
         public ICommand LoginCommand { get; }
         public ICommand NavigateToRegisterCommand { get; }
-        #endregion 
-        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow)
+
+        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel)
         {
             _userBL = userBL;
             _navigationService = navigationService;
             _currentUser = currentUser;
             _mainWindow = mainWindow;
-
-
+            _credentialsManager = credentialsManager;
+            _mainWindowViewModel = mainWindowViewModel;
             LoginCommand = new RelayCommand(async () => await LoginAsync(), CanLogin);
             NavigateToRegisterCommand = new RelayCommand(NavigateToRegister);
-            ErrorVisibility = Visibility.Collapsed;
-            LoadingVisibility = Visibility.Collapsed;
+            LoadCredentials();
         }
 
         private async Task LoginAsync()
         {
-            ErrorVisibility = Visibility.Collapsed;
-            LoadingVisibility = Visibility.Visible;
-
+            _mainWindowViewModel.ShowLoading();
             try
             {
                 if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
                 {
-                    ShowError("Пожалуйста, заполните все поля");
+                    _mainWindowViewModel.ShowError("Пожалуйста, заполните все поля");
                     return;
                 }
 
                 var user = await _userBL.VerifyPasswordAsync(Email, Password);
                 if (user == null)
                 {
-                    ShowError("Неверный email или пароль");
+                    _mainWindowViewModel.ShowError("Неверный email или пароль");
+                    _credentialsManager.ClearCredentials();
                     return;
                 }
+
                 _currentUser.SetUser(user);
+                _credentialsManager.SaveCredentials(Email, Password, RememberMe);
                 var homeWindow = new HomeWindow();
                 homeWindow.Show();
                 _mainWindow.Close();
-
             }
             catch (Exception ex)
             {
-                ShowError($"Ошибка при входе: {ex.Message}");
+                _mainWindowViewModel.ShowError($"Ошибка при входе: {ex.Message}");
+                _credentialsManager.ClearCredentials();
             }
             finally
             {
-                LoadingVisibility = Visibility.Collapsed;
+                _mainWindowViewModel.HideLoading();
             }
         }
 
@@ -106,11 +95,15 @@ namespace SmartEstimateApp.ViewModels
 
         private void NavigateToRegister() => _navigationService.NavigateTo<RegisterPage>();
 
-
-        private void ShowError(string message)
+        private void LoadCredentials()
         {
-            ErrorMessage = message;
-            ErrorVisibility = Visibility.Visible;
+            var (email, password, isValid) = _credentialsManager.LoadCredentials();
+            if (isValid)
+            {
+                Email = email;
+                Password = password;
+                RememberMe = true;
+            }
         }
     }
 }
