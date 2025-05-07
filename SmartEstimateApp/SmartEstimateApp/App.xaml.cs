@@ -29,16 +29,18 @@ namespace SmartEstimateApp
             var currentUser = ServiceProvider.GetService<CurrentUser>();
             var credentialsManager = ServiceProvider.GetService<CredentialsManager>();
 
-            if (await TryAutoLoginAsync(userBL, currentUser, credentialsManager))
-            {
-                var homeWindow = ServiceProvider.GetService<HomeWindow>();
-                homeWindow.Show();
-            }
-            else
-            {
-                var mainWindow = ServiceProvider.GetService<MainWindow>();
-                mainWindow?.Show();
-            }
+            //if (await TryAutoLoginAsync(userBL, currentUser, credentialsManager))
+            //{
+            //    var homeWindow = ServiceProvider.GetService<HomeWindow>();
+            //    homeWindow.Show();
+            //}
+            //else
+            //{
+            //    var mainWindow = ServiceProvider.GetService<MainWindow>();
+            //    mainWindow?.Show();
+            //}
+            var mainWindow = ServiceProvider.GetService<MainWindow>();
+            mainWindow?.Show();
         }
 
         private IConfiguration BuildConfiguration()
