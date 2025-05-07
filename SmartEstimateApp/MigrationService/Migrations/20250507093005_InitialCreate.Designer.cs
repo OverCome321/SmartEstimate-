@@ -12,8 +12,8 @@ using MigrationService.Data;
 namespace MigrationService.Migrations
 {
     [DbContext(typeof(SmartEstimateContext))]
-    [Migration("20250506152939_Init")]
-    partial class Init
+    [Migration("20250507093005_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -4,6 +4,7 @@ using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
+using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,6 +17,7 @@ namespace SmartEstimateApp.ViewModels
         private readonly INavigationService _navigationService;
         private readonly CurrentUser _currentUser;
         private string _email;
+        private readonly MainWindow _mainWindow;
         public string Email
         {
             get => _email;
@@ -51,11 +53,12 @@ namespace SmartEstimateApp.ViewModels
         public ICommand RegisterCommand { get; }
         public ICommand NavigateToLoginCommand { get; }
         #endregion
-        public RegisterViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser)
+        public RegisterViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow)
         {
             _userBL = userBL;
             _navigationService = navigationService;
             _currentUser = currentUser;
+            _mainWindow = mainWindow;
 
             RegisterCommand = new RelayCommand(async () => await RegisterAsync(), CanRegister);
             NavigateToLoginCommand = new RelayCommand(NavigateToLogin);
@@ -95,10 +98,9 @@ namespace SmartEstimateApp.ViewModels
                 await _userBL.AddOrUpdateAsync(user);
                 _currentUser.SetUser(user);
 
-                MessageBox.Show("Регистрация успешно завершена! Теперь вы можете войти в систему.",
-                    "Успешная регистрация", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                NavigateToLogin();
+                var homeWindow = new HomeWindow();
+                homeWindow.Show();
+                _mainWindow.Close();
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.ViewModels;
+using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,10 +12,10 @@ namespace SmartEstimateApp.Views.Pages
     {
         private readonly RegisterViewModel _viewModel;
 
-        public RegisterPage(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser)
+        public RegisterPage(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow)
         {
             InitializeComponent();
-            _viewModel = new RegisterViewModel(userBL, navigationService, currentUser);
+            _viewModel = new RegisterViewModel(userBL, navigationService, currentUser, mainWindow);
             DataContext = _viewModel;
         }
 

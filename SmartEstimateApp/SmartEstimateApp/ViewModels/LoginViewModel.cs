@@ -3,6 +3,7 @@ using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
+using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,6 +15,7 @@ namespace SmartEstimateApp.ViewModels
         private readonly IUserBL _userBL;
         private readonly INavigationService _navigationService;
         private readonly CurrentUser _currentUser;
+        private readonly MainWindow _mainWindow;
 
         private string _email;
         public string Email
@@ -51,11 +53,13 @@ namespace SmartEstimateApp.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand NavigateToRegisterCommand { get; }
         #endregion 
-        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser)
+        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow)
         {
             _userBL = userBL;
             _navigationService = navigationService;
             _currentUser = currentUser;
+            _mainWindow = mainWindow;
+
 
             LoginCommand = new RelayCommand(async () => await LoginAsync(), CanLogin);
             NavigateToRegisterCommand = new RelayCommand(NavigateToRegister);
@@ -83,6 +87,9 @@ namespace SmartEstimateApp.ViewModels
                     return;
                 }
                 _currentUser.SetUser(user);
+                var homeWindow = new HomeWindow();
+                homeWindow.Show();
+                _mainWindow.Close();
 
             }
             catch (Exception ex)
