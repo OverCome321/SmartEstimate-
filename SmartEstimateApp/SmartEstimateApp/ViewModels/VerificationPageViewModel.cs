@@ -52,7 +52,6 @@ namespace SmartEstimateApp.ViewModels
 
         public event Action VerificationSuccess;
 
-
         public VerificationPageViewModel(MainWindowViewModel mainViewModel, INavigationService navigationService, EmailVerificationServiceBL emailVerificationService)
         {
             _mainViewModel = mainViewModel;
@@ -72,7 +71,7 @@ namespace SmartEstimateApp.ViewModels
             _email = email;
         }
 
-        private async void VerifyCodeAsync()
+        private void VerifyCodeAsync()
         {
             try
             {
@@ -129,7 +128,7 @@ namespace SmartEstimateApp.ViewModels
 
             _resendTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(1)
+                Interval = TimeSpan.FromMilliseconds(100)
             };
             _resendTimer.Tick += (s, e) =>
             {
@@ -143,7 +142,7 @@ namespace SmartEstimateApp.ViewModels
                 }
                 else
                 {
-                    CountdownText = $"Повторная отправка доступна через {Math.Ceiling(timeLeft.TotalSeconds)} сек.";
+                    CountdownText = $"Повторная отправка доступна через {(int)timeLeft.TotalSeconds} сек.";
                 }
             };
             _resendTimer.Start();
