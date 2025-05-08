@@ -10,7 +10,7 @@ namespace Bl.Managers
             public DateTime Expiry { get; set; }
         }
 
-        private static readonly ConcurrentDictionary<string, CodeEntry> _codeStore = new ConcurrentDictionary<string, CodeEntry>();
+        private static ConcurrentDictionary<string, CodeEntry> _codeStore = new ConcurrentDictionary<string, CodeEntry>();
         private static readonly TimeSpan _codeValidity = TimeSpan.FromMinutes(5);
 
         public static void StoreCode(string email, string code)

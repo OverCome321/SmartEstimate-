@@ -147,6 +147,51 @@
                         </Button.RenderTransform>
                     </Button>
                 </StackPanel>
+
+                <!-- Resend Code Section -->
+                <TextBlock Text="{Binding CountdownText}" 
+                           Style="{StaticResource LabelStyle}" 
+                           Margin="0,20,0,10"
+                           FontSize="13"
+                           TextAlignment="Center"
+                           Visibility="{Binding IsResendCooldownActive, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=collapsed}"/>
+
+                <Button Content="Отправить повторно" 
+                        Style="{StaticResource LoginButtonStyle}" 
+                        Command="{Binding ResendCodeCommand}"
+                        Width="300"
+                        Margin="0,15,0,0"
+                        IsEnabled="{Binding IsResendEnabled}"
+                        Background="{StaticResource AppleBackgroundBrush}"
+                        Foreground="{StaticResource ApplePrimaryBrush}"
+                        BorderBrush="{StaticResource AppleBorderBrush}"
+                        BorderThickness="1">
+                    <Button.Triggers>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1.05" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1.05" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1.0" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1.0" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Button.Triggers>
+                    <Button.RenderTransform>
+                        <ScaleTransform CenterX="0" CenterY="0"/>
+                    </Button.RenderTransform>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>
