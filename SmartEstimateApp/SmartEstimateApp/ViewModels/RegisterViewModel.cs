@@ -110,9 +110,11 @@ namespace SmartEstimateApp.ViewModels
                 await _emailVerificationService.SendVerificationCodeAsync(Email);
 
                 var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
+
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
 
                 verificationViewModel.SetEmail(Email);
+
                 verificationViewModel.VerificationSuccess += async () =>
                 {
                     try
@@ -125,8 +127,6 @@ namespace SmartEstimateApp.ViewModels
                         _mainWindowViewModel.ShowError($"Ошибка при завершении регистрации: {ex.Message}");
                     }
                 };
-
-
                 _navigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)

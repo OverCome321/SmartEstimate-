@@ -34,7 +34,7 @@ namespace SmartEstimateApp.ViewModels
             _navigationService = navigationService;
 
             _emailVerificationService = emailVerificationService;
-            VerifyCodeCommand = new RelayCommand(async () => await VerifyCodeAsync(),
+            VerifyCodeCommand = new RelayCommand(async () => VerifyCodeAsync(),
                 () => !string.IsNullOrWhiteSpace(VerificationCode));
             CancelVerificationCommand = new RelayCommand(CancelVerification);
         }
@@ -43,7 +43,7 @@ namespace SmartEstimateApp.ViewModels
         {
             _email = email;
         }
-        private async Task VerifyCodeAsync()
+        private void VerifyCodeAsync()
         {
             try
             {

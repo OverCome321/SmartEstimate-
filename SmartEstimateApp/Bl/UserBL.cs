@@ -127,7 +127,9 @@ namespace Bl
                 return null;
 
             var searchParams = new UserSearchParams(email);
+
             var dalResult = await _userDal.GetAsync(searchParams);
+
             var user = dalResult.Objects.FirstOrDefault();
 
             if (user != null && PasswordHasher.VerifyPassword(user.PasswordHash, password))

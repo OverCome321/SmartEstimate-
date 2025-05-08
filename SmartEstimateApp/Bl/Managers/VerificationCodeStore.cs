@@ -32,7 +32,7 @@ namespace Bl.Managers
                     _codeStore.TryRemove(email, out _);
                     return true;
                 }
-                _codeStore.TryRemove(email, out _); // Remove expired or invalid code
+                _codeStore.TryRemove(email, out _);
             }
             return false;
         }

@@ -5,36 +5,147 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="VerificationPage">
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      Title="VerificationPage"
+      Background="{StaticResource AppleBackgroundBrush}">
 
-    <Grid Background="{StaticResource AppleCardBackgroundBrush}">
-        <Border Background="{StaticResource AppleCardBackgroundBrush}" 
-                CornerRadius="8" 
-                BorderBrush="{StaticResource AppleBorderBrush}" 
-                BorderThickness="1"
-                Padding="20"
+    <Grid>
+        <Grid.Background>
+            <VisualBrush>
+                <VisualBrush.Visual>
+                    <Border Background="{StaticResource AppleCardBackgroundBrush}" Opacity="0.8">
+                        <Border.Effect>
+                            <BlurEffect Radius="20" KernelType="Gaussian"/>
+                        </Border.Effect>
+                    </Border>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Grid.Background>
 
+        <Border Style="{StaticResource CardStyle}"
+                Width="420"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
-            <StackPanel>
-                <TextBlock Text="Введите код подтверждения" 
+            <StackPanel Margin="20">
+                <!-- Header -->
+                <TextBlock Text="Подтверждение" 
                            Style="{StaticResource TitleStyle}" 
-                           Margin="0,0,0,20"/>
-                <TextBlock Text="Код отправлен на вашу почту" 
+                           Margin="0,0,0,20"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           TextAlignment="Center"/>
+
+                <!-- Subtitle -->
+                <TextBlock Text="Введите код, отправленный на вашу почту" 
                            Style="{StaticResource LabelStyle}" 
-                           Margin="0,0,0,10"/>
+                           Margin="0,0,0,20"
+                           FontSize="14"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"/>
+
+                <!-- Verification Code Input -->
                 <TextBox Style="{StaticResource InputFieldStyle}" 
                          Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,0,0,20"/>
+                         Margin="0,0,0,20"
+                         Width="300"
+                         HorizontalAlignment="Center">
+                    <TextBox.Triggers>
+                        <EventTrigger RoutedEvent="GotFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                    To="1.0" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1.02" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1.02" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="LostFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                    To="0.9" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                    To="1.0" Duration="0:0:0.2"/>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                    To="1.0" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </TextBox.Triggers>
+                    <TextBox.RenderTransform>
+                        <ScaleTransform CenterX="0" CenterY="0"/>
+                    </TextBox.RenderTransform>
+                </TextBox>
+
+                <!-- Buttons -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Content="Подтвердить" 
                             Style="{StaticResource LoginButtonStyle}" 
-                            Command="{Binding VerifyCodeCommand}" 
-                            Margin="0,0,10,0"/>
+                            Command="{Binding VerifyCodeCommand}"
+                            Width="140"
+                            Margin="0,0,10,0">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                        To="1.0" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                        To="1.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                        <Button.RenderTransform>
+                            <ScaleTransform CenterX="0" CenterY="0"/>
+                        </Button.RenderTransform>
+                    </Button>
+
                     <Button Content="Отмена" 
                             Style="{StaticResource LoginButtonStyle}" 
-                            Command="{Binding CancelVerificationCommand}"/>
+                            Command="{Binding CancelVerificationCommand}"
+                            Width="140"
+                            Background="{StaticResource AppleTextSecondaryBrush}"
+                            Foreground="{StaticResource AppleCardBackgroundBrush}">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                        To="1.05" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                        To="1.0" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                        To="1.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                        <Button.RenderTransform>
+                            <ScaleTransform CenterX="0" CenterY="0"/>
+                        </Button.RenderTransform>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </Border>
