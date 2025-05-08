@@ -62,6 +62,7 @@ namespace SmartEstimateApp.ViewModels
             };
         }
 
+
         private void UpdateDateTime()
         {
             CurrentDateTime = DateTime.Now.ToString("dd.MM.yyyy HH:mm");

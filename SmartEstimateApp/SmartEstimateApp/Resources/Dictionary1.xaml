@@ -2,137 +2,232 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-    <Style TargetType="Border" x:Key="CardStyle">
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="CornerRadius" Value="14"/>
-        <Setter Property="Padding" Value="20"/>
-        <Setter Property="Margin" Value="30"/>
+    <!-- Colors -->
+    <Color x:Key="ApplePrimary">#007AFF</Color>
+    <Color x:Key="AppleSecondary">#2556D9</Color>
+    <Color x:Key="AppleBackground">#F5F5F7</Color>
+    <Color x:Key="AppleCardBackground">#FFFFFF</Color>
+    <Color x:Key="AppleTextPrimary">#1D1D1F</Color>
+    <Color x:Key="AppleTextSecondary">#86868B</Color>
+    <Color x:Key="AppleError">#FF3B30</Color>
+    <Color x:Key="AppleSuccess">#34C759</Color>
+    <Color x:Key="AppleBorder">#E5E5E5</Color>
+    <Color x:Key="AppleFocusRing">#0071E3</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="ApplePrimaryBrush" Color="{StaticResource ApplePrimary}"/>
+    <SolidColorBrush x:Key="AppleSecondaryBrush" Color="{StaticResource AppleSecondary}"/>
+    <SolidColorBrush x:Key="AppleBackgroundBrush" Color="{StaticResource AppleBackground}"/>
+    <SolidColorBrush x:Key="AppleCardBackgroundBrush" Color="{StaticResource AppleCardBackground}"/>
+    <SolidColorBrush x:Key="AppleTextPrimaryBrush" Color="{StaticResource AppleTextPrimary}"/>
+    <SolidColorBrush x:Key="AppleTextSecondaryBrush" Color="{StaticResource AppleTextSecondary}"/>
+    <SolidColorBrush x:Key="AppleErrorBrush" Color="{StaticResource AppleError}"/>
+    <SolidColorBrush x:Key="AppleSuccessBrush" Color="{StaticResource AppleSuccess}"/>
+    <SolidColorBrush x:Key="AppleBorderBrush" Color="{StaticResource AppleBorder}"/>
+    <SolidColorBrush x:Key="AppleFocusRingBrush" Color="{StaticResource AppleFocusRing}"/>
+
+    <!-- Fonts -->
+    <FontFamily x:Key="AppleFont">Segoe UI, SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif</FontFamily>
+
+    <!-- Header Style -->
+    <Style TargetType="Border" x:Key="HeaderBorderStyle">
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.10" Color="#000000"/>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="TitleStyle">
-        <Setter Property="FontSize" Value="28"/>
+    <Style TargetType="TextBlock" x:Key="HeaderTextStyle">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Card Style -->
+    <Style TargetType="Border" x:Key="CardStyle">
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+
+    <!-- Title Style -->
+    <Style TargetType="TextBlock" x:Key="TitleStyle">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="0,0,0,25"/>
     </Style>
 
+    <!-- Icon Style -->
     <Style TargetType="materialDesign:PackIcon" x:Key="IconStyle">
-        <Setter Property="Foreground" Value="#111827"/>
-        <Setter Property="Width" Value="24"/>
-        <Setter Property="Height" Value="24"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0,0,10,0"/>
+        <Setter Property="Margin" Value="0,0,8,0"/>
     </Style>
 
+    <!-- Label Style -->
     <Style TargetType="TextBlock" x:Key="LabelStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
+    <!-- Input Field Style -->
     <Style TargetType="TextBox" x:Key="InputFieldStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Padding" Value="16"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="12,8"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#CBD5E1"/>
-        <Setter Property="Background" Value="#F1F5F9"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AppleBorderBrush}"/>
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="Height" Value="34"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,0,0,0"/>
+                            CornerRadius="6">
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,3,0,0"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="#1E3A8A"/>
+                <Setter Property="BorderBrush" Value="{StaticResource AppleFocusRingBrush}"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="#1E3A8A"/>
+                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.2" Color="{StaticResource AppleFocusRing}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Password Field Style -->
     <Style TargetType="PasswordBox" x:Key="PasswordFieldStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Padding" Value="16"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="12,8"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#CBD5E1"/>
-        <Setter Property="Background" Value="#F1F5F9"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AppleBorderBrush}"/>
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="PasswordChar" Value="●"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="PasswordChar" Value="•"/>
+        <Setter Property="Height" Value="34"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="PasswordBox">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="10">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,0,0,0"/>
+                            CornerRadius="6">
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,3,0,0"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="#1E3A8A"/>
+                <Setter Property="BorderBrush" Value="{StaticResource AppleFocusRingBrush}"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="#1E3A8A"/>
+                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.2" Color="{StaticResource AppleFocusRing}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- CheckBox Style -->
     <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Height" Value="36"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="Border" Width="18" Height="18" 
+                                CornerRadius="4" BorderThickness="1" 
+                                BorderBrush="{StaticResource AppleBorderBrush}">
+                            <Path x:Name="Checkmark" Visibility="Collapsed" 
+                                  Data="M1,5 L4,9 L9,1" 
+                                  Stroke="{StaticResource AppleCardBackgroundBrush}" 
+                                  StrokeThickness="2" 
+                                  Stretch="Uniform" 
+                                  Margin="2"/>
+                        </Border>
+                        <ContentPresenter Grid.Column="1" Margin="8,0,0,0" 
+                                          VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ApplePrimaryBrush}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ApplePrimaryBrush}"/>
+                            <Setter TargetName="Checkmark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ApplePrimaryBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-
+    <!-- Forgot Password Style -->
     <Style TargetType="TextBlock" x:Key="ForgotPasswordStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Foreground" Value="#991B1B"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="#7F1D1D"/>
+                <Setter Property="Foreground" Value="{StaticResource AppleSecondaryBrush}"/>
                 <Setter Property="TextDecorations" Value="Underline"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Login Button Style -->
     <Style TargetType="Button" x:Key="LoginButtonStyle">
-        <Setter Property="Background" Value="#1E3A8A"/>
+        <Setter Property="Background" Value="{StaticResource ApplePrimaryBrush}"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Medium"/>
-        <Setter Property="Padding" Value="0,16"/>
+        <Setter Property="Padding" Value="0,10"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Width" Value="380"/>
-        <Setter Property="Height" Value="52"/>
+        <Setter Property="Width" Value="320"/>
+        <Setter Property="Height" Value="40"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}"
-                            CornerRadius="10">
+                            CornerRadius="8">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -140,51 +235,54 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#3B82F6"/>
+                <Setter Property="Background" Value="{StaticResource AppleSecondaryBrush}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#172554"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="#0056B3"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Color="#D3D3D6"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+                <Setter Property="Cursor" Value="Arrow"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Register Link Style -->
     <Style TargetType="TextBlock" x:Key="RegisterLinkStyle">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Hyperlink Style -->
+    <Style TargetType="Hyperlink">
+        <Setter Property="TextDecorations" Value="None"/>
+        <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="#1E3A8A"/>
+                <Setter Property="Foreground" Value="{StaticResource AppleSecondaryBrush}"/>
+                <Setter Property="TextDecorations" Value="Underline"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="HeaderTextStyle">
-        <Setter Property="FontSize" Value="22"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.3" Color="Black"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
+    <!-- Status Bar Style -->
     <Style TargetType="StatusBar" x:Key="ModernStatusBarStyle">
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="Foreground" Value="#111827"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.15" Color="Black"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="Border" x:Key="HeaderBorderStyle">
-        <Setter Property="Background" Value="#1E3A8A"/>
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Height" Value="30"/>
     </Style>
 </ResourceDictionary>

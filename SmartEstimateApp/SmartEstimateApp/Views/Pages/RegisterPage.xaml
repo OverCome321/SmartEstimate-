@@ -1,66 +1,72 @@
 ﻿<Page x:Class="SmartEstimateApp.Views.Pages.RegisterPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="Регистрация"
-      Background="#F1F4F8">
+      Background="{StaticResource AppleBackgroundBrush}">
 
     <Grid>
-        <Border Style="{StaticResource CardStyle}">
-            <StackPanel VerticalAlignment="Center" Width="600">
-                <TextBlock Text="Регистрация" Style="{StaticResource TitleStyle}"/>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="420">
+            <!-- Register Form -->
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Регистрация" Style="{StaticResource TitleStyle}" Margin="0,0,0,20"/>
 
-                <StackPanel Margin="0,10,0,0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <materialDesign:PackIcon Kind="Email" Style="{StaticResource IconStyle}"/>
-                        <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}"/>
+                    <!-- Email Field -->
+                    <StackPanel Margin="0,5,0,0">
+                        <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
+                        <TextBox Style="{StaticResource InputFieldStyle}" 
+                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
-                    <TextBox Style="{StaticResource InputFieldStyle}" 
-                             Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
 
-                <StackPanel Margin="0,15,0,0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <materialDesign:PackIcon Kind="Lock" Style="{StaticResource IconStyle}"/>
-                        <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}"/>
+                    <!-- Password Field -->
+                    <StackPanel Margin="0,16,0,0">
+                        <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
+                        <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordFieldStyle}"
+                                     PasswordChanged="PasswordBox_PasswordChanged"/>
                     </StackPanel>
-                    <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                PasswordChanged="PasswordBox_PasswordChanged"/>
-                </StackPanel>
 
-                <StackPanel Margin="0,15,0,0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <materialDesign:PackIcon Kind="LockCheck" Style="{StaticResource IconStyle}"/>
-                        <TextBlock Text="Подтверждение пароля" Style="{StaticResource LabelStyle}"/>
+                    <!-- Confirm Password Field -->
+                    <StackPanel Margin="0,16,0,0">
+                        <TextBlock Text="Подтверждение пароля" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
+                        <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource PasswordFieldStyle}"
+                                     PasswordChanged="ConfirmPasswordBox_PasswordChanged"/>
                     </StackPanel>
-                    <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                PasswordChanged="ConfirmPasswordBox_PasswordChanged"/>
-                </StackPanel>               
-                <StackPanel Margin="0,15,0,0">
-                    <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}" 
-                              IsChecked="{Binding RememberMe}"/>
+
+                    <!-- Remember Me -->
+                    <StackPanel Margin="0,12,0,0">
+                        <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}" 
+                                  IsChecked="{Binding RememberMe}"/>
+                    </StackPanel>
+
+                    <!-- Register Button -->
+                    <Button Content="Зарегистрироваться" Style="{StaticResource LoginButtonStyle}" 
+                            Command="{Binding RegisterCommand}"
+                            Margin="0,24,0,0"
+                            HorizontalAlignment="Center"/>
+
+                    <!-- Login Link -->
+                    <TextBlock Style="{StaticResource RegisterLinkStyle}" Margin="0,20,0,0">
+                        <Run Text="Уже есть аккаунт?"/>
+                        <Hyperlink Command="{Binding NavigateToLoginCommand}">
+                            Войти
+                        </Hyperlink>
+                    </TextBlock>
                 </StackPanel>
+            </Border>
 
-                <Button Content="Зарегистрироваться" Style="{StaticResource LoginButtonStyle}" 
-                        Command="{Binding RegisterCommand}"
-                        Margin="0,30,0,0"/>
-
-                <TextBlock Style="{StaticResource RegisterLinkStyle}" Margin="0,20,0,0">
-                    <Run Text="Уже есть аккаунт? "/>
-                    <Hyperlink Command="{Binding NavigateToLoginCommand}">
-                        Войти
-                    </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Text="{Binding ErrorMessage}" 
-                          TextWrapping="Wrap" Margin="0,20,0,0" HorizontalAlignment="Center"
-                          Visibility="{Binding ErrorVisibility}"/>
-            </StackPanel>
-        </Border>
+            <!-- Footer Text -->
+            <TextBlock Text="© 2025 Умный счетчик смет"
+                       FontFamily="{StaticResource AppleFont}"
+                       FontSize="11"
+                       Foreground="{StaticResource AppleTextSecondaryBrush}"
+                       HorizontalAlignment="Center"
+                       Margin="0,20,0,0"/>
+        </StackPanel>
     </Grid>
 </Page>

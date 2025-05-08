@@ -1,4 +1,7 @@
-﻿using Bl.Interfaces;
+﻿using Bl;
+using Bl.Interfaces;
+using Entities;
+using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Models;
@@ -17,6 +20,8 @@ namespace SmartEstimateApp.ViewModels
         private readonly MainWindow _mainWindow;
         private readonly CredentialsManager _credentialsManager;
         private readonly MainWindowViewModel _mainWindowViewModel;
+        private readonly EmailVerificationServiceBL _emailVerificationService;
+        private readonly IServiceProvider _serviceProvider;
 
         private string _email;
         public string Email
@@ -42,7 +47,9 @@ namespace SmartEstimateApp.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand NavigateToRegisterCommand { get; }
 
-        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel)
+        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser,
+            MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel,
+            EmailVerificationServiceBL emailVerificationService, IServiceProvider serviceProvider)
         {
             _userBL = userBL;
             _navigationService = navigationService;
@@ -50,9 +57,13 @@ namespace SmartEstimateApp.ViewModels
             _mainWindow = mainWindow;
             _credentialsManager = credentialsManager;
             _mainWindowViewModel = mainWindowViewModel;
+            _emailVerificationService = emailVerificationService;
+            _serviceProvider = serviceProvider;
+
             LoginCommand = new RelayCommand(async () => await LoginAsync(), CanLogin);
             NavigateToRegisterCommand = new RelayCommand(NavigateToRegister);
             LoadCredentials();
+            _serviceProvider = serviceProvider;
         }
 
         private async Task LoginAsync()
@@ -73,12 +84,19 @@ namespace SmartEstimateApp.ViewModels
                     _credentialsManager.ClearCredentials();
                     return;
                 }
+                await _emailVerificationService.SendVerificationCodeAsync(Email);
 
-                _currentUser.SetUser(user);
-                _credentialsManager.SaveCredentials(Email, Password, RememberMe);
-                var homeWindow = new HomeWindow();
-                homeWindow.Show();
-                _mainWindow.Close();
+                var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
+
+                _navigationService.NavigateTo<VerificationPage>();
+
+                var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
+
+                verificationViewModel.SetEmail(Email);
+                verificationViewModel.VerificationSuccess += () =>
+                {
+                    CompleteLogin(user);
+                };
             }
             catch (Exception ex)
             {
@@ -105,5 +123,16 @@ namespace SmartEstimateApp.ViewModels
                 RememberMe = true;
             }
         }
+        private void CompleteLogin(User user)
+        {
+            _currentUser.SetUser(user);
+            _credentialsManager.SaveCredentials(Email, Password, RememberMe);
+
+            var homeWindow = new HomeWindow();
+            homeWindow.Show();
+
+            _mainWindow.Close();
+        }
+
     }
 }

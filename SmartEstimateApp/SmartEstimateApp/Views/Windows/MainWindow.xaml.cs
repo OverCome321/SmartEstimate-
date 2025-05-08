@@ -4,14 +4,16 @@ using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.Views.Windows
 {
     public partial class MainWindow : Window
     {
         private readonly IServiceProvider _serviceProvider;
+
         public Frame MainFrame { get; private set; }
-        private TextBlock _dateTimeDisplay;
+
         private MainWindowViewModel _viewModel;
 
         public MainWindow(IServiceProvider serviceProvider)
@@ -34,23 +36,40 @@ namespace SmartEstimateApp.Views.Windows
             var navigationService = _serviceProvider.GetService<INavigationService>();
 
             navigationService.NavigateTo<LoginPage>();
+        }
+        // Add these methods to your MainWindow.xaml.cs file
 
-            _dateTimeDisplay = FindName("DateTimeDisplay") as TextBlock;
-
-            SetupDateTimeDisplay();
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                MaximizeButton_Click(sender, e);
+            }
+            else
+            {
+                this.DragMove();
+            }
         }
 
-        private void SetupDateTimeDisplay()
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_dateTimeDisplay != null)
+            this.Close();
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
             {
-                System.Windows.Data.Binding binding = new System.Windows.Data.Binding("CurrentDateTime")
-                {
-                    Source = _viewModel,
-                    Mode = System.Windows.Data.BindingMode.OneWay,
-                    UpdateSourceTrigger = System.Windows.Data.UpdateSourceTrigger.PropertyChanged
-                };
-                _dateTimeDisplay.SetBinding(TextBlock.TextProperty, binding);
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
             }
         }
     }

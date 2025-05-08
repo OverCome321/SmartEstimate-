@@ -7,110 +7,159 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Авторизация" Height="780" Width="1000"
+        Title="Умный счетчик смет" Height="720" Width="1100"
         WindowStartupLocation="CenterScreen"
-        Background="#F1F4F8" Icon="/Resources/smart-estimate-icon-for-calculating.ico">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        Background="{StaticResource AppleBackgroundBrush}" 
+        Icon="/Resources/smart-estimate-icon-for-calculating.ico"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize">
 
-        <!-- Заголовок с меню и пользователем -->
-        <Border Grid.Row="0" Style="{StaticResource HeaderBorderStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Margin="20,13">
-                    <materialDesign:PackIcon Kind="Calculator" 
-                                             Foreground="White"
-                                             Width="24" Height="24"
-                                             VerticalAlignment="Center"
-                                             Margin="0,0,10,0"/>
-                    <TextBlock Text="Умный счетчик смет" Style="{StaticResource HeaderTextStyle}"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+    <Window.Resources>
+        <Style x:Key="WindowControlButton" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppleBorderBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F0F0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
-        <!-- Основной контент -->
-        <Border Grid.Row="1" Margin="20,10,20,10" Background="White" CornerRadius="10">
-            <Frame x:Name="MainFrameU" NavigationUIVisibility="Hidden"/>
-        </Border>
+    <Border CornerRadius="10" Background="{StaticResource AppleBackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Индикатор загрузки -->
-        <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
-                             Background="Transparent"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Stretch">
-            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                         Value="0"
-                         IsIndeterminate="True"
-                         Width="50"
-                         Height="50"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"/>
-        </materialDesign:Card>
+            <!-- Custom Title Bar -->
+            <Border Grid.Row="0" Style="{StaticResource HeaderBorderStyle}" 
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown" 
+                    CornerRadius="10,10,0,0">
+                <Grid Height="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Умный счетчик смет" Margin="20,0,0,0" Style="{StaticResource HeaderTextStyle}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,15,0" VerticalAlignment="Center">
+                        <Button Style="{StaticResource WindowControlButton}" Click="MinimizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                        <Button Style="{StaticResource WindowControlButton}" Click="MaximizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                        <Button Style="{StaticResource WindowControlButton}" Click="CloseButton_Click">
+                            <materialDesign:PackIcon Kind="Close" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-        <!-- Строка состояния -->
-        <StatusBar Grid.Row="2" x:Name="StatusBar">
-            <StatusBar.Style>
-                <Style TargetType="StatusBar" BasedOn="{StaticResource ModernStatusBarStyle}">
-                    <Setter Property="Background" Value="White"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
-                                                        To="#D32F2F" Duration="0:0:0.3"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
-                                                        To="White" Duration="0:0:0.3"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </StatusBar.Style>
-            <StatusBarItem>
-                <TextBlock Margin="15,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Text" Value="Готово"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                                    <Setter Property="Text" Value="{Binding ErrorMessage}"/>
-                                    <Setter Property="Foreground" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
-                <TextBlock x:Name="DateTimeDisplay" Text="{Binding CurrentDateTime}">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="Black"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                                    <Setter Property="Foreground" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </StatusBarItem>
-        </StatusBar>
-    </Grid>
+            <!-- Main Content Area -->
+            <Border Grid.Row="1" Margin="16" Background="{StaticResource AppleCardBackgroundBrush}" CornerRadius="8">
+                <Frame x:Name="MainFrameU" NavigationUIVisibility="Hidden"/>
+            </Border>
+
+            <!-- Loading Indicator -->
+            <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Value="0"
+                            IsIndeterminate="True"
+                            Width="40"
+                            Height="40"
+                            Foreground="{StaticResource ApplePrimaryBrush}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+            </materialDesign:Card>
+
+            <!-- Status Bar -->
+            <StatusBar Grid.Row="2" x:Name="StatusBar">
+                <StatusBar.Style>
+                    <Style TargetType="StatusBar" BasedOn="{StaticResource ModernStatusBarStyle}">
+                        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
+                                                           To="{StaticResource AppleError}" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
+                                                           To="{StaticResource AppleCardBackground}" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBar.Style>
+                <StatusBarItem>
+                    <TextBlock Margin="15,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="Готово"/>
+                                <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                                        <Setter Property="Text" Value="{Binding ErrorMessage}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
+                    <TextBlock x:Name="DateTimeDisplay" Text="{Binding CurrentDateTime}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+                                <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Border>
 </Window>

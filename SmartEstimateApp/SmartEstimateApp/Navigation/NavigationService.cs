@@ -19,5 +19,13 @@ namespace SmartEstimateApp.Navigation
             var page = _serviceProvider.GetService<TPage>();
             _frame.Navigate(page);
         }
+
+        public void GoBack()
+        {
+            if (_frame.CanGoBack)
+            {
+                _frame.GoBack();
+            }
+        }
     }
 }
