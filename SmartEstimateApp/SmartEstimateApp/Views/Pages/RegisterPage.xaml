@@ -21,21 +21,159 @@
                     <StackPanel Margin="0,5,0,0">
                         <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <TextBox Style="{StaticResource InputFieldStyle}" 
-                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Effect>
+                                <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
+                            </TextBox.Effect>
+                            <TextBox.Triggers>
+                                <EventTrigger RoutedEvent="GotFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="TextBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.3" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="TextBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="12" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="LostFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="TextBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="TextBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="8" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBox.Triggers>
+                        </TextBox>
                     </StackPanel>
 
                     <!-- Password Field -->
                     <StackPanel Margin="0,16,0,0">
                         <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                     PasswordChanged="PasswordBox_PasswordChanged"/>
+                                     PasswordChanged="PasswordBox_PasswordChanged">
+                            <PasswordBox.Effect>
+                                <DropShadowEffect x:Name="PasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
+                            </PasswordBox.Effect>
+                            <PasswordBox.Triggers>
+                                <EventTrigger RoutedEvent="GotFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PasswordBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.3" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="PasswordBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="12" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="LostFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PasswordBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="PasswordBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="8" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </PasswordBox.Triggers>
+                        </PasswordBox>
                     </StackPanel>
 
                     <!-- Confirm Password Field -->
                     <StackPanel Margin="0,16,0,0">
                         <TextBlock Text="Подтверждение пароля" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                     PasswordChanged="ConfirmPasswordBox_PasswordChanged"/>
+                                     PasswordChanged="ConfirmPasswordBox_PasswordChanged">
+                            <PasswordBox.Effect>
+                                <DropShadowEffect x:Name="ConfirmPasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
+                            </PasswordBox.Effect>
+                            <PasswordBox.Triggers>
+                                <EventTrigger RoutedEvent="GotFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ConfirmPasswordBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.3" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ConfirmPasswordBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="12" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="LostFocus">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ConfirmPasswordBoxShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ConfirmPasswordBoxShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="8" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </PasswordBox.Triggers>
+                        </PasswordBox>
                     </StackPanel>
 
                     <!-- Remember Me -->
@@ -48,7 +186,53 @@
                     <Button Content="Зарегистрироваться" Style="{StaticResource LoginButtonStyle}" 
                             Command="{Binding RegisterCommand}"
                             Margin="0,24,0,0"
-                            HorizontalAlignment="Center"/>
+                            HorizontalAlignment="Center">
+                        <Button.Effect>
+                            <DropShadowEffect x:Name="ButtonShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
+                        </Button.Effect>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonShadow"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.4" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonShadow"
+                                                         Storyboard.TargetProperty="BlurRadius"
+                                                         To="12" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonShadow"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="ButtonShadow"
+                                                         Storyboard.TargetProperty="BlurRadius"
+                                                         To="8" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
 
                     <!-- Login Link -->
                     <TextBlock Style="{StaticResource RegisterLinkStyle}" Margin="0,20,0,0">
