@@ -3,10 +3,702 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:SmartEstimateApp.Views.Windows"
         mc:Ignorable="d"
-        Title="HomeWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="SmartEstimate" 
+        Height="850" 
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        WindowStyle="None"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        FontFamily="{materialDesign:MaterialDesignFont}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+
+            <!-- Animation for Menu Items -->
+            <Storyboard x:Key="MenuItemAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2" />
+                <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,30,0" To="0" Duration="0:0:0.3">
+                    <ThicknessAnimation.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </ThicknessAnimation.EasingFunction>
+                </ThicknessAnimation>
+            </Storyboard>
+
+            <!-- Custom Control Templates -->
+            <Style x:Key="NavButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatDarkButton}">
+                <Setter Property="Height" Value="58"/>
+                <Setter Property="Margin" Value="8,4"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+                <Setter Property="Foreground" Value="#E0E0E0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="8"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Padding" Value="20,0"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="0" ShadowDepth="0" Opacity="0"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#673AB7"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect BlurRadius="15" ShadowDepth="0" Opacity="0.2" Color="#673AB7"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource MenuItemAnimation}"/>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Dashboard Card Style -->
+            <Style x:Key="DashboardCard" TargetType="Border">
+                <Setter Property="Background" Value="#232234"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Margin" Value="12"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.2" Color="#11111F"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Gradient Brushes -->
+            <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#673AB7" Offset="0"/>
+                <GradientStop Color="#9C27B0" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="SecondaryGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#232234" Offset="0"/>
+                <GradientStop Color="#1A1A2E" Offset="1"/>
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFC107" Offset="0"/>
+                <GradientStop Color="#FF9800" Offset="1"/>
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border CornerRadius="20" Background="{StaticResource SecondaryGradient}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <!-- Custom Window Chrome - Top Bar -->
+            <Border Grid.Row="0" Background="{StaticResource PrimaryGradient}" CornerRadius="20,20,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Window Controls -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="20,0,0,0">
+                        <materialDesign:PackIcon Kind="ChartTimelineVariant" Width="30" Height="30" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="White"/>
+                        <TextBlock Text="SmartEstimate" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" Foreground="White">
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.3" Color="Black"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Search Box -->
+                    <Border Grid.Column="1" Width="400" Height="40" Background="#32FFFFFF" CornerRadius="20" HorizontalAlignment="Center">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="#AAD1D1D1"/>
+                            <TextBox Grid.Column="1" BorderThickness="0" Margin="10,0,15,0" VerticalAlignment="Center" 
+                                   Background="Transparent" Foreground="#D1D1D1" FontSize="14"
+                                   materialDesign:HintAssist.Hint="Search anything..." 
+                                   materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                   CaretBrush="White"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Window Control Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,20,0">
+                        <!-- Notifications -->
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Margin="8,0">
+                            <materialDesign:PackIcon Kind="BellOutline" Width="24" Height="24" Foreground="White"/>
+                        </Button>
+
+                        <!-- Settings -->
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Margin="8,0">
+                            <materialDesign:PackIcon Kind="CogOutline" Width="24" Height="24" Foreground="White"/>
+                        </Button>
+
+                        <!-- User Profile -->
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40" Padding="0" Margin="16,0,8,0">
+                            <Border Width="36" Height="36" CornerRadius="18" Background="#9C27B0">
+                                <TextBlock Text="JS" Foreground="White" FontWeight="Medium" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Button>
+
+                        <!-- Window Control Buttons -->
+                        <Button x:Name="MinimizeButton" Style="{StaticResource MaterialDesignIconButton}" Margin="4,0" Click="MinimizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="White"/>
+                        </Button>
+                        <Button x:Name="MaximizeButton" Style="{StaticResource MaterialDesignIconButton}" Margin="4,0" Click="MaximizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14" Foreground="White"/>
+                        </Button>
+                        <Button x:Name="CloseButton" Style="{StaticResource MaterialDesignIconButton}" Margin="4,0" Click="CloseButton_Click">
+                            <materialDesign:PackIcon Kind="WindowClose" Width="14" Height="14" Foreground="White"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content Area -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Side Navigation Panel -->
+                <Border Grid.Column="0" Background="#1E1E2D" CornerRadius="0,0,0,20" Margin="0,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Main Menu -->
+                        <StackPanel Grid.Row="0" Margin="0,20,0,0">
+                            <TextBlock Text="MAIN MENU" Margin="25,10,0,20" FontSize="12" Foreground="#7A7A94" FontWeight="Medium"/>
+
+                            <!-- Dashboard Button -->
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToDashboard_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ViewDashboardOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Clients Button -->
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToClients_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="AccountMultipleOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Clients" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Projects Button -->
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToProjects_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FolderMultipleOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Projects" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Estimates Button -->
+                            <Button Style="{StaticResource NavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ChartLineVariant" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Estimates" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Invoices Button -->
+                            <Button Style="{StaticResource NavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FileDocumentOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Invoices" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Separator Style="{StaticResource MaterialDesignDarkSeparator}" Margin="20,20"/>
+
+                            <TextBlock Text="ANALYTICS" Margin="25,10,0,20" FontSize="12" Foreground="#7A7A94" FontWeight="Medium"/>
+
+                            <!-- Reports Button -->
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToAnalytics_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ChartBarStacked" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Reports" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Statistics Button -->
+                            <Button Style="{StaticResource NavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ChartScatterPlot" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Statistics" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Settings Section at Bottom -->
+                        <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                            <Separator Style="{StaticResource MaterialDesignDarkSeparator}" Margin="20,0,20,20"/>
+
+                            <!-- Settings Button -->
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToSettings_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CogOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Settings" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Help Button -->
+                            <Button Style="{StaticResource NavButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="HelpCircleOutline" Width="24" Height="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock Text="Help and Support" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Main Content Frame -->
+                <Border Grid.Column="1" Background="#121221" Margin="5,5,5,5" CornerRadius="20">
+                    <!-- Dashboard Content (Default View) -->
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header Section -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Welcome Message -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Welcome back!" FontSize="16" Foreground="#7A7A94"/>
+                                <TextBlock Text="Dashboard Overview" FontSize="30" FontWeight="Bold" Foreground="White" Margin="0,5,0,0">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.3" Color="Black"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Quick Actions -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Style="{StaticResource MaterialDesignOutlinedButton}" Foreground="White" BorderBrush="#7A7A94" Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="New Estimate"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignRaisedButton}" Background="{StaticResource PrimaryGradient}" Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="New Project"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Main Statistics Cards -->
+                        <Grid Grid.Row="1" Margin="0,30,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Active Project Card -->
+                            <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Icon Header -->
+                                    <Border Grid.Row="0" Background="#673AB730" Width="48" Height="48" CornerRadius="12">
+                                        <materialDesign:PackIcon Kind="CalendarClock" Width="24" Height="24" Foreground="#673AB7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Main Stat -->
+                                    <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                        <TextBlock Text="Active Projects" FontSize="14" Foreground="#7A7A94"/>
+                                        <TextBlock Text="12" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Trend -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                        <materialDesign:PackIcon Kind="TrendingUp" Width="16" Height="16" Foreground="#4CAF50" VerticalAlignment="Center"/>
+                                        <TextBlock Text="+2.5%" Foreground="#4CAF50" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="vs previous month" Foreground="#7A7A94" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Total Revenue Card -->
+                            <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Icon Header -->
+                                    <Border Grid.Row="0" Background="#9C27B030" Width="48" Height="48" CornerRadius="12">
+                                        <materialDesign:PackIcon Kind="CurrencyUsd" Width="24" Height="24" Foreground="#9C27B0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Main Stat -->
+                                    <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                        <TextBlock Text="Total Revenue" FontSize="14" Foreground="#7A7A94"/>
+                                        <TextBlock Text="$42,597" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Trend -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                        <materialDesign:PackIcon Kind="TrendingUp" Width="16" Height="16" Foreground="#4CAF50" VerticalAlignment="Center"/>
+                                        <TextBlock Text="+8.3%" Foreground="#4CAF50" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="vs previous month" Foreground="#7A7A94" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Pending Invoices Card -->
+                            <Border Grid.Column="2" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Icon Header -->
+                                    <Border Grid.Row="0" Background="#FFC10730" Width="48" Height="48" CornerRadius="12">
+                                        <materialDesign:PackIcon Kind="FileDocumentAlert" Width="24" Height="24" Foreground="#FFC107" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Main Stat -->
+                                    <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                        <TextBlock Text="Pending Invoices" FontSize="14" Foreground="#7A7A94"/>
+                                        <TextBlock Text="8" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Trend -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                        <materialDesign:PackIcon Kind="TrendingDown" Width="16" Height="16" Foreground="#F44336" VerticalAlignment="Center"/>
+                                        <TextBlock Text="-3.2%" Foreground="#F44336" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="vs previous month" Foreground="#7A7A94" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Completed Projects Card -->
+                            <Border Grid.Column="3" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Icon Header -->
+                                    <Border Grid.Row="0" Background="#4CAF5030" Width="48" Height="48" CornerRadius="12">
+                                        <materialDesign:PackIcon Kind="CheckboxMarkedCircleOutline" Width="24" Height="24" Foreground="#4CAF50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Main Stat -->
+                                    <StackPanel Grid.Row="1" Margin="0,15,0,0">
+                                        <TextBlock Text="Completed Projects" FontSize="14" Foreground="#7A7A94"/>
+                                        <TextBlock Text="87" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,5,0,0"/>
+                                    </StackPanel>
+
+                                    <!-- Trend -->
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                                        <materialDesign:PackIcon Kind="TrendingUp" Width="16" Height="16" Foreground="#4CAF50" VerticalAlignment="Center"/>
+                                        <TextBlock Text="+12.7%" Foreground="#4CAF50" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="vs previous month" Foreground="#7A7A94" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!-- Data Visualization and Recent Projects -->
+                        <Grid Grid.Row="2" Margin="0,20,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Revenue Chart -->
+                            <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Chart Header -->
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="Revenue Analytics" FontSize="18" FontWeight="Medium" Foreground="White"/>
+
+                                        <ComboBox Grid.Column="1" Width="120" materialDesign:ColorZoneAssist.Mode="Dark" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                            <ComboBoxItem Content="This Month" IsSelected="True"/>
+                                            <ComboBoxItem Content="Last Month"/>
+                                            <ComboBoxItem Content="Last 3 Months"/>
+                                            <ComboBoxItem Content="This Year"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <!-- Chart Placeholder -->
+                                    <Border Grid.Row="1" Margin="0,20,0,0" Background="#1AFFFFFF" CornerRadius="8" Height="280">
+                                        <!-- Purple gradient line chart with dots would be here -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="50"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Line Chart Sketch -->
+                                            <Path Grid.Row="0" Stroke="{StaticResource PrimaryGradient}" StrokeThickness="3" Margin="40,20,40,0">
+                                                <Path.Data>
+                                                    <PathGeometry>
+                                                        <PathFigure StartPoint="0,150">
+                                                            <BezierSegment Point1="100,120" Point2="200,140" Point3="300,80"/>
+                                                            <LineSegment Point="400,50"/>
+                                                            <BezierSegment Point1="500,30" Point2="600,60" Point3="700,20"/>
+                                                        </PathFigure>
+                                                    </PathGeometry>
+                                                </Path.Data>
+                                                <Path.Effect>
+                                                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.3" Color="#673AB7"/>
+                                                </Path.Effect>
+                                            </Path>
+
+                                            <!-- Month Labels -->
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Jan" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                                <TextBlock Text="Feb" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                                <TextBlock Text="Mar" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                                <TextBlock Text="Apr" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                                <TextBlock Text="May" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                                <TextBlock Text="Jun" Foreground="#7A7A94" Margin="40,5,40,0"/>
+                                            </StackPanel>
+
+                                            <!-- Data Points -->
+                                            <Canvas Grid.Row="0" Margin="40,20,40,0">
+                                                <Ellipse Canvas.Left="0" Canvas.Top="150" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="100" Canvas.Top="120" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="200" Canvas.Top="140" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="300" Canvas.Top="80" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="400" Canvas.Top="50" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="500" Canvas.Top="30" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="600" Canvas.Top="60" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                                <Ellipse Canvas.Left="700" Canvas.Top="20" Width="10" Height="10" Fill="White" Stroke="#673AB7" StrokeThickness="2"/>
+                                            </Canvas>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <!-- Recent Projects -->
+                            <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Header -->
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="Недавние проекты" FontSize="18" FontWeight="Medium" Foreground="White"/>
+
+                                        <Button Grid.Column="1" Style="{StaticResource MaterialDesignIconButton}" ToolTip="Посмотреть все проекты">
+                                            <materialDesign:PackIcon Kind="DotsHorizontal" Width="18" Height="18" Foreground="#7A7A94"/>
+                                        </Button>
+                                    </Grid>
+
+                                    <!-- Projects List -->
+                                    <ScrollViewer Grid.Row="1" Margin="0,20,0,0" VerticalScrollBarVisibility="Auto">
+                                        <StackPanel>
+                                            <!-- Project 1 -->
+                                            <Border Background="#1AFFFFFF" CornerRadius="8" Margin="0,0,0,12" Padding="16">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Project Icon -->
+                                                    <Border Grid.Column="0" Width="40" Height="40" Background="#673AB730" CornerRadius="8" Margin="0,0,16,0">
+                                                        <materialDesign:PackIcon Kind="Web" Width="18" Height="18" Foreground="#673AB7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <!-- Project Info -->
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Веб-сайт для клиента ABC" FontSize="14" FontWeight="Medium" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="Срок выполнения: 15 мая" FontSize="12" Foreground="#7A7A94" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+
+                                                    <!-- Progress -->
+                                                    <Border Grid.Column="2" Background="#673AB730" CornerRadius="4" Padding="8,4" VerticalAlignment="Top">
+                                                        <TextBlock Text="80%" FontSize="12" FontWeight="Medium" Foreground="#673AB7"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Project 2 -->
+                                            <Border Background="#1AFFFFFF" CornerRadius="8" Margin="0,0,0,12" Padding="16">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Project Icon -->
+                                                    <Border Grid.Column="0" Width="40" Height="40" Background="#9C27B030" CornerRadius="8" Margin="0,0,16,0">
+                                                        <materialDesign:PackIcon Kind="MobilePhone" Width="18" Height="18" Foreground="#9C27B0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <!-- Project Info -->
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Мобильное приложение XYZ" FontSize="14" FontWeight="Medium" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="Срок выполнения: 2 июня" FontSize="12" Foreground="#7A7A94" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+
+                                                    <!-- Progress -->
+                                                    <Border Grid.Column="2" Background="#9C27B030" CornerRadius="4" Padding="8,4" VerticalAlignment="Top">
+                                                        <TextBlock Text="45%" FontSize="12" FontWeight="Medium" Foreground="#9C27B0"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Project 3 -->
+                                            <Border Background="#1AFFFFFF" CornerRadius="8" Margin="0,0,0,12" Padding="16">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Project Icon -->
+                                                    <Border Grid.Column="0" Width="40" Height="40" Background="#FFC10730" CornerRadius="8" Margin="0,0,16,0">
+                                                        <materialDesign:PackIcon Kind="BrandingWatermark" Width="18" Height="18" Foreground="#FFC107" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <!-- Project Info -->
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Брендинг для компании EFG" FontSize="14" FontWeight="Medium" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="Срок выполнения: 20 мая" FontSize="12" Foreground="#7A7A94" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+
+                                                    <!-- Progress -->
+                                                    <Border Grid.Column="2" Background="#FFC10730" CornerRadius="4" Padding="8,4" VerticalAlignment="Top">
+                                                        <TextBlock Text="65%" FontSize="12" FontWeight="Medium" Foreground="#FFC107"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Project 4 -->
+                                            <Border Background="#1AFFFFFF" CornerRadius="8" Margin="0,0,0,12" Padding="16">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Project Icon -->
+                                                    <Border Grid.Column="0" Width="40" Height="40" Background="#4CAF5030" CornerRadius="8" Margin="0,0,16,0">
+                                                        <materialDesign:PackIcon Kind="DatabaseOutline" Width="18" Height="18" Foreground="#4CAF50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+
+                                                    <!-- Project Info -->
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="Интеграция CRM-системы" FontSize="14" FontWeight="Medium" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="Срок выполнения: 30 мая" FontSize="12" Foreground="#7A7A94" Margin="0,5,0,0"/>
+                                                    </StackPanel>
+
+                                                    <!-- Progress -->
+                                                    <Border Grid.Column="2" Background="#4CAF5030" CornerRadius="4" Padding="8,4" VerticalAlignment="Top">
+                                                        <TextBlock Text="20%" FontSize="12" FontWeight="Medium" Foreground="#4CAF50"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Add New Project Button -->
+                                            <Button Style="{StaticResource MaterialDesignFlatDarkButton}" Height="50" Margin="0,8,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="#1AFFFFFF">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="Plus" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Добавить новый проект" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Status Bar -->
+            <Border Grid.Row="2" Background="#1E1E2D" CornerRadius="0,0,20,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Version Info -->
+                    <TextBlock Grid.Column="0" Text="SmartEstimate v1.0.3" Foreground="#7A7A94" Margin="20,0,0,0" VerticalAlignment="Center" FontSize="12"/>
+
+                    <!-- System Status -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Ellipse Width="8" Height="8" Fill="#4CAF50" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Все системы работают нормально" Foreground="#7A7A94" VerticalAlignment="Center" FontSize="12"/>
+                    </StackPanel>
+
+                    <!-- Time -->
+                    <TextBlock Grid.Column="2" Text="Последнее обновление: 15:42" Foreground="#7A7A94" Margin="0,0,20,0" VerticalAlignment="Center" FontSize="12"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </Window>
