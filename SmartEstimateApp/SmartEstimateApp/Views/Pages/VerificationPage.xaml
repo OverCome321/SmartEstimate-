@@ -48,7 +48,8 @@
                          Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,0,0,20"
                          Width="300"
-                         HorizontalAlignment="Center">
+                         HorizontalAlignment="Center" materialDesign:HintAssist.Hint="Код подтверждения"
+                                 materialDesign:HintAssist.HintOpacity="0.5">
                     <TextBox.Effect>
                         <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                     </TextBox.Effect>
@@ -207,6 +208,7 @@
                 <!-- Resend Code Section -->
                 <TextBlock Text="{Binding CountdownText}" 
                            Style="{StaticResource LabelStyle}" 
+                           Foreground="Red"
                            Margin="0,20,0,10"
                            FontSize="13"
                            TextAlignment="Center"
@@ -215,7 +217,7 @@
                 <Button Content="Отправить повторно" 
                         Style="{StaticResource LoginButtonStyle}" 
                         Command="{Binding ResendCodeCommand}"
-                        Width="300"
+                        Width="290"
                         Margin="0,15,0,0"
                         IsEnabled="{Binding IsResendEnabled}"
                         Background="{StaticResource AppleBackgroundBrush}"

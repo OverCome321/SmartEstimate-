@@ -1,25 +1,21 @@
 ﻿using Bl.Interfaces;
-using SmartEstimateApp.Manager;
-using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.ViewModels;
-using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace SmartEstimateApp.Views.Pages
 {
-    public partial class RegisterPage : Page
+    public partial class PasswordResetPage : Page
     {
-        private readonly RegisterViewModel _viewModel;
+        private readonly PasswordResetViewModel _viewModel;
 
-        public RegisterPage(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
+        public PasswordResetPage(MainWindowViewModel mainViewModel, INavigationService navigationService, IUserBL userBl)
         {
             InitializeComponent();
-            _viewModel = new RegisterViewModel(userBL, navigationService, currentUser, mainWindow, credentialsManager, mainWindowViewModel, serviceProvider);
+            _viewModel = new PasswordResetViewModel(mainViewModel, navigationService, userBl);
             DataContext = _viewModel;
         }
-
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)

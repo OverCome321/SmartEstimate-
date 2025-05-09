@@ -21,7 +21,8 @@
                     <StackPanel Margin="0,5,0,0">
                         <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <TextBox Style="{StaticResource InputFieldStyle}" 
-                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}">
+                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Адрес электронной почты"
+                                 materialDesign:HintAssist.HintOpacity="0.5">
                             <TextBox.Effect>
                                 <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </TextBox.Effect>
@@ -74,7 +75,8 @@
                     <StackPanel Margin="0,16,0,0">
                         <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                     PasswordChanged="PasswordBox_PasswordChanged">
+                                     PasswordChanged="PasswordBox_PasswordChanged" materialDesign:HintAssist.Hint="Пароль"
+                                     materialDesign:HintAssist.HintOpacity="0.5">
                             <PasswordBox.Effect>
                                 <DropShadowEffect x:Name="PasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </PasswordBox.Effect>
@@ -127,7 +129,8 @@
                     <StackPanel Margin="0,16,0,0">
                         <TextBlock Text="Подтверждение пароля" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="ConfirmPasswordBox" Style="{StaticResource PasswordFieldStyle}"
-                                     PasswordChanged="ConfirmPasswordBox_PasswordChanged">
+                                     PasswordChanged="ConfirmPasswordBox_PasswordChanged" materialDesign:HintAssist.Hint="Пароль"
+                                     materialDesign:HintAssist.HintOpacity="0.5">
                             <PasswordBox.Effect>
                                 <DropShadowEffect x:Name="ConfirmPasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </PasswordBox.Effect>

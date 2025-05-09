@@ -8,11 +8,11 @@ namespace Bl
 {
     public class EmailServiceBL : IEmailService
     {
-        private readonly string _smtpServer;
+        private readonly string? _smtpServer;
         private readonly int _smtpPort;
-        private readonly string _smtpUser;
-        private readonly string _smtpPass;
-        private readonly string _fromEmail;
+        private readonly string? _smtpUser;
+        private readonly string? _smtpPass;
+        private readonly string? _fromEmail;
 
         public EmailServiceBL(IConfiguration configuration)
         {

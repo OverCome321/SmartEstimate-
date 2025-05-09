@@ -1,9 +1,8 @@
-﻿using Bl;
-using Bl.Interfaces;
-using Entities;
+﻿using Bl.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Manager;
+using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.Views.Pages;
@@ -21,7 +20,6 @@ namespace SmartEstimateApp.ViewModels
         private readonly MainWindow _mainWindow;
         private readonly CredentialsManager _credentialsManager;
         private readonly MainWindowViewModel _mainWindowViewModel;
-        private readonly EmailVerificationServiceBL _emailVerificationService;
         private readonly IServiceProvider _serviceProvider;
 
         private string _email;
@@ -58,8 +56,7 @@ namespace SmartEstimateApp.ViewModels
         public ICommand NavigateToLoginCommand { get; }
         #endregion
 
-        public RegisterViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel,
-            EmailVerificationServiceBL emailVerificationService, IServiceProvider serviceProvider)
+        public RegisterViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
         {
             _userBL = userBL;
             _navigationService = navigationService;
@@ -67,7 +64,6 @@ namespace SmartEstimateApp.ViewModels
             _mainWindow = mainWindow;
             _credentialsManager = credentialsManager;
             _mainWindowViewModel = mainWindowViewModel;
-            _emailVerificationService = emailVerificationService;
             _serviceProvider = serviceProvider;
 
             RegisterCommand = new RelayCommand(async () => await RegisterAsync(), CanRegister);
@@ -80,12 +76,6 @@ namespace SmartEstimateApp.ViewModels
             _mainWindowViewModel.ShowLoading();
             try
             {
-                if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
-                {
-                    _mainWindowViewModel.ShowError("Пожалуйста, заполните все поля");
-                    return;
-                }
-
                 if (Password != ConfirmPassword)
                 {
                     _mainWindowViewModel.ShowError("Пароли не совпадают");
@@ -106,8 +96,8 @@ namespace SmartEstimateApp.ViewModels
                     CreatedAt = DateTime.Now,
                     LastLogin = DateTime.Now
                 };
-
-                await _emailVerificationService.SendVerificationCodeAsync(Email);
+                var entityUser = Mapper.ToEntity(user);
+                await _userBL.ValidationCommand(entityUser);
 
                 var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
 
@@ -119,7 +109,7 @@ namespace SmartEstimateApp.ViewModels
                 {
                     try
                     {
-                        await _userBL.AddOrUpdateAsync(user);
+                        await _userBL.AddOrUpdateAsync(entityUser);
                         CompleteRegistration(user);
                     }
                     catch (Exception ex)

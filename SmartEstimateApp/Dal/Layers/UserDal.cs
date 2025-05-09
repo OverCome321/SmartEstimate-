@@ -53,6 +53,22 @@ namespace Dal.Layers
         /// <returns>True, если роль существует, иначе False</returns>
         public async Task<bool> RoleExistsAsync(long roleId) => await _context.Roles.AnyAsync(r => r.Id == roleId);
 
+
+        /// <summary>
+        /// Получает пользователя по email
+        /// </summary>
+        /// <param name="email">Email пользователя</param>
+        /// <param name="isFull">Флаг полной загрузки</param>
+        /// <returns>Найденная сущность или null</returns>
+        public async Task<Entities.User> GetAsync(string email, bool isFull = true)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentNullException(nameof(email));
+
+            var query = Where(u => u.Email.ToLower() == email.ToLower()).Take(1);
+            return (await BuildEntitiesListAsync(query, isFull)).FirstOrDefault();
+        }
+
         /// <summary>
         /// Добавляет или обновляет пользователя в базе данных
         /// </summary>
@@ -115,6 +131,12 @@ namespace Dal.Layers
             {
                 dbObject.CreatedAt = DateTime.Now;
             }
+            else
+            {
+                dbObject.PasswordHash = entity.PasswordHash;
+                dbObject.LastLogin = DateTime.Now;
+            }
+
             return Task.CompletedTask;
         }
 

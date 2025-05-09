@@ -1,7 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns:converters="clr-namespace:SmartEstimateApp.Converters"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+>
 
+    <converters:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
+    
     <!-- Colors -->
     <Color x:Key="ApplePrimary">#007AFF</Color>
     <Color x:Key="AppleSecondary">#2556D9</Color>
@@ -92,15 +97,25 @@
         <Setter Property="BorderBrush" Value="{StaticResource AppleBorderBrush}"/>
         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Height" Value="34"/>
+        <Setter Property="Height" Value="36"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,3,0,0"/>
+                            CornerRadius="8">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="8,4,8,4"/>
+                            <TextBlock x:Name="HintText"
+                                       Text="{Binding Path=(materialDesign:HintAssist.Hint), RelativeSource={RelativeSource TemplatedParent}}"
+                                       Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                       Opacity="{Binding Path=(materialDesign:HintAssist.HintOpacity), RelativeSource={RelativeSource TemplatedParent}}"
+                                       Margin="8,4,8,4"
+                                       Visibility="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TextToVisibilityConverter}}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"/>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -110,7 +125,7 @@
                 <Setter Property="BorderBrush" Value="{StaticResource AppleFocusRingBrush}"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.2" Color="{StaticResource AppleFocusRing}"/>
+                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.15" Color="{StaticResource AppleFocusRing}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
@@ -118,7 +133,8 @@
     </Style>
 
     <!-- Password Field Style -->
-    <Style TargetType="PasswordBox" x:Key="PasswordFieldStyle">
+    <Style TargetType="PasswordBox" x:Key="PasswordFieldStyle"
+       xmlns:sys="clr-namespace:System;assembly=mscorlib">
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="12,8"/>
@@ -132,10 +148,42 @@
             <Setter.Value>
                 <ControlTemplate TargetType="PasswordBox">
                     <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,3,0,0"/>
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="8,4,8,4"/>
+
+                            <TextBlock x:Name="HintText"
+                                   Text="{Binding Path=(materialDesign:HintAssist.Hint), RelativeSource={RelativeSource TemplatedParent}}"
+                                   Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                   Opacity="{Binding Path=(materialDesign:HintAssist.HintOpacity), RelativeSource={RelativeSource TemplatedParent}}"
+                                   Margin="8,4,8,4"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <!-- Hide Hint when Tag has any non-empty string -->
+                                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=PasswordBox}}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=PasswordBox}}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=PasswordBox}}">
+                                                <DataTrigger.Value>
+                                                    <sys:String>*</sys:String>
+                                                    <!-- Любая строка -->
+                                                </DataTrigger.Value>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -145,13 +193,47 @@
                 <Setter Property="BorderBrush" Value="{StaticResource AppleFocusRingBrush}"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.2" Color="{StaticResource AppleFocusRing}"/>
+                        <DropShadowEffect BlurRadius="4" ShadowDepth="0" Opacity="0.2"
+                                      Color="{StaticResource AppleFocusRing}"/>
                     </Setter.Value>
                 </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Стиль для кнопки Назад в Apple стиле -->
+    <Style TargetType="Button" x:Key="MinimalBackButtonStyle">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.7"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Opacity" Value="0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.3"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <!-- CheckBox Style -->
     <Style TargetType="CheckBox" x:Key="CheckBoxStyle">
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
@@ -284,5 +366,38 @@
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Height" Value="30"/>
+    </Style>
+    <Style x:Key="NotificationCloseButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Margin" Value="0,0,15,0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                        <materialDesign:PackIcon Kind="Close" 
+                                                    Width="14" 
+                                                    Height="14" 
+                                                    Foreground="White"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#40FFFFFF"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#60FFFFFF"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

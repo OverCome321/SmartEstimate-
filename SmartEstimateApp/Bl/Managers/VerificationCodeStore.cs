@@ -6,7 +6,7 @@ namespace Bl.Managers
     {
         private class CodeEntry
         {
-            public string Code { get; set; }
+            public string? Code { get; set; }
             public DateTime Expiry { get; set; }
         }
 
@@ -37,15 +37,15 @@ namespace Bl.Managers
             return false;
         }
 
-        public static void ClearExpiredCodes()
-        {
-            foreach (var entry in _codeStore)
-            {
-                if (entry.Value.Expiry <= DateTime.UtcNow)
-                {
-                    _codeStore.TryRemove(entry.Key, out _);
-                }
-            }
-        }
+        //public static void ClearExpiredCodes()
+        //{
+        //    foreach (var entry in _codeStore)
+        //    {
+        //        if (entry.Value.Expiry <= DateTime.UtcNow)
+        //        {
+        //            _codeStore.TryRemove(entry.Key, out _);
+        //        }
+        //    }
+        //}
     }
 }

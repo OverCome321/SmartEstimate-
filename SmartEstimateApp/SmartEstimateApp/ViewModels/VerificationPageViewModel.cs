@@ -1,4 +1,5 @@
 ﻿using Bl;
+using Bl.Managers;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
@@ -14,7 +15,6 @@ namespace SmartEstimateApp.ViewModels
         private readonly EmailVerificationServiceBL _emailVerificationService;
 
         private string _verificationCode;
-        private string _errorMessage;
         private string _email;
         private bool _isResendEnabled;
         private bool _isResendCooldownActive;
@@ -66,9 +66,50 @@ namespace SmartEstimateApp.ViewModels
             IsResendCooldownActive = false;
         }
 
-        public void SetEmail(string email)
+        public async void SetEmail(string email)
         {
             _email = email;
+            await SendInitialCodeAsync();
+        }
+
+        private async Task SendInitialCodeAsync()
+        {
+            try
+            {
+                _mainViewModel.ShowLoading();
+
+                var (canSend, errorMessage, remainingSeconds) = SendAttemptStore.CanSendCode(_email);
+
+                if (!canSend)
+                {
+                    _mainViewModel.ShowError(errorMessage);
+
+                    StartResendCooldown(remainingSeconds.Value);
+                    return;
+                }
+
+                // Отправляем код
+                await _emailVerificationService.SendVerificationCodeAsync(_email);
+
+                // Регистрируем попытку отправки
+                var (isInCooldown, cooldownSeconds) = SendAttemptStore.RecordAttempt(_email);
+
+                // Если нужно включить период ожидания
+                if (isInCooldown)
+                {
+                    StartResendCooldown(cooldownSeconds.Value);
+                }
+
+                _mainViewModel.ShowSuccess("Код подтверждения отправлен на вашу почту");
+            }
+            catch (Exception ex)
+            {
+                _mainViewModel.ShowError(ex.Message);
+            }
+            finally
+            {
+                _mainViewModel.HideLoading();
+            }
         }
 
         private void VerifyCodeAsync()
@@ -98,21 +139,10 @@ namespace SmartEstimateApp.ViewModels
 
         private async void ResendCodeAsync()
         {
-            try
-            {
-                _mainViewModel.ShowLoading();
+            if (!IsResendEnabled)
+                return;
 
-                await _emailVerificationService.SendVerificationCodeAsync(_email);
-                StartResendCooldown();
-            }
-            catch (Exception ex)
-            {
-                _mainViewModel.ShowError($"Ошибка при повторной отправке кода: {ex.Message}");
-            }
-            finally
-            {
-                _mainViewModel.HideLoading();
-            }
+            await SendInitialCodeAsync();
         }
 
         private void CancelVerification()
@@ -120,16 +150,22 @@ namespace SmartEstimateApp.ViewModels
             _navigationService.GoBack();
         }
 
-        private void StartResendCooldown()
+        private void StartResendCooldown(int seconds)
         {
             IsResendEnabled = false;
             IsResendCooldownActive = true;
-            _resendCooldownEnd = DateTime.UtcNow.AddSeconds(60);
+            _resendCooldownEnd = DateTime.UtcNow.AddSeconds(seconds);
+
+            if (_resendTimer != null && _resendTimer.IsEnabled)
+            {
+                _resendTimer.Stop();
+            }
 
             _resendTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(100)
+                Interval = TimeSpan.FromMilliseconds(500)
             };
+
             _resendTimer.Tick += (s, e) =>
             {
                 var timeLeft = _resendCooldownEnd - DateTime.UtcNow;
@@ -142,9 +178,10 @@ namespace SmartEstimateApp.ViewModels
                 }
                 else
                 {
-                    CountdownText = $"Повторная отправка доступна через {(int)timeLeft.TotalSeconds} сек.";
+                    CountdownText = $"Повторная отправка доступна через {(int)Math.Ceiling(timeLeft.TotalSeconds)} сек.";
                 }
             };
+
             _resendTimer.Start();
         }
     }

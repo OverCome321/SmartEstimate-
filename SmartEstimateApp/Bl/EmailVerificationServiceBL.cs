@@ -5,34 +5,44 @@ namespace Bl
 {
     public class EmailVerificationServiceBL
     {
-        private readonly IEmailService _emailService;
+        private readonly IEmailService _emailSender;
+        private readonly Random _random = new Random();
 
-        public EmailVerificationServiceBL(IEmailService emailService)
+        public EmailVerificationServiceBL(IEmailService emailSender)
         {
-            _emailService = emailService;
+            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
         }
 
+        /// <summary>
+        /// Отправляет код подтверждения на указанный email
+        /// </summary>
         public async Task SendVerificationCodeAsync(string email)
         {
-            try
-            {
-                string code = new Random().Next(100000, 999999).ToString();
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException("Email не может быть пустым.", nameof(email));
 
-                VerificationCodeStore.StoreCode(email, code);
+            // Генерация 6-значного кода
+            string code = GenerateVerificationCode();
 
-                string subject = "Код подтверждения для входа";
-                string body = $"Ваш код подтверждения: {code}. Код действителен 5 минут.";
-                await _emailService.SendEmailAsync(email, subject, body);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Ошибка при отправке кода подтверждения: {ex.Message}", ex);
-            }
+            // Сохраняем код в хранилище
+            VerificationCodeStore.StoreCode(email, code);
+
+            // Отправляем код на email
+            await _emailSender.SendEmailAsync(
+                email,
+                "Код подтверждения",
+                $"Ваш код подтверждения: {code}. Действителен в течение 5 минут."
+            );
         }
+        /// <summary>
+        /// Проверяет код подтверждения
+        /// </summary>
+        public bool VerifyCode(string email, string code) => VerificationCodeStore.VerifyCode(email, code);
 
-        public bool VerifyCode(string email, string code)
-        {
-            return VerificationCodeStore.VerifyCode(email, code);
-        }
+        /// <summary>
+        /// Генерирует 6-значный код подтверждения
+        /// </summary>
+        private string GenerateVerificationCode() => _random.Next(100000, 999999).ToString();
+
     }
 }

@@ -29,5 +29,13 @@ namespace Dal.Interfaces
         /// <param name="roleId">Идентификатор роли</param>
         /// <returns>True, если роль существует, иначе False</returns>
         Task<bool> RoleExistsAsync(long roleId);
+
+        /// <summary>
+        /// Получает пользователя по email
+        /// </summary>
+        /// <param name="email">Email пользователя</param>
+        /// <param name="isFull">Флаг полной загрузки (включая связанные данные, например, роль)</param>
+        /// <returns>Найденная сущность или null</returns>
+        Task<User> GetAsync(string email, bool isFull = true);
     }
 }

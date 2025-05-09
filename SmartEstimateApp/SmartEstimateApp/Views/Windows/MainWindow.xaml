@@ -16,6 +16,8 @@
         ResizeMode="CanResize">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
         <Style x:Key="WindowControlButton" TargetType="Button">
             <Setter Property="Width" Value="32"/>
             <Setter Property="Height" Value="24"/>
@@ -42,6 +44,68 @@
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#E0E0E0"/>
                 </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Error Notification Bar Style -->
+        <Style x:Key="ErrorNotificationBarStyle" TargetType="Border">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0" To="1"
+                                                 Duration="0:0:0.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="1" To="0"
+                                                 Duration="0:0:0.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Success Notification Bar Style -->
+        <Style x:Key="SuccessNotificationBarStyle" TargetType="Border">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSuccessVisible}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0" To="1"
+                                                 Duration="0:0:0.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="1" To="0"
+                                                 Duration="0:0:0.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -98,66 +162,81 @@
                             HorizontalAlignment="Center"/>
             </materialDesign:Card>
 
-            <!-- Status Bar -->
-            <StatusBar Grid.Row="2" x:Name="StatusBar">
+            <!-- Error Notification Bar -->
+            <Border Grid.Row="2" 
+                    Style="{StaticResource ErrorNotificationBarStyle}"
+                    Background="{StaticResource AppleErrorBrush}"
+                    Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                               Text="{Binding ErrorMessage}" 
+                               Foreground="White" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                            Width="20" Height="20" 
+                            Margin="0,0,15,0" 
+                            Style="{StaticResource NotificationCloseButtonStyle}"
+                            Command="{Binding HideErrorCommand}"
+                            Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Success Notification Bar -->
+            <Border Grid.Row="2" 
+                    Style="{StaticResource SuccessNotificationBarStyle}"
+                    Background="{StaticResource AppleSuccessBrush}"
+                    Visibility="{Binding IsSuccessVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                               Text="{Binding SuccessMessage}" 
+                               Foreground="White" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                            Width="20" Height="20" 
+                            Margin="0,0,15,0" 
+                            Style="{StaticResource NotificationCloseButtonStyle}"
+                            Command="{Binding HideSuccessCommand}"
+                            Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Regular Status Bar (always visible) -->
+            <StatusBar Grid.Row="2" x:Name="StatusBar"
+                       Visibility="{Binding Path=IsNotificationVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <StatusBar.Style>
                     <Style TargetType="StatusBar" BasedOn="{StaticResource ModernStatusBarStyle}">
                         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
-                                                           To="{StaticResource AppleError}" Duration="0:0:0.3"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                                <DataTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetProperty="(StatusBar.Background).(SolidColorBrush.Color)"
-                                                           To="{StaticResource AppleCardBackground}" Duration="0:0:0.3"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.ExitActions>
-                            </DataTrigger>
-                        </Style.Triggers>
                     </Style>
                 </StatusBar.Style>
                 <StatusBarItem>
-                    <TextBlock Margin="15,0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="Готово"/>
-                                <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
-                                <Setter Property="FontSize" Value="12"/>
-                                <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                                        <Setter Property="Text" Value="{Binding ErrorMessage}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <TextBlock Margin="15,0" 
+                               Text="Готово" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"/>
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
-                    <TextBlock x:Name="DateTimeDisplay" Text="{Binding CurrentDateTime}">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="FontSize" Value="12"/>
-                                <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
-                                <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <TextBlock x:Name="DateTimeDisplay" 
+                               Text="{Binding CurrentDateTime}"
+                               FontSize="12"
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                               FontFamily="{StaticResource AppleFont}"/>
                 </StatusBarItem>
             </StatusBar>
         </Grid>

@@ -4,6 +4,7 @@ using Dal.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Manager;
+using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
 using SmartEstimateApp.ViewModels;
@@ -57,6 +58,8 @@ namespace SmartEstimateApp
 
             services.AddSingleton<IConfiguration>(configuration);
 
+            services.AddAutoMapper(typeof(Profiles.MappingProfile));
+
             services.AddBusinessLogic(options =>
             {
                 options.EnableExtendedValidation = true;
@@ -76,6 +79,8 @@ namespace SmartEstimateApp
             services.AddScoped<LoginPage>();
             services.AddScoped<RegisterPage>();
             services.AddScoped<VerificationPage>();
+            services.AddScoped<PasswordResetPage>();
+            services.AddScoped<ResetEmailPage>();
 
             services.AddScoped<INavigationService>(provider =>
             {
@@ -100,8 +105,8 @@ namespace SmartEstimateApp
                     credentialsManager.ClearCredentials();
                     return false;
                 }
-
-                currentUser.SetUser(user);
+                var modelUser = Mapper.ToModel(user);
+                currentUser.SetUser(modelUser);
                 return true;
             }
             catch (Exception)

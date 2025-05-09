@@ -4,7 +4,9 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
+      xmlns:behav="clr-namespace:SmartEstimateApp.Behaviors"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d"
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="Вход в систему"
@@ -21,7 +23,8 @@
                     <StackPanel Margin="0,5,0,0">
                         <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <TextBox Style="{StaticResource InputFieldStyle}" 
-                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}">
+                                 Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Адрес электронной почты"
+                                 materialDesign:HintAssist.HintOpacity="0.5">
                             <TextBox.Effect>
                                 <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </TextBox.Effect>
@@ -74,7 +77,8 @@
                     <StackPanel Margin="0,16,0,0">
                         <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="PwdPassword" Style="{StaticResource PasswordFieldStyle}"
-                                     PasswordChanged="PasswordBox_PasswordChanged">
+                                     PasswordChanged="PasswordBox_PasswordChanged" materialDesign:HintAssist.Hint="Пароль"
+                                     materialDesign:HintAssist.HintOpacity="0.5">
                             <PasswordBox.Effect>
                                 <DropShadowEffect x:Name="PasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </PasswordBox.Effect>
@@ -131,9 +135,12 @@
                         </Grid.ColumnDefinitions>
                         <CheckBox Content="Запомнить меня" Style="{StaticResource CheckBoxStyle}" 
                                   IsChecked="{Binding RememberMe}"/>
-                        <TextBlock Grid.Column="1" Text="Забыли пароль?" 
-                                   Style="{StaticResource ForgotPasswordStyle}"
-                                   Cursor="Hand"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource ForgotPasswordStyle}" 
+                                   HorizontalAlignment="Right" Cursor="Hand">
+                            <Hyperlink Command="{Binding NavigateToPasswordResetCommand}">
+                                Забыли пароль?
+                            </Hyperlink>
+                        </TextBlock>
                     </Grid>
 
                     <!-- Login Button -->
@@ -187,6 +194,14 @@
                             </EventTrigger>
                         </Button.Triggers>
                     </Button>
+
+                    <!-- Cooldown Timer -->
+                    <TextBlock Text="{Binding CountdownText}"
+                               Visibility="{Binding IsLoginCooldownActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Style="{StaticResource LabelStyle}"
+                               Foreground="Red"
+                               HorizontalAlignment="Center"
+                               Margin="0,10,0,0"/>
 
                     <!-- Register Link -->
                     <TextBlock Style="{StaticResource RegisterLinkStyle}" Margin="0,20,0,0">

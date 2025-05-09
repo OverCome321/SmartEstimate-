@@ -1,6 +1,4 @@
-﻿using Entities;
-
-namespace SmartEstimateApp.Models
+﻿namespace SmartEstimateApp.Models
 {
     public class CurrentUser
     {

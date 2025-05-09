@@ -30,5 +30,20 @@ namespace Bl.Interfaces
         /// <param name="includeRole">Включать ли связанные роль</param>
         /// <returns>Результат поиска с сущностями</returns>
         Task<SearchResult<User>> GetAsync(UserSearchParams searchParams, bool includeRole = true);
+        /// <summary>
+        /// Получает список сущностей по параметрам поиска
+        /// </summary>
+        /// <param name="email">Получаем текущего пользователя по email</param>
+        /// <param name="includeRole">Включать ли связанные роль</param>
+        /// <returns>Результат поиска с сущностями</returns>
+        Task<User> GetAsync(string email, bool includeRole = true);
+
+        /// <summary>
+        /// Команда валидации данных пользователя
+        /// </summary>
+        /// <param name="entity">user с его параметрами</param>
+        /// <param name="includeRole">Включать ли связанные роль</param>
+        /// <returns>Результат поиска с сущностями</returns>
+        Task ValidationCommand(User entity);
     }
 }

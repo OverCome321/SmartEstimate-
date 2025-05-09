@@ -41,24 +41,6 @@ namespace Bl
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            if (string.IsNullOrWhiteSpace(entity.Email))
-                throw new ArgumentException(ErrorMessages.EmailEmpty, nameof(entity.Email));
-
-            if (!Validation.IsValidEmail(entity.Email))
-                throw new ArgumentException(ErrorMessages.EmailInvalidFormat, nameof(entity.Email));
-
-            if (entity.Role == null || entity.Role.Id == 0)
-                throw new ArgumentException(ErrorMessages.RoleNotSpecified, nameof(entity.Role));
-
-            if (string.IsNullOrEmpty(entity.PasswordHash))
-                throw new ArgumentException(ErrorMessages.PasswordEmpty, nameof(entity.PasswordHash));
-
-            if (_options.EnableExtendedValidation)
-                Validation.ValidatePassword(entity.PasswordHash, _options);
-
-            if (await _userDal.ExistsAsync(entity.Email))
-                throw new InvalidOperationException(ErrorMessages.EmailAlreadyExists);
-
             entity.PasswordHash = PasswordHasher.HashPassword(entity.PasswordHash);
 
             if (entity.Id == 0)
@@ -67,6 +49,24 @@ namespace Bl
             }
 
             return await _userDal.AddOrUpdateAsync(entity);
+        }
+
+        public async Task ValidationCommand(User entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            if (!Validation.IsValidEmail(entity.Email))
+                throw new ArgumentException(ErrorMessages.EmailInvalidFormat, nameof(entity.Email));
+
+            if (entity.Role == null || entity.Role.Id == 0)
+                throw new ArgumentException(ErrorMessages.RoleNotSpecified, nameof(entity.Role));
+
+            if (_options.EnableExtendedValidation)
+                Validation.ValidatePassword(entity.PasswordHash, _options);
+
+            if (await _userDal.ExistsAsync(entity.Email))
+                throw new InvalidOperationException(ErrorMessages.EmailAlreadyExists);
         }
 
         /// <summary>
@@ -91,6 +91,7 @@ namespace Bl
         /// <returns>Сущность пользователя</returns>
         public Task<User> GetAsync(long id, bool includeRole = false) => _userDal.GetAsync(id, includeRole);
 
+        public Task<User> GetAsync(string email, bool includeRole = false) => _userDal.GetAsync(email, includeRole);
 
         /// <summary>
         /// Удаляет пользователя по идентификатору
