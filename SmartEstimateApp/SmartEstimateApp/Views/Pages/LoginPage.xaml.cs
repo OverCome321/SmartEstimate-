@@ -7,6 +7,7 @@ using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SmartEstimateApp.Views.Pages
@@ -22,6 +23,15 @@ namespace SmartEstimateApp.Views.Pages
             DataContext = _viewModel;
         }
 
+        private void InputField_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && _viewModel.LoginCommand.CanExecute(null))
+            {
+                _viewModel.LoginCommand.Execute(null);
+                e.Handled = true;
+            }
+        }
+
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
@@ -31,18 +41,16 @@ namespace SmartEstimateApp.Views.Pages
                 pb.Tag = string.IsNullOrEmpty(pb.Password) ? "" : "*";
             }
         }
-        private bool _isPasswordVisible;
 
+        private bool _isPasswordVisible;
         private void TogglePasswordButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             var passwordBox = FindParent<PasswordBox>(button);
             var eyeIcon = button?.FindName("EyeIcon") as PackIcon;
-
             if (passwordBox == null || eyeIcon == null) return;
 
             _isPasswordVisible = !_isPasswordVisible;
-
             if (_isPasswordVisible)
             {
                 // Показать пароль

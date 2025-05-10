@@ -49,7 +49,7 @@
                          Margin="0,0,0,20"
                          Width="300"
                          HorizontalAlignment="Center" materialDesign:HintAssist.Hint="Код подтверждения"
-                                 materialDesign:HintAssist.HintOpacity="0.5">
+                                 materialDesign:HintAssist.HintOpacity="0.5" KeyDown="InputField_KeyDown">
                     <TextBox.Effect>
                         <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                     </TextBox.Effect>

@@ -43,7 +43,7 @@
                                      materialDesign:HintAssist.Hint="Адрес электронной почты"
                                      materialDesign:HintAssist.HintOpacity="0.5"
                                      Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" 
-                                     Width="280">
+                                     Width="280" KeyDown="InputField_KeyDown">
                                 <TextBox.Effect>
                                     <DropShadowEffect x:Name="EmailShadow" 
                                                      Color="Black" 

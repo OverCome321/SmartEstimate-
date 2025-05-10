@@ -6,6 +6,7 @@ using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Windows;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.Views.Pages
 {
@@ -20,6 +21,14 @@ namespace SmartEstimateApp.Views.Pages
             DataContext = _viewModel;
         }
 
+        private void InputField_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && _viewModel.RegisterCommand.CanExecute(null))
+            {
+                _viewModel.RegisterCommand.Execute(null);
+                e.Handled = true;
+            }
+        }
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)

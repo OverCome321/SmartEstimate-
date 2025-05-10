@@ -1,5 +1,6 @@
 ﻿using Bl;
 using Bl.Managers;
+using Entities;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
@@ -21,6 +22,10 @@ namespace SmartEstimateApp.ViewModels
         private string _countdownText;
         private DispatcherTimer _resendTimer;
         private DateTime _resendCooldownEnd;
+        private string _sessionId;
+
+        // Field to track the purpose of verification
+        private VerificationPurpose _verificationPurpose;
 
         public string VerificationCode
         {
@@ -64,12 +69,42 @@ namespace SmartEstimateApp.ViewModels
 
             IsResendEnabled = true;
             IsResendCooldownActive = false;
+
+            // Default to login verification
+            _verificationPurpose = VerificationPurpose.Login;
         }
 
-        public async void SetEmail(string email)
+        public async void SetEmail(string email, VerificationPurpose purpose = VerificationPurpose.Login)
         {
+            // Clear any existing verification state
+            ClearState();
+
             _email = email;
+            _verificationPurpose = purpose;
             await SendInitialCodeAsync();
+        }
+
+        public void ClearVerificationHandlers()
+        {
+            VerificationSuccess = null;
+        }
+
+        private void ClearState()
+        {
+            // Clear previous verification code
+            VerificationCode = string.Empty;
+
+            // Invalidate any existing codes for this email/purpose
+            if (!string.IsNullOrEmpty(_email))
+            {
+                _emailVerificationService.InvalidateCode(_email, _verificationPurpose);
+            }
+
+            // Clear the session ID
+            _sessionId = null;
+
+            // Clear event handlers
+            ClearVerificationHandlers();
         }
 
         private async Task SendInitialCodeAsync()
@@ -83,13 +118,12 @@ namespace SmartEstimateApp.ViewModels
                 if (!canSend)
                 {
                     _mainViewModel.ShowError(errorMessage);
-
                     StartResendCooldown(remainingSeconds.Value);
                     return;
                 }
 
-                // Отправляем код
-                await _emailVerificationService.SendVerificationCodeAsync(_email);
+                // Отправляем код с указанием цели
+                _sessionId = await _emailVerificationService.SendVerificationCodeAsync(_email, _verificationPurpose);
 
                 // Регистрируем попытку отправки
                 var (isInCooldown, cooldownSeconds) = SendAttemptStore.RecordAttempt(_email);
@@ -118,9 +152,11 @@ namespace SmartEstimateApp.ViewModels
             {
                 _mainViewModel.ShowLoading();
 
-                if (_emailVerificationService.VerifyCode(_email, VerificationCode))
+                if (_emailVerificationService.VerifyCode(_email, VerificationCode, _verificationPurpose, _sessionId))
                 {
-                    VerificationSuccess?.Invoke();
+                    var handler = VerificationSuccess;
+
+                    handler?.Invoke();
                 }
                 else
                 {
@@ -142,11 +178,21 @@ namespace SmartEstimateApp.ViewModels
             if (!IsResendEnabled)
                 return;
 
+            // Clear any old verification state when resending
+            _emailVerificationService.InvalidateCode(_email, _verificationPurpose);
+            _sessionId = null;
+
             await SendInitialCodeAsync();
         }
 
         private void CancelVerification()
         {
+            if (!string.IsNullOrEmpty(_email))
+            {
+                _emailVerificationService.InvalidateCode(_email, _verificationPurpose);
+            }
+
+            ClearVerificationHandlers();
             _navigationService.GoBack();
         }
 

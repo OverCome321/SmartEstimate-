@@ -3,6 +3,7 @@ using SmartEstimateApp.Navigation;
 using SmartEstimateApp.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.Views.Pages
 {
@@ -15,6 +16,14 @@ namespace SmartEstimateApp.Views.Pages
             InitializeComponent();
             _viewModel = new PasswordResetViewModel(mainViewModel, navigationService, userBl);
             DataContext = _viewModel;
+        }
+        private void InputField_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && _viewModel.ChangePasswordCommand.CanExecute(null))
+            {
+                _viewModel.ChangePasswordCommand.Execute(null);
+                e.Handled = true;
+            }
         }
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {

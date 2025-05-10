@@ -13,7 +13,6 @@ namespace SmartEstimateApp.ViewModels
         private readonly MainWindowViewModel _mainViewModel;
         private readonly INavigationService _navigationService;
         private readonly IServiceProvider _serviceProvider;
-
         private string _email;
 
         public string Email
@@ -23,7 +22,6 @@ namespace SmartEstimateApp.ViewModels
         }
 
         public ICommand SendVerificationCodeCommand { get; }
-
         public ICommand GoBackCommand { get; }
 
         public ResetEmailViewModel(MainWindowViewModel mainViewModel, INavigationService navigationService, IServiceProvider serviceProvider)
@@ -49,25 +47,27 @@ namespace SmartEstimateApp.ViewModels
                 _mainViewModel.ShowLoading();
 
                 var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
-
-                _navigationService.NavigateTo<VerificationPage>();
-
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
 
-                verificationViewModel.SetEmail(Email);
+                verificationViewModel.ClearVerificationHandlers();
+
+                verificationViewModel.SetEmail(Email, VerificationPurpose.PasswordReset);
+
                 verificationViewModel.VerificationSuccess += () =>
                 {
                     var passwordResetPage = _serviceProvider.GetRequiredService<PasswordResetPage>();
                     var passwordResetViewModel = (PasswordResetViewModel)passwordResetPage.DataContext;
-
                     passwordResetViewModel.SetEmail(Email);
-
                     _navigationService.NavigateTo<PasswordResetPage>();
+
+                    verificationViewModel.ClearVerificationHandlers();
                 };
+
+                _navigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
             {
-                _mainViewModel.ShowError($"Ошибка при повторной отправке кода: {ex.Message}");
+                _mainViewModel.ShowError($"Ошибка при отправке кода: {ex.Message}");
             }
             finally
             {

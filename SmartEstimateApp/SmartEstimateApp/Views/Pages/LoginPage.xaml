@@ -24,7 +24,7 @@
                         <TextBlock Text="Электронная почта" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <TextBox Style="{StaticResource InputFieldStyle}" 
                                  Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Адрес электронной почты"
-                                 materialDesign:HintAssist.HintOpacity="0.5">
+                                 materialDesign:HintAssist.HintOpacity="0.5" KeyDown="InputField_KeyDown">
                             <TextBox.Effect>
                                 <DropShadowEffect x:Name="TextBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </TextBox.Effect>
@@ -78,7 +78,7 @@
                         <TextBlock Text="Пароль" Style="{StaticResource LabelStyle}" Margin="2,0,0,6"/>
                         <PasswordBox x:Name="PwdPassword" Style="{StaticResource PasswordFieldStyle}"
                                      PasswordChanged="PasswordBox_PasswordChanged" materialDesign:HintAssist.Hint="Пароль"
-                                     materialDesign:HintAssist.HintOpacity="0.5">
+                                     materialDesign:HintAssist.HintOpacity="0.5" KeyDown="InputField_KeyDown">
                             <PasswordBox.Effect>
                                 <DropShadowEffect x:Name="PasswordBoxShadow" Color="Black" Direction="315" ShadowDepth="2" Opacity="0" BlurRadius="8"/>
                             </PasswordBox.Effect>

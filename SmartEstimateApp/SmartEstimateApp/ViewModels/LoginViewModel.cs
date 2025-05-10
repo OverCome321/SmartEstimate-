@@ -1,5 +1,6 @@
 ﻿using Bl.Interfaces;
 using Bl.Managers;
+using Entities;
 using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Manager;
@@ -87,12 +88,6 @@ namespace SmartEstimateApp.ViewModels
             _mainWindowViewModel.ShowLoading();
             try
             {
-                if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
-                {
-                    _mainWindowViewModel.ShowError("Пожалуйста, заполните все поля");
-                    return;
-                }
-
                 var (canLogin, errorMessage, remainingSeconds) = LoginAttemptStore.CanLogin(Email);
                 if (!canLogin)
                 {
@@ -119,13 +114,21 @@ namespace SmartEstimateApp.ViewModels
                 LoginAttemptStore.ResetAttempts(Email);
 
                 var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
-                _navigationService.NavigateTo<VerificationPage>();
-
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
-                verificationViewModel.SetEmail(Email);
+
+                verificationViewModel.ClearVerificationHandlers();
+
+                verificationViewModel.SetEmail(Email, VerificationPurpose.Login);
 
                 var modelUser = Mapper.ToModel(user);
-                verificationViewModel.VerificationSuccess += () => CompleteLogin(modelUser);
+                verificationViewModel.VerificationSuccess += () =>
+                {
+                    CompleteLogin(modelUser);
+
+                    verificationViewModel.ClearVerificationHandlers();
+                };
+
+                _navigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
             {
@@ -162,7 +165,7 @@ namespace SmartEstimateApp.ViewModels
             }
         }
 
-        private void CompleteLogin(User user)
+        private void CompleteLogin(Models.User user)
         {
             _currentUser.SetUser(user);
             _credentialsManager.SaveCredentials(Email, Password, RememberMe);

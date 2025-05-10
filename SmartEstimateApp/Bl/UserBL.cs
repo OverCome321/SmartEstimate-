@@ -127,6 +127,9 @@ namespace Bl
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
 
+            if (!Validation.IsValidEmail(email))
+                throw new ArgumentException(ErrorMessages.EmailInvalidFormat, nameof(email));
+
             var searchParams = new UserSearchParams(email);
 
             var dalResult = await _userDal.GetAsync(searchParams);
