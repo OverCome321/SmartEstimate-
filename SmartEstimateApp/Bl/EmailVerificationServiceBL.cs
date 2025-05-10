@@ -186,6 +186,14 @@ namespace Bl
             sb.AppendLine("            font-weight: 500;");
             sb.AppendLine("            margin-top: 20px;");
             sb.AppendLine("        }");
+            sb.AppendLine("        .support-link {");
+            sb.AppendLine("            color: #2e58ff;");
+            sb.AppendLine("            text-decoration: none;");
+            sb.AppendLine("            font-weight: 500;");
+            sb.AppendLine("        }");
+            sb.AppendLine("        .support-link:hover {");
+            sb.AppendLine("            text-decoration: underline;");
+            sb.AppendLine("        }");
             sb.AppendLine("    </style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
@@ -200,7 +208,7 @@ namespace Bl
             sb.AppendLine($"                <p class=\"verification-code\">{code}</p>");
             sb.AppendLine("            </div>");
             sb.AppendLine("            <p>Код действителен в течение 5 минут.</p>");
-            sb.AppendLine($"            <p>Если вы не запрашивали {actionText} в системе {appName}, пожалуйста, проигнорируйте это письмо или свяжитесь с нашей службой поддержки.</p>");
+            sb.AppendLine($"            <p>Если вы не запрашивали {actionText} в системе {appName}, пожалуйста, проигнорируйте это письмо или свяжитесь с <a href=\"https://t.me/asap_wosap\" class=\"support-link\">службой поддержки</a>.</p>");
             sb.AppendLine("            <p class=\"warning\">Не сообщайте этот код никому, включая сотрудников технической поддержки.</p>");
             sb.AppendLine("        </div>");
             sb.AppendLine("        <div class=\"footer\">");
@@ -209,7 +217,6 @@ namespace Bl
             sb.AppendLine("    </div>");
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
-
             return sb.ToString();
         }
     }
