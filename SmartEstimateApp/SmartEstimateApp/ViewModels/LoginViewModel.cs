@@ -6,7 +6,7 @@ using SmartEstimateApp.Commands;
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.Windows.Input;
@@ -31,6 +31,7 @@ namespace SmartEstimateApp.ViewModels
         private string? _countdownText;
         private DispatcherTimer _loginTimer;
         private DateTime? _lockoutEnd;
+        private string _storedPassword;
 
         public string Email
         {
@@ -127,7 +128,7 @@ namespace SmartEstimateApp.ViewModels
 
                     verificationViewModel.ClearVerificationHandlers();
                 };
-
+                _storedPassword = Password;
                 _navigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
@@ -160,7 +161,6 @@ namespace SmartEstimateApp.ViewModels
             if (isValid)
             {
                 Email = email;
-                Password = password;
                 RememberMe = true;
             }
         }
@@ -168,9 +168,9 @@ namespace SmartEstimateApp.ViewModels
         private void CompleteLogin(Models.User user)
         {
             _currentUser.SetUser(user);
-            _credentialsManager.SaveCredentials(Email, Password, RememberMe);
+            _credentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow();
+            var homeWindow = new HomeWindow(_serviceProvider);
             homeWindow.Show();
 
             _mainWindow.Close();

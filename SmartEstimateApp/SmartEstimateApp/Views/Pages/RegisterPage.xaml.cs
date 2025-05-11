@@ -1,7 +1,7 @@
 ﻿using Bl.Interfaces;
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Windows;
 using System.Windows;

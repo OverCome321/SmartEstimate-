@@ -7,6 +7,7 @@ using SmartEstimateApp.Manager;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
@@ -30,18 +31,16 @@ namespace SmartEstimateApp
             var currentUser = ServiceProvider.GetService<CurrentUser>();
             var credentialsManager = ServiceProvider.GetService<CredentialsManager>();
 
-            //if (await TryAutoLoginAsync(userBL, currentUser, credentialsManager))
-            //{
-            //    var homeWindow = ServiceProvider.GetService<HomeWindow>();
-            //    homeWindow.Show();
-            //}
-            //else
-            //{
-            //    var mainWindow = ServiceProvider.GetService<MainWindow>();
-            //    mainWindow?.Show();
-            //}
-            var mainWindow = ServiceProvider.GetService<MainWindow>();
-            mainWindow?.Show();
+            if (await TryAutoLoginAsync(userBL, currentUser, credentialsManager))
+            {
+                var homeWindow = ServiceProvider.GetService<HomeWindow>();
+                homeWindow.Show();
+            }
+            else
+            {
+                var mainWindow = ServiceProvider.GetService<MainWindow>();
+                mainWindow?.Show();
+            }
         }
 
         private IConfiguration BuildConfiguration()
@@ -70,23 +69,28 @@ namespace SmartEstimateApp
 
             services.AddDataAccess(configuration);
 
+            // Регистрация окон
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindow>();
             services.AddSingleton<CurrentUser>(provider => CurrentUser.Instance);
             services.AddSingleton<CredentialsManager>();
 
+            // Регистрация навигационных сервисов
+            services.AddSingleton<INavigationServiceFactory, NavigationServiceFactory>();
+            services.AddScoped<INavigationService, NavigationService>();
+
+            // Регистрация страниц
             services.AddScoped<LoginPage>();
             services.AddScoped<RegisterPage>();
             services.AddScoped<VerificationPage>();
             services.AddScoped<PasswordResetPage>();
             services.AddScoped<ResetEmailPage>();
-
-            services.AddScoped<INavigationService>(provider =>
-            {
-                var mainWindow = provider.GetService<MainWindow>();
-                return new NavigationService(provider, mainWindow.MainFrame);
-            });
+            services.AddScoped<DashboardPage>();
+            services.AddScoped<ProjectsPage>();
+            services.AddScoped<ClientsPage>();
+            services.AddScoped<SettingsPage>();
+            services.AddScoped<AnalyticsPage>();
 
             return services.BuildServiceProvider();
         }
@@ -97,19 +101,24 @@ namespace SmartEstimateApp
             {
                 var (email, password, isValid) = credentialsManager.LoadCredentials();
                 if (!isValid || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+                {
+                    Console.WriteLine("Invalid or missing credentials");
                     return false;
+                }
 
                 var user = await userBL.VerifyPasswordAsync(email, password);
                 if (user == null)
                 {
+                    Console.WriteLine("User verification failed");
                     credentialsManager.ClearCredentials();
                     return false;
                 }
+
                 var modelUser = Mapper.ToModel(user);
                 currentUser.SetUser(modelUser);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 credentialsManager.ClearCredentials();
                 return false;

@@ -1,7 +1,7 @@
 ﻿using Bl.Interfaces;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using System.Windows.Input;
 

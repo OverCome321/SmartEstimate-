@@ -6,34 +6,7 @@
 >
 
     <converters:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
-    
-    <!-- Colors -->
-    <Color x:Key="ApplePrimary">#007AFF</Color>
-    <Color x:Key="AppleSecondary">#2556D9</Color>
-    <Color x:Key="AppleBackground">#F5F5F7</Color>
-    <Color x:Key="AppleCardBackground">#FFFFFF</Color>
-    <Color x:Key="AppleTextPrimary">#1D1D1F</Color>
-    <Color x:Key="AppleTextSecondary">#86868B</Color>
-    <Color x:Key="AppleError">#FF3B30</Color>
-    <Color x:Key="AppleSuccess">#34C759</Color>
-    <Color x:Key="AppleBorder">#E5E5E5</Color>
-    <Color x:Key="AppleFocusRing">#0071E3</Color>
-
-    <!-- Brushes -->
-    <SolidColorBrush x:Key="ApplePrimaryBrush" Color="{StaticResource ApplePrimary}"/>
-    <SolidColorBrush x:Key="AppleSecondaryBrush" Color="{StaticResource AppleSecondary}"/>
-    <SolidColorBrush x:Key="AppleBackgroundBrush" Color="{StaticResource AppleBackground}"/>
-    <SolidColorBrush x:Key="AppleCardBackgroundBrush" Color="{StaticResource AppleCardBackground}"/>
-    <SolidColorBrush x:Key="AppleTextPrimaryBrush" Color="{StaticResource AppleTextPrimary}"/>
-    <SolidColorBrush x:Key="AppleTextSecondaryBrush" Color="{StaticResource AppleTextSecondary}"/>
-    <SolidColorBrush x:Key="AppleErrorBrush" Color="{StaticResource AppleError}"/>
-    <SolidColorBrush x:Key="AppleSuccessBrush" Color="{StaticResource AppleSuccess}"/>
-    <SolidColorBrush x:Key="AppleBorderBrush" Color="{StaticResource AppleBorder}"/>
-    <SolidColorBrush x:Key="AppleFocusRingBrush" Color="{StaticResource AppleFocusRing}"/>
-
-    <!-- Fonts -->
-    <FontFamily x:Key="AppleFont">Segoe UI, SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif</FontFamily>
-
+       
     <!-- Header Style -->
     <Style TargetType="Border" x:Key="HeaderBorderStyle">
         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>

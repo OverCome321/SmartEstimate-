@@ -1,5 +1,5 @@
 ﻿using Bl;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Input;

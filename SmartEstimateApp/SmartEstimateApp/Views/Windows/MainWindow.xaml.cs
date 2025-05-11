@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Manager;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Pages;
 using System.Windows;
@@ -19,12 +19,12 @@ namespace SmartEstimateApp.Views.Windows
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+
             _serviceProvider = serviceProvider;
             MainFrame = FindName("MainFrameU") as Frame;
             _viewModel = serviceProvider.GetService<MainWindowViewModel>();
             DataContext = _viewModel;
 
-            // Создаем экземпляр менеджера изменения размеров для текущего окна
             _resizeManager = new WindowResizeManager(this);
 
             Loaded += MainWindow_Loaded;
@@ -32,11 +32,12 @@ namespace SmartEstimateApp.Views.Windows
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var navigationService = _serviceProvider.GetService<INavigationService>();
+            var navigationFactory = _serviceProvider.GetService<INavigationServiceFactory>();
+            var navigationService = navigationFactory.Create(MainFrame);
             navigationService.NavigateTo<LoginPage>();
 
             var screen = System.Windows.SystemParameters.WorkArea;
-            MaxHeight = screen.Height;
+            MaxHeight = screen.Height + 10;
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

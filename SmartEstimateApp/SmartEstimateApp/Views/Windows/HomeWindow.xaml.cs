@@ -1,106 +1,111 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SmartEstimateApp.Manager;
+using SmartEstimateApp.Models;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SmartEstimateApp.Views.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для HomeWindow.xaml
-    /// </summary>
     public partial class HomeWindow : Window
     {
-        public HomeWindow()
+        private readonly IServiceProvider _serviceProvider;
+        public Frame MainFrame { get; private set; }
+        private WindowResizeManager _resizeManager;
+        private INavigationService _navigationService;
+        private NavigationPage _currentPage = NavigationPage.Dashboard;
+        private bool _isNavigationExpanded = true;
+
+
+        public HomeWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            MainFrame = FindName("MainFrameHome") as Frame;
+            _serviceProvider = serviceProvider;
+            _resizeManager = new WindowResizeManager(this);
+            Loaded += MainWindow_Loaded;
         }
 
-        #region Обработчики событий окна
+        private void UpdateNavigationButtons(NavigationPage page)
+        {
+            _currentPage = page;
+            // Передаем this в качестве параметра
+            var buttons = FindVisualChildren<Button>(this).Where(b => b.Tag != null);
+            foreach (Button button in buttons)
+            {
+                if (button.Tag?.ToString() == page.ToString())
+                {
+                    button.Style = FindResource("NavButtonActive") as Style;
+                }
+                else
+                {
+                    button.Style = FindResource("NavButton") as Style;
+                }
+            }
+        }
 
-        /// <summary>
-        /// Обработчик нажатия кнопки закрытия окна
-        /// </summary>
+        // Вспомогательный метод для поиска всех элементов определенного типа
+        private IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+            yield break;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var navigationFactory = _serviceProvider.GetService<INavigationServiceFactory>();
+            _navigationService = navigationFactory.Create(MainFrame);
+            _navigationService.NavigateTo<DashboardPage>();
+
+            var screen = System.Windows.SystemParameters.WorkArea;
+            MaxHeight = screen.Height + 10;
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _resizeManager.HandleMouseLeftButtonDown(sender, e);
+        }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            _resizeManager.Close();
         }
 
-        /// <summary>
-        /// Обработчик нажатия кнопки максимизации/восстановления окна
-        /// </summary>
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
-        }
-
-        /// <summary>
-        /// Обработчик нажатия кнопки минимизации окна
-        /// </summary>
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
+            _resizeManager.Minimize();
         }
 
-        /// <summary>
-        /// Обработчик события для перетаскивания окна при удержании ЛКМ
-        /// </summary>
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
+            _resizeManager.ToggleMaximize();
         }
-
-        #endregion
-
-        #region Навигация между страницами
 
         /// <summary>
         /// Переход на страницу Dashboard
         /// </summary>
         private void NavigateToDashboard_Click(object sender, RoutedEventArgs e)
         {
-            // Здесь можно добавить логику навигации
-            // Например: MainFrame.Navigate(new DashboardPage());
-            MessageBox.Show("Переход на страницу Dashboard", "Навигация", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        /// <summary>
-        /// Переход на страницу Clients
-        /// </summary>
-        private void NavigateToClients_Click(object sender, RoutedEventArgs e)
-        {
-            // Здесь можно добавить логику навигации
-            // Например: MainFrame.Navigate(new ClientsPage());
-            MessageBox.Show("Переход на страницу Clients", "Навигация", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        /// <summary>
-        /// Переход на страницу Projects
-        /// </summary>
-        private void NavigateToProjects_Click(object sender, RoutedEventArgs e)
-        {
-            // Здесь можно добавить логику навигации
-            // Например: MainFrame.Navigate(new ProjectsPage());
-            MessageBox.Show("Переход на страницу Projects", "Навигация", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        /// <summary>
-        /// Переход на страницу Analytics
-        /// </summary>
-        private void NavigateToAnalytics_Click(object sender, RoutedEventArgs e)
-        {
-            // Здесь можно добавить логику навигации
-            // Например: MainFrame.Navigate(new AnalyticsPage());
-            MessageBox.Show("Переход на страницу Analytics", "Навигация", MessageBoxButton.OK, MessageBoxImage.Information);
+            UpdateNavigationButtons(NavigationPage.Dashboard);
+            _navigationService.NavigateTo<DashboardPage>();
         }
 
         /// <summary>
@@ -108,11 +113,59 @@ namespace SmartEstimateApp.Views.Windows
         /// </summary>
         private void NavigateToSettings_Click(object sender, RoutedEventArgs e)
         {
-            // Здесь можно добавить логику навигации
-            // Например: MainFrame.Navigate(new SettingsPage());
-            MessageBox.Show("Переход на страницу Settings", "Навигация", MessageBoxButton.OK, MessageBoxImage.Information);
+            UpdateNavigationButtons(NavigationPage.Settings);
+            _navigationService.NavigateTo<SettingsPage>();
         }
 
-        #endregion
+        /// <summary>
+        /// Переход на страницу Projects
+        /// </summary>
+        private void NavigateToProjects_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Projects);
+            _navigationService.NavigateTo<ProjectsPage>();
+        }
+
+        /// <summary>
+        /// Переход на страницу Clients
+        /// </summary>
+        private void NavigateToClients_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Clients);
+            _navigationService.NavigateTo<ClientsPage>();
+        }
+
+        /// <summary>
+        /// Переход на страницу Analytics
+        /// </summary>
+        private void NavigateToAnalytics_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Reports);
+            _navigationService.NavigateTo<AnalyticsPage>();
+        }
+        /// <summary>
+        /// Переход на страницу Help
+        /// </summary>
+        private void NavigateToHelp_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Help);
+            _navigationService.NavigateTo<AnalyticsPage>();
+        }
+        /// <summary>
+        /// Переход на страницу Statistic
+        /// </summary>
+        private void NavigateToStatistics_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Statistics);
+            _navigationService.NavigateTo<AnalyticsPage>();
+        }
+        /// <summary>
+        /// Переход на страницу Statistic
+        /// </summary>
+        private void NavigateToDocuments_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateNavigationButtons(NavigationPage.Documents);
+            _navigationService.NavigateTo<AnalyticsPage>();
+        }
     }
 }

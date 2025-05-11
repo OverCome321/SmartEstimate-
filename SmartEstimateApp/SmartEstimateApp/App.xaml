@@ -7,10 +7,20 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <!-- Сначала загружаем базовые цвета -->
+                <ResourceDictionary Source="/Resources/Colors.xaml"/>
+
+                <!-- Затем Material Design -->
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml"/>
+
+                <!-- Потом все остальные словари -->
                 <ResourceDictionary Source="/Resources/Dictionary1.xaml"/>
+                <ResourceDictionary Source="/Resources/DashboardDictionary.xaml"/>
+                <ResourceDictionary Source="/Resources/HomeDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Конвертеры -->
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>

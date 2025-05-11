@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <!-- Menu Item Animation -->
+    <Storyboard x:Key="MenuItemAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity" 
+                        From="0" To="1" Duration="0:0:0.2"/>
+        <ThicknessAnimation Storyboard.TargetProperty="Margin" 
+                           From="0,0,15,0" To="0" Duration="0:0:0.3">
+            <ThicknessAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </ThicknessAnimation.EasingFunction>
+        </ThicknessAnimation>
+    </Storyboard>
+   
+    <!-- Navigation Button Style -->
+    <Style x:Key="NavButton" TargetType="Button">
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="12"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="16,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12"
+                            BorderThickness="0">
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#F5F5F7"/>
+                            <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="0" 
+                                                    Opacity="0.1" Color="{StaticResource ApplePrimary}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#F5F5F7"/>
+                <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="8" 
+                                    ShadowDepth="0" 
+                                    Opacity="0.1" 
+                                    Color="{StaticResource ApplePrimary}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <DataTrigger Binding="{Binding IsNavigationExpanded}" Value="False">
+                <Setter Property="Padding" Value="8,0"/>
+                <Setter Property="ToolTip" Value="{Binding Content.Text, RelativeSource={RelativeSource Self}}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Active Navigation Button Style -->
+    <Style x:Key="NavButtonActive" TargetType="Button" BasedOn="{StaticResource NavButton}">
+        <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
+        <Setter Property="Background" Value="#F5F5F7"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="0" 
+                                Opacity="0.1" Color="{StaticResource ApplePrimary}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Search Box Style -->
+    <Style x:Key="AppleSearchBox" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid>
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"/>
+                        <TextBlock Text="{TemplateBinding Tag}"
+                                 Foreground="#FFFFFF"
+                                 Opacity="0.7"
+                                 IsHitTestVisible="False"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"
+                                                   Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"
+                                                   Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

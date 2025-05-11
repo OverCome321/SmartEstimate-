@@ -4,7 +4,7 @@ using SmartEstimateApp.Commands;
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.Windows.Input;
@@ -21,6 +21,7 @@ namespace SmartEstimateApp.ViewModels
         private readonly CredentialsManager _credentialsManager;
         private readonly MainWindowViewModel _mainWindowViewModel;
         private readonly IServiceProvider _serviceProvider;
+        private string _storedPassword;
 
         private string _email;
         public string Email
@@ -117,6 +118,7 @@ namespace SmartEstimateApp.ViewModels
                         _mainWindowViewModel.ShowError($"Ошибка при завершении регистрации: {ex.Message}");
                     }
                 };
+                _storedPassword = Password;
                 _navigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
@@ -132,9 +134,9 @@ namespace SmartEstimateApp.ViewModels
         private void CompleteRegistration(User user)
         {
             _currentUser.SetUser(user);
-            _credentialsManager.SaveCredentials(Email, Password, RememberMe);
+            _credentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow();
+            var homeWindow = new HomeWindow(_serviceProvider);
             homeWindow.Show();
 
             _mainWindow.Close();

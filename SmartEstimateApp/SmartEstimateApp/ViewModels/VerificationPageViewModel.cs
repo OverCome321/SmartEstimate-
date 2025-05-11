@@ -3,7 +3,7 @@ using Bl.Managers;
 using Entities;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
+using SmartEstimateApp.Navigation.Interfaces;
 using System.Windows.Input;
 using System.Windows.Threading;
 
