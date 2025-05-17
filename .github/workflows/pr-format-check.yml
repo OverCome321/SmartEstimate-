@@ -1,4 +1,4 @@
-name: PR-CI-CD Format Check
+name: PR Format Check
 
 on:
   pull_request:
