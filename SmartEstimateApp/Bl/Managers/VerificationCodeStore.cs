@@ -7,10 +7,10 @@ namespace Bl.Managers
     {
         private class CodeEntry
         {
-            public string Code { get; set; }
+            public required string Code { get; set; } = string.Empty;
+            public required string SessionId { get; set; } = string.Empty;
             public DateTime Expiry { get; set; }
             public VerificationPurpose Purpose { get; set; }
-            public string SessionId { get; set; }
         }
 
         private static ConcurrentDictionary<string, CodeEntry> _codeStore = new ConcurrentDictionary<string, CodeEntry>();
