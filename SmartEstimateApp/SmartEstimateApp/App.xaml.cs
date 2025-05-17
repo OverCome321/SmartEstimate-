@@ -44,7 +44,9 @@ namespace SmartEstimateApp
             };
 
             var userBL = ServiceProvider.GetService<IUserBL>();
+
             var currentUser = ServiceProvider.GetService<CurrentUser>();
+
             var credentialsManager = ServiceProvider.GetService<CredentialsManager>();
 
             if (await TryAutoLoginAsync(userBL, currentUser, credentialsManager))
