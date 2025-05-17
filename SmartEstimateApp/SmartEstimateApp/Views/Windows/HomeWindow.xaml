@@ -284,7 +284,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButton}"  Tag="Help" Click="NavigateToHelp_Click"> 
+                            <Button Style="{StaticResource NavButton}"  Tag="Help" Click="NavigateToHelp_Click">
                                 <StackPanel Orientation="Horizontal" >
                                     <materialDesign:PackIcon Kind="HelpCircleOutline" 
                                                            Width="24" Height="24" 
@@ -309,9 +309,8 @@
             </Grid>
 
             <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
-                    Background="Transparent"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
+                    VerticalAlignment="Stretch" Background="#40FFFFFF">
                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                 Value="0"
                 IsIndeterminate="True"

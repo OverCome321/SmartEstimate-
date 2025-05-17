@@ -87,7 +87,7 @@
 
             <!-- Loading Indicator -->
             <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
-                                Background="Transparent"
+                                Background="#40FFFFFF"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch">
                 <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
