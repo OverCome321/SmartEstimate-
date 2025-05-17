@@ -3,6 +3,8 @@ using Bl.Interfaces;
 using Dal.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartEstimateApp.Context;
+using SmartEstimateApp.Interfaces;
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
@@ -91,6 +93,10 @@ namespace SmartEstimateApp
             services.AddScoped<ClientsPage>();
             services.AddScoped<SettingsPage>();
             services.AddScoped<AnalyticsPage>();
+
+            //Регистрация зависимых серивисов
+            services.AddScoped<ILoginContext, LoginContext>();
+            services.AddScoped<IRegisterContext, RegisterContext>();
 
             return services.BuildServiceProvider();
         }

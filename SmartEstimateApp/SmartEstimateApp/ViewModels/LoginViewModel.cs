@@ -1,12 +1,10 @@
-﻿using Bl.Interfaces;
-using Bl.Managers;
+﻿using Bl.Managers;
 using Entities;
 using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
-using SmartEstimateApp.Manager;
+using SmartEstimateApp.Interfaces;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.Windows.Input;
@@ -16,13 +14,7 @@ namespace SmartEstimateApp.ViewModels
 {
     public class LoginViewModel : PropertyChangedBase
     {
-        private readonly IUserBL _userBL;
-        private readonly INavigationService _navigationService;
-        private readonly CurrentUser _currentUser;
-        private readonly MainWindow _mainWindow;
-        private readonly CredentialsManager _credentialsManager;
-        private readonly MainWindowViewModel _mainWindowViewModel;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ILoginContext _ctx;
 
         private string _email;
         private string _password;
@@ -67,16 +59,9 @@ namespace SmartEstimateApp.ViewModels
         public ICommand NavigateToRegisterCommand { get; }
         public ICommand NavigateToPasswordResetCommand { get; }
 
-        public LoginViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser,
-            MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
+        public LoginViewModel(ILoginContext ctx)
         {
-            _userBL = userBL;
-            _navigationService = navigationService;
-            _currentUser = currentUser;
-            _mainWindow = mainWindow;
-            _credentialsManager = credentialsManager;
-            _mainWindowViewModel = mainWindowViewModel;
-            _serviceProvider = serviceProvider;
+            _ctx = ctx;
 
             LoginCommand = new RelayCommand(async () => await LoginAsync(), CanLogin);
             NavigateToRegisterCommand = new RelayCommand(NavigateToRegister);
@@ -86,27 +71,27 @@ namespace SmartEstimateApp.ViewModels
 
         private async Task LoginAsync()
         {
-            _mainWindowViewModel.ShowLoading();
+            _ctx.MainWindowViewModel.ShowLoading();
             try
             {
                 var (canLogin, errorMessage, remainingSeconds) = LoginAttemptStore.CanLogin(Email);
                 if (!canLogin)
                 {
-                    _mainWindowViewModel.ShowError(errorMessage);
+                    _ctx.MainWindowViewModel.ShowError(errorMessage);
                     StartLoginCooldown(remainingSeconds.Value);
                     return;
                 }
 
-                var user = await _userBL.VerifyPasswordAsync(Email, Password);
+                var user = await _ctx.UserBL.VerifyPasswordAsync(Email, Password);
                 if (user == null)
                 {
-                    _mainWindowViewModel.ShowError("Неверный email или пароль");
-                    _credentialsManager.ClearCredentials();
+                    _ctx.MainWindowViewModel.ShowError("Неверный email или пароль");
+                    _ctx.CredentialsManager.ClearCredentials();
 
                     var (isLockedOut, cooldownSeconds) = LoginAttemptStore.RecordFailedAttempt(Email);
                     if (isLockedOut)
                     {
-                        _mainWindowViewModel.ShowError($"Слишком много попыток. Попробуйте снова через {cooldownSeconds} сек.");
+                        _ctx.MainWindowViewModel.ShowError($"Слишком много попыток. Попробуйте снова через {cooldownSeconds} сек.");
                         StartLoginCooldown(cooldownSeconds.Value);
                     }
                     return;
@@ -114,7 +99,7 @@ namespace SmartEstimateApp.ViewModels
 
                 LoginAttemptStore.ResetAttempts(Email);
 
-                var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
+                var verificationPage = _ctx.ServiceProvider.GetRequiredService<VerificationPage>();
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
 
                 verificationViewModel.ClearVerificationHandlers();
@@ -129,16 +114,16 @@ namespace SmartEstimateApp.ViewModels
                     verificationViewModel.ClearVerificationHandlers();
                 };
                 _storedPassword = Password;
-                _navigationService.NavigateTo<VerificationPage>();
+                _ctx.NavigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
             {
-                _mainWindowViewModel.ShowError($"Ошибка при входе: {ex.Message}");
-                _credentialsManager.ClearCredentials();
+                _ctx.MainWindowViewModel.ShowError($"Ошибка при входе: {ex.Message}");
+                _ctx.CredentialsManager.ClearCredentials();
             }
             finally
             {
-                _mainWindowViewModel.HideLoading();
+                _ctx.MainWindowViewModel.HideLoading();
             }
         }
 
@@ -151,13 +136,13 @@ namespace SmartEstimateApp.ViewModels
             return canLogin;
         }
 
-        private void NavigateToRegister() => _navigationService.NavigateTo<RegisterPage>();
+        private void NavigateToRegister() => _ctx.NavigationService.NavigateTo<RegisterPage>();
 
-        private void NavigateToPasswordReset() => _navigationService.NavigateTo<ResetEmailPage>();
+        private void NavigateToPasswordReset() => _ctx.NavigationService.NavigateTo<ResetEmailPage>();
 
         private void LoadCredentials()
         {
-            var (email, password, isValid) = _credentialsManager.LoadCredentials();
+            var (email, password, isValid) = _ctx.CredentialsManager.LoadCredentials();
             if (isValid)
             {
                 Email = email;
@@ -167,13 +152,13 @@ namespace SmartEstimateApp.ViewModels
 
         private void CompleteLogin(Models.User user)
         {
-            _currentUser.SetUser(user);
-            _credentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
+            _ctx.CurrentUser.SetUser(user);
+            _ctx.CredentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow(_serviceProvider);
+            var homeWindow = new HomeWindow(_ctx.ServiceProvider);
             homeWindow.Show();
 
-            _mainWindow.Close();
+            _ctx.MainWindow.Close();
         }
 
         private void StartLoginCooldown(int seconds)

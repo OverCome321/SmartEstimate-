@@ -16,8 +16,6 @@ namespace SmartEstimateApp.Views.Windows
         public Frame MainFrame { get; private set; }
         private WindowResizeManager _resizeManager;
         private INavigationService _navigationService;
-        private NavigationPage _currentPage = NavigationPage.Dashboard;
-        private bool _isNavigationExpanded = true;
 
 
         public HomeWindow(IServiceProvider serviceProvider)
@@ -31,7 +29,6 @@ namespace SmartEstimateApp.Views.Windows
 
         private void UpdateNavigationButtons(NavigationPage page)
         {
-            _currentPage = page;
             // Передаем this в качестве параметра
             var buttons = FindVisualChildren<Button>(this).Where(b => b.Tag != null);
             foreach (Button button in buttons)

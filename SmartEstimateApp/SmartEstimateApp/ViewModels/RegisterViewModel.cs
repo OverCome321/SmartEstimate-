@@ -1,10 +1,8 @@
-﻿using Bl.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
-using SmartEstimateApp.Manager;
+using SmartEstimateApp.Interfaces;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.Windows.Input;
@@ -14,13 +12,8 @@ namespace SmartEstimateApp.ViewModels
     public class RegisterViewModel : PropertyChangedBase
     {
         #region Fields
-        private readonly IUserBL _userBL;
-        private readonly INavigationService _navigationService;
-        private readonly CurrentUser _currentUser;
-        private readonly MainWindow _mainWindow;
-        private readonly CredentialsManager _credentialsManager;
-        private readonly MainWindowViewModel _mainWindowViewModel;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IRegisterContext _ctx;
+
         private string _storedPassword;
 
         private string _email;
@@ -57,15 +50,9 @@ namespace SmartEstimateApp.ViewModels
         public ICommand NavigateToLoginCommand { get; }
         #endregion
 
-        public RegisterViewModel(IUserBL userBL, INavigationService navigationService, CurrentUser currentUser, MainWindow mainWindow, CredentialsManager credentialsManager, MainWindowViewModel mainWindowViewModel, IServiceProvider serviceProvider)
+        public RegisterViewModel(IRegisterContext ctx)
         {
-            _userBL = userBL;
-            _navigationService = navigationService;
-            _currentUser = currentUser;
-            _mainWindow = mainWindow;
-            _credentialsManager = credentialsManager;
-            _mainWindowViewModel = mainWindowViewModel;
-            _serviceProvider = serviceProvider;
+            _ctx = ctx;
 
             RegisterCommand = new RelayCommand(async () => await RegisterAsync(), CanRegister);
 
@@ -74,18 +61,18 @@ namespace SmartEstimateApp.ViewModels
 
         private async Task RegisterAsync()
         {
-            _mainWindowViewModel.ShowLoading();
+            _ctx.MainWindowViewModel.ShowLoading();
             try
             {
                 if (Password != ConfirmPassword)
                 {
-                    _mainWindowViewModel.ShowError("Пароли не совпадают");
+                    _ctx.MainWindowViewModel.ShowError("Пароли не совпадают");
                     return;
                 }
 
-                if (await _userBL.ExistsAsync(Email))
+                if (await _ctx.UserBL.ExistsAsync(Email))
                 {
-                    _mainWindowViewModel.ShowError("Пользователь с таким email уже существует");
+                    _ctx.MainWindowViewModel.ShowError("Пользователь с таким email уже существует");
                     return;
                 }
 
@@ -98,9 +85,9 @@ namespace SmartEstimateApp.ViewModels
                     LastLogin = DateTime.Now
                 };
                 var entityUser = Mapper.ToEntity(user);
-                await _userBL.ValidationCommand(entityUser);
+                await _ctx.UserBL.ValidationCommand(entityUser);
 
-                var verificationPage = _serviceProvider.GetRequiredService<VerificationPage>();
+                var verificationPage = _ctx.ServiceProvider.GetRequiredService<VerificationPage>();
 
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
 
@@ -110,40 +97,40 @@ namespace SmartEstimateApp.ViewModels
                 {
                     try
                     {
-                        await _userBL.AddOrUpdateAsync(entityUser);
+                        await _ctx.UserBL.AddOrUpdateAsync(entityUser);
                         CompleteRegistration(user);
                     }
                     catch (Exception ex)
                     {
-                        _mainWindowViewModel.ShowError($"Ошибка при завершении регистрации: {ex.Message}");
+                        _ctx.MainWindowViewModel.ShowError($"Ошибка при завершении регистрации: {ex.Message}");
                     }
                 };
                 _storedPassword = Password;
-                _navigationService.NavigateTo<VerificationPage>();
+                _ctx.NavigationService.NavigateTo<VerificationPage>();
             }
             catch (Exception ex)
             {
-                _mainWindowViewModel.ShowError($"Ошибка при регистрации: {ex.Message}");
+                _ctx.MainWindowViewModel.ShowError($"Ошибка при регистрации: {ex.Message}");
             }
             finally
             {
-                _mainWindowViewModel.HideLoading();
+                _ctx.MainWindowViewModel.HideLoading();
             }
         }
 
         private void CompleteRegistration(User user)
         {
-            _currentUser.SetUser(user);
-            _credentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
+            _ctx.CurrentUser.SetUser(user);
+            _ctx.CredentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow(_serviceProvider);
+            var homeWindow = new HomeWindow(_ctx.ServiceProvider);
             homeWindow.Show();
 
-            _mainWindow.Close();
+            _ctx.MainWindow.Close();
         }
 
         private bool CanRegister() => !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(ConfirmPassword);
 
-        private void NavigateToLogin() => _navigationService.NavigateTo<LoginPage>();
+        private void NavigateToLogin() => _ctx.NavigationService.NavigateTo<LoginPage>();
     }
 }
