@@ -28,7 +28,7 @@ jobs:
         working-directory: SmartEstimateApp
 
       - name: Publish
-        run: dotnet publish SmartEstimateApp.csproj -c Release -o ../publish
+        run: dotnet publish SmartEstimateApp/SmartEstimateApp.csproj -c Release -o ../../publish
         working-directory: SmartEstimateApp
 
       - name: Upload artifact
