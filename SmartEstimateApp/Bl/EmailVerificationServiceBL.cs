@@ -2,20 +2,35 @@
 using Bl.Managers;
 using Entities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace Bl
 {
+    /// <summary>
+    /// Сервис бизнес-логики для отправки и проверки email-кодов подтверждения
+    /// </summary>
     public class EmailVerificationServiceBL
     {
         private readonly IEmailService _emailSender;
         private readonly Random _random = new Random();
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailVerificationServiceBL> _logger;
 
-        public EmailVerificationServiceBL(IEmailService emailSender, IConfiguration configuration)
+        /// <summary>
+        /// Конструктор класса EmailVerificationServiceBL
+        /// </summary>
+        /// <param name="emailSender">Сервис отправки email</param>
+        /// <param name="configuration">Конфигурация приложения</param>
+        /// <param name="logger">Логгер</param>
+        public EmailVerificationServiceBL(
+            IEmailService emailSender,
+            IConfiguration configuration,
+            ILogger<EmailVerificationServiceBL> logger)
         {
             _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -23,36 +38,49 @@ namespace Bl
         /// </summary>
         public async Task<string> SendVerificationCodeAsync(string email, VerificationPurpose purpose)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email не может быть пустым.", nameof(email));
-
-            // Генерация 6-значного кода
-            string code = GenerateVerificationCode();
-
-            // Получаем название приложения из конфигурации
-            var appName = _configuration["AppSettings:AppName"] ?? "SmartEstimate";
-            var companyName = _configuration["AppSettings:CompanyName"] ?? "Умный счетчик смет";
-
-            // Сохраняем код в хранилище с указанием цели
-            string sessionId = VerificationCodeStore.StoreCode(email, code, purpose);
-
-            // Формируем заголовок в зависимости от цели верификации
-            string subject = purpose switch
+            try
             {
-                VerificationPurpose.Login => $"{code} - Ваш код для входа в {appName}",
-                VerificationPurpose.PasswordReset => $"{code} - Ваш код для восстановления пароля в {appName}",
-                VerificationPurpose.Registration => $"{code} - Ваш код для регистрации в {appName}",
-                _ => $"{code} - Ваш код подтверждения для {appName}"
-            };
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    _logger.LogWarning("Попытка отправки кода подтверждения на пустой email");
+                    throw new ArgumentException("Email не может быть пустым.", nameof(email));
+                }
 
-            // Отправляем красивый HTML email с кодом
-            await _emailSender.SendEmailAsync(
-                email,
-                subject,
-                GenerateEmailBody(code, purpose, appName, companyName)
-            );
+                // Генерация 6-значного кода
+                string code = GenerateVerificationCode();
 
-            return sessionId;
+                // Получаем название приложения из конфигурации
+                var appName = _configuration["AppSettings:AppName"] ?? "SmartEstimate";
+                var companyName = _configuration["AppSettings:CompanyName"] ?? "Умный счетчик смет";
+
+                // Сохраняем код в хранилище с указанием цели
+                string sessionId = VerificationCodeStore.StoreCode(email, code, purpose);
+
+                // Формируем заголовок в зависимости от цели верификации
+                string subject = purpose switch
+                {
+                    VerificationPurpose.Login => $"{code} - Ваш код для входа в {appName}",
+                    VerificationPurpose.PasswordReset => $"{code} - Ваш код для восстановления пароля в {appName}",
+                    VerificationPurpose.Registration => $"{code} - Ваш код для регистрации в {appName}",
+                    _ => $"{code} - Ваш код подтверждения для {appName}"
+                };
+
+                // Отправляем красивый HTML email с кодом
+                await _emailSender.SendEmailAsync(
+                    email,
+                    subject,
+                    GenerateEmailBody(code, purpose, appName, companyName)
+                );
+
+                _logger.LogInformation("Код подтверждения {Purpose} успешно отправлен на email: {Email}, sessionId: {SessionId}", purpose, email, sessionId);
+
+                return sessionId;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при отправке кода подтверждения на email: {Email} (Purpose: {Purpose})", email, purpose);
+                throw;
+            }
         }
 
         /// <summary>
@@ -60,7 +88,17 @@ namespace Bl
         /// </summary>
         public bool VerifyCode(string email, string code, VerificationPurpose purpose, string sessionId = null)
         {
-            return VerificationCodeStore.VerifyCode(email, code, purpose, sessionId);
+            try
+            {
+                var result = VerificationCodeStore.VerifyCode(email, code, purpose, sessionId);
+                _logger.LogDebug("Проверка кода подтверждения: Email={Email}, Purpose={Purpose}, SessionId={SessionId}, Result={Result}", email, purpose, sessionId, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при проверке кода подтверждения (Email={Email}, Purpose={Purpose}, SessionId={SessionId})", email, purpose, sessionId);
+                throw;
+            }
         }
 
         /// <summary>
@@ -68,7 +106,16 @@ namespace Bl
         /// </summary>
         public void InvalidateCode(string email, VerificationPurpose purpose)
         {
-            VerificationCodeStore.InvalidateCode(email, purpose);
+            try
+            {
+                VerificationCodeStore.InvalidateCode(email, purpose);
+                _logger.LogInformation("Код подтверждения для Email={Email}, Purpose={Purpose} был аннулирован", email, purpose);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при аннулировании кода подтверждения (Email={Email}, Purpose={Purpose})", email, purpose);
+                throw;
+            }
         }
 
         /// <summary>

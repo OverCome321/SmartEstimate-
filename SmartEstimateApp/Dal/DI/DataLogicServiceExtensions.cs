@@ -1,4 +1,5 @@
-﻿using Dal.DbModels;
+﻿using Common.Managers;
+using Dal.DbModels;
 using Dal.Interfaces;
 using Dal.Layers;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ namespace Dal.DI
     {
         public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
-            string connectionString = GetConnectionString(configuration);
+            string connectionString = ConnectionStringManager.GetConnectionString(configuration);
             services.AddDbContext<SmartEstimateDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -22,20 +23,6 @@ namespace Dal.DI
             services.AddScoped<IProjectDal, ProjectDal>();
 
             return services;
-        }
-
-        private static string GetConnectionString(IConfiguration configuration)
-        {
-            string machineName = Environment.MachineName;
-            switch (machineName)
-            {
-                case "DESKTOP-K81FSPL":
-                    return configuration.GetConnectionString("Connection1");
-                case "DESKTOP-RE0M47N":
-                    return configuration.GetConnectionString("Connection2");
-                default:
-                    return configuration.GetConnectionString("Connection1");
-            }
         }
     }
 }

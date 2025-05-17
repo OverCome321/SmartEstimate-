@@ -1,8 +1,12 @@
 ﻿using Bl.DI;
 using Bl.Interfaces;
+using Common.Managers;
 using Dal.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 using SmartEstimateApp.Context;
 using SmartEstimateApp.Interfaces;
 using SmartEstimateApp.Manager;
@@ -28,6 +32,15 @@ namespace SmartEstimateApp
 
             var configuration = BuildConfiguration();
             ServiceProvider = ConfigureServices(configuration);
+
+            AppDomain.CurrentDomain.UnhandledException += (s, exArgs) =>
+            {
+                var logger = ServiceProvider.GetService<ILogger<App>>();
+                if (logger != null)
+                {
+                    logger.LogCritical(exArgs.ExceptionObject as Exception, "Fatal error (UnhandledException)");
+                }
+            };
 
             var userBL = ServiceProvider.GetService<IUserBL>();
             var currentUser = ServiceProvider.GetService<CurrentUser>();
@@ -55,9 +68,33 @@ namespace SmartEstimateApp
 
         private IServiceProvider ConfigureServices(IConfiguration configuration)
         {
+            string connectionString = ConnectionStringManager.GetConnectionString(configuration);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.MSSqlServer(
+                    connectionString: connectionString,
+                    sinkOptions: new MSSqlServerSinkOptions
+                    {
+                        TableName = "Logs",
+                        AutoCreateSqlTable = true
+                    },
+                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+                )
+                .CreateLogger();
+
             var services = new ServiceCollection();
 
             services.AddSingleton<IConfiguration>(configuration);
+
+            services.AddSingleton<Serilog.ILogger>(Log.Logger);
+
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddSerilog();
+            });
 
             services.AddAutoMapper(typeof(Profiles.MappingProfile));
 
@@ -94,7 +131,6 @@ namespace SmartEstimateApp
             services.AddScoped<SettingsPage>();
             services.AddScoped<AnalyticsPage>();
 
-            //Регистрация зависимых серивисов
             services.AddScoped<ILoginContext, LoginContext>();
             services.AddScoped<IRegisterContext, RegisterContext>();
 

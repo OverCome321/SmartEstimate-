@@ -2,10 +2,14 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 
 namespace Bl
 {
+    /// <summary>
+    /// Сервис отправки email-уведомлений через SMTP
+    /// </summary>
     public class EmailServiceBL : IEmailService
     {
         private readonly string _smtpServer;
@@ -16,8 +20,14 @@ namespace Bl
         private readonly string _fromName;
         private readonly string _appName;
         private readonly string _domain;
+        private readonly ILogger<EmailServiceBL> _logger;
 
-        public EmailServiceBL(IConfiguration configuration)
+        /// <summary>
+        /// Конструктор класса EmailServiceBL
+        /// </summary>
+        /// <param name="configuration">Конфигурация приложения</param>
+        /// <param name="logger">Логгер</param>
+        public EmailServiceBL(IConfiguration configuration, ILogger<EmailServiceBL> logger)
         {
             var smtpSettings = configuration.GetSection("SmtpSettings");
             _smtpServer = smtpSettings["SmtpServer"] ?? throw new ArgumentNullException("SmtpServer configuration is missing");
@@ -28,8 +38,15 @@ namespace Bl
             _fromName = smtpSettings["FromName"] ?? configuration.GetSection("AppSettings")["AppName"] ?? "SmartEstimate";
             _appName = configuration.GetSection("AppSettings")["AppName"] ?? "SmartEstimate";
             _domain = _fromEmail.Split('@')[1];
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <summary>
+        /// Асинхронно отправляет электронное письмо
+        /// </summary>
+        /// <param name="to">Email получателя</param>
+        /// <param name="subject">Тема письма</param>
+        /// <param name="body">HTML-тело письма</param>
         public async Task SendEmailAsync(string to, string subject, string body)
         {
             try
@@ -49,7 +66,7 @@ namespace Bl
                 email.Subject = subject;
 
                 // Добавляем заголовки, которые улучшают доставляемость
-                var messageId = $"{Guid.NewGuid().ToString("N")}@{_domain}";
+                var messageId = $"{Guid.NewGuid():N}@{_domain}";
                 email.MessageId = $"<{messageId}>";
                 email.Headers.Add("X-Mailer", $"{_appName} Application");
                 email.Headers.Add("X-Auto-Response-Suppress", "OOF, DR, RN, NRN, AutoReply");
@@ -91,6 +108,8 @@ namespace Bl
 
                     // Отправка письма
                     await client.SendAsync(email);
+
+                    _logger.LogInformation("Письмо успешно отправлено на {To}. Subject: {Subject}, MessageId: {MessageId}", to, subject, messageId);
                 }
                 finally
                 {
@@ -100,11 +119,16 @@ namespace Bl
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Ошибка при отправке email на адрес {To} с темой {Subject}", to, subject);
                 throw new Exception($"Ошибка при отправке email: {ex.Message}", ex);
             }
         }
 
-        // Улучшенный конвертер из HTML в текст
+        /// <summary>
+        /// Улучшенный конвертер из HTML в текст
+        /// </summary>
+        /// <param name="html">HTML строка</param>
+        /// <returns>Очищенный plain text</returns>
         private string HtmlToPlainText(string html)
         {
             if (string.IsNullOrEmpty(html))

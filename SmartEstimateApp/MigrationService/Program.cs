@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Managers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MigrationService.Data;
@@ -39,25 +40,11 @@ namespace MigrationService
 
             var services = new ServiceCollection();
 
-            string connectionString = GetConnectionString(configuration);
+            string connectionString = ConnectionStringManager.GetConnectionString(configuration);
             services.AddDbContext<SmartEstimateContext>(options =>
                 options.UseSqlServer(connectionString));
 
             return services.BuildServiceProvider();
-        }
-
-        private static string GetConnectionString(IConfiguration configuration)
-        {
-            string machineName = Environment.MachineName;
-            switch (machineName)
-            {
-                case "DESKTOP-K81FSPL":
-                    return configuration.GetConnectionString("Connection1");
-                case "DESKTOP-RE0M47N":
-                    return configuration.GetConnectionString("Connection2");
-                default:
-                    return configuration.GetConnectionString("Connection1");
-            }
         }
     }
 }
