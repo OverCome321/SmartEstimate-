@@ -1,14 +1,368 @@
 ﻿<Page x:Class="SmartEstimateApp.Views.Pages.ClientsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
+      d:DesignHeight="900" d:DesignWidth="1200"
       Title="ClientsPage">
 
-    <Grid>
-        
-    </Grid>
+    <Border CornerRadius="20,0,0,0" Background="{StaticResource AppleBackgroundBrush}">
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Top Section: Header and Search -->
+            <Grid Grid.Row="0" Margin="48,32,48,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Header -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Клиенты"
+                           Style="{StaticResource CardTitleStyle}"
+                           FontSize="32"
+                           FontWeight="Bold"
+                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Управление списком ваших клиентов"
+                           Foreground="{StaticResource AppleTextSecondaryBrush}"
+                           FontFamily="{StaticResource AppleFont}"
+                           FontSize="16"
+                           Margin="0,0,0,24"/>
+                </StackPanel>
+
+                <!-- Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Button Content="Новый клиент" 
+                        Style="{StaticResource AppleButtonStyle}"
+                        Width="160"
+                        Height="48"
+                        FontSize="14"
+                        Command="{Binding AddNewClientCommand}"
+                        Margin="0,0,16,0"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Search Bar -->
+            <Border Grid.Row="0" 
+                Height="56"
+                Background="{StaticResource AppleCardBackgroundBrush}"
+                CornerRadius="16"
+                Margin="48,140,48,24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <materialDesign:PackIcon Kind="Magnify"
+                                       Width="24" Height="24"
+                                       Margin="20,0,12,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+
+                    <TextBox Grid.Column="1"
+                         Style="{StaticResource ClientSeacrhBox}"
+                         materialDesign:HintAssist.Hint="Поиск по имени, email, телефону или адресу..."
+                         materialDesign:HintAssist.HintOpacity="0.5"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         CaretBrush="{StaticResource AppleTextPrimaryBrush}"
+                         SelectionBrush="#8086868B"
+                         VerticalAlignment="Center"
+                         FontSize="14"
+                         Foreground="{StaticResource AppleTextPrimaryBrush}"
+                         Height="40" Margin="0,0,8,0"/>
+
+                    <Button Grid.Column="2" 
+                        Style="{StaticResource AppleSearchClearButton}"
+                        Margin="8,0,16,0"
+                        Width="32" Height="32"
+                        Padding="4"
+                        BorderThickness="0"
+                        Command="{Binding ClearSearchCommand}"
+                        Visibility="{Binding SearchText, Converter={StaticResource StringNullOrEmptyToInverseVisibilityConverter}}">
+                        <materialDesign:PackIcon Kind="Close" 
+                             Width="18" Height="18" 
+                             Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Main Content: Client Cards -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Status Info -->
+                    <StackPanel Grid.Row="0" 
+                            Orientation="Horizontal" 
+                            Margin="48,0,48,16" 
+                            Visibility="{Binding HasResults, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="{Binding ResultsInfo}"
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                               FontFamily="{StaticResource AppleFont}"
+                               FontSize="14"/>
+                    </StackPanel>
+
+                    <!-- No Results Message -->
+                    <Border Grid.Row="0" 
+                        Background="{StaticResource AppleCardBackgroundBrush}"
+                        CornerRadius="16"
+                        Margin="48,0,48,0"
+                        Height="180"
+                        Visibility="{Binding HasResults, Converter={StaticResource BooleanToInverseVisibilityConverter}}">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountSearchOutline"
+                                               Width="48" Height="48"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                               Opacity="0.7"
+                                               Margin="0,0,0,16"/>
+                            <TextBlock Text="Клиенты не найдены"
+                                   FontFamily="{StaticResource AppleFont}"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+                            <TextBlock Text="Измените параметры поиска или добавьте нового клиента"
+                                   FontFamily="{StaticResource AppleFont}"
+                                   FontSize="14"
+                                   Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                   HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Clients Grid -->
+                    <ItemsControl Grid.Row="1" 
+                              ItemsSource="{Binding Clients}"
+                              Margin="36,0,36,0"
+                              Visibility="{Binding HasResults, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource DashboardCardAnimated}"
+                                Width="340" Height="290"
+                                Margin="16">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Client Details -->
+                                        <StackPanel Grid.Row="0" Margin="24,24,24,0">
+                                            <!-- Name with Status Indicator -->
+                                            <Grid Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Text="{Binding Name}"
+                                                       Style="{StaticResource CardTitleStyle}"
+                                                       FontSize="20"
+                                                       Margin="0"/>
+
+                                                <Border Grid.Column="1" 
+                                                    Background="{Binding Status, Converter={StaticResource StatusToBrushConverter}}"
+                                                    CornerRadius="12"
+                                                    Height="24"
+                                                    Padding="8,0">
+                                                    <TextBlock Text="{Binding Status, Converter={StaticResource StatusToStringConverter}}"
+                                                           FontFamily="{StaticResource AppleFont}"
+                                                           FontSize="11"
+                                                           FontWeight="Medium"
+                                                           Foreground="White"
+                                                           VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Contact Info -->
+                                            <Grid Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <!-- Email -->
+                                                <materialDesign:PackIcon Kind="Email"
+                                                                     Grid.Row="0" Grid.Column="0"
+                                                                     Width="16" Height="16"
+                                                                     Margin="0,4,8,4"
+                                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                                     Visibility="{Binding Email, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" 
+                                                       Text="{Binding Email}"
+                                                       Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                       FontFamily="{StaticResource AppleFont}"
+                                                       FontSize="13"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,4"
+                                                       Visibility="{Binding Email, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+
+                                                <!-- Phone -->
+                                                <materialDesign:PackIcon Kind="Phone"
+                                                                     Grid.Row="1" Grid.Column="0"
+                                                                     Width="16" Height="16"
+                                                                     Margin="0,4,8,4"
+                                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                                     Visibility="{Binding Phone, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="1" 
+                                                       Text="{Binding Phone}"
+                                                       Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                       FontFamily="{StaticResource AppleFont}"
+                                                       FontSize="13"
+                                                       Margin="0,4"
+                                                       Visibility="{Binding Phone, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+
+                                                <!-- Address -->
+                                                <materialDesign:PackIcon Kind="MapMarker"
+                                                                     Grid.Row="2" Grid.Column="0"
+                                                                     Width="16" Height="16"
+                                                                     Margin="0,4,8,4"
+                                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                                     Visibility="{Binding Address, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+                                                <TextBlock Grid.Row="2" Grid.Column="1" 
+                                                       Text="{Binding Address}"
+                                                       Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                       FontFamily="{StaticResource AppleFont}"
+                                                       FontSize="13"
+                                                       TextWrapping="Wrap"
+                                                       MaxHeight="40"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,4"
+                                                       Visibility="{Binding Address, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
+                                            </Grid>
+
+                                            <!-- Created Date -->
+                                            <TextBlock Text="{Binding CreatedAt, StringFormat=Создан: {0:dd.MM.yyyy}}"
+                                                   FontFamily="{StaticResource AppleFont}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                   HorizontalAlignment="Left"/>
+                                        </StackPanel>
+
+                                        <!-- Action Buttons -->
+                                        <StackPanel Grid.Row="1" 
+                                                Orientation="Horizontal" 
+                                                Margin="24,0,24,24"
+                                                HorizontalAlignment="Right">
+                                            <Button Content="Подробнее"
+                                    Style="{StaticResource AppleCardPrimaryButton}"
+                                    Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                    CommandParameter="{Binding}" Margin="0,0,8,0"/>
+
+                                            <Button Content="Удалить"
+                                    Style="{StaticResource AppleCardDestructiveButton}"
+                                    Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                    CommandParameter="{Binding}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- Pagination Controls -->
+            <Border Grid.Row="2" 
+                Background="{StaticResource AppleCardBackgroundBrush}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="#E5E5E5"
+                Padding="48,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Items Per Page -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Показать:"
+                               FontFamily="{StaticResource AppleFont}"
+                               FontSize="14"
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"/>
+                        <ComboBox Width="80"
+                              Height="36"
+                              FontFamily="{StaticResource AppleFont}"
+                              FontSize="14"
+                              SelectedItem="{Binding PageSize}"
+                              ItemsSource="{Binding PageSizeOptions}"
+                              Foreground="{StaticResource AppleTextPrimaryBrush}"
+                              BorderBrush="{StaticResource AppleBorderBrush}"/>
+                    </StackPanel>
+
+                    <!-- Page Navigation -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Style="{StaticResource NavPageButton}"
+                            Command="{Binding GoToFirstPageCommand}">
+                            <materialDesign:PackIcon Kind="PageFirst" Width="20" Height="20"/>
+                        </Button>
+                        <Button Style="{StaticResource NavPageButton}"
+                            Command="{Binding PreviousPageCommand}">
+                            <materialDesign:PackIcon Kind="ChevronLeft" Width="20" Height="20"/>
+                        </Button>
+
+                        <ItemsControl ItemsSource="{Binding PageNumbers}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding}" 
+                                    Style="{StaticResource PageNumberButton}"
+                                    Command="{Binding DataContext.GoToPageCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                    CommandParameter="{Binding}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button Style="{StaticResource NavPageButton}"
+                            Command="{Binding NextPageCommand}">
+                            <materialDesign:PackIcon Kind="ChevronRight" Width="20" Height="20"/>
+                        </Button>
+                        <Button Style="{StaticResource NavPageButton}"
+                            Command="{Binding GoToLastPageCommand}">
+                            <materialDesign:PackIcon Kind="PageLast" Width="20" Height="20"/>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Page Info -->
+                    <TextBlock Grid.Column="2"
+                           Text="{Binding PageInfo}"
+                           FontFamily="{StaticResource AppleFont}"
+                           FontSize="14"
+                           Foreground="{StaticResource AppleTextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </Page>

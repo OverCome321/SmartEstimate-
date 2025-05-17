@@ -63,9 +63,9 @@ namespace SmartEstimateApp.ViewModels
         {
             _ctx = ctx;
 
-            LoginCommand = new RelayCommand(async () => await LoginAsync(), CanLogin);
-            NavigateToRegisterCommand = new RelayCommand(NavigateToRegister);
-            NavigateToPasswordResetCommand = new RelayCommand(NavigateToPasswordReset);
+            LoginCommand = new RelayCommand(async obj => await LoginAsync(), obj => CanLogin());
+            NavigateToRegisterCommand = new RelayCommand(obj => NavigateToRegister());
+            NavigateToPasswordResetCommand = new RelayCommand(obj => NavigateToPasswordReset());
             LoadCredentials();
         }
 
@@ -155,7 +155,7 @@ namespace SmartEstimateApp.ViewModels
             _ctx.CurrentUser.SetUser(user);
             _ctx.CredentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow(_ctx.ServiceProvider);
+            var homeWindow = new HomeWindow(_ctx.ServiceProvider, _ctx.HomeWindowViewModel);
             homeWindow.Show();
 
             _ctx.MainWindow.Close();

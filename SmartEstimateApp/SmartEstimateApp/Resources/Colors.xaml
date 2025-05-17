@@ -43,4 +43,5 @@
         <GradientStop Color="#34C759" Offset="0"/>
         <GradientStop Color="#30B350" Offset="1"/>
     </LinearGradientBrush>
+
 </ResourceDictionary>

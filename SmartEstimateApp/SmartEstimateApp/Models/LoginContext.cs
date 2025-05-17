@@ -16,7 +16,7 @@ public class LoginContext : ILoginContext
         MainWindow mainWindow,
         CredentialsManager credentialsManager,
         MainWindowViewModel mainWindowViewModel,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, HomeWindowViewModel homeWindowViewModel)
     {
         UserBL = userBL;
         NavigationService = navigationService;
@@ -25,6 +25,7 @@ public class LoginContext : ILoginContext
         CredentialsManager = credentialsManager;
         MainWindowViewModel = mainWindowViewModel;
         ServiceProvider = serviceProvider;
+        HomeWindowViewModel = homeWindowViewModel;
     }
 
     public IUserBL UserBL { get; }
@@ -33,5 +34,6 @@ public class LoginContext : ILoginContext
     public MainWindow MainWindow { get; }
     public CredentialsManager CredentialsManager { get; }
     public MainWindowViewModel MainWindowViewModel { get; }
+    public HomeWindowViewModel HomeWindowViewModel { get; }
     public IServiceProvider ServiceProvider { get; }
 }

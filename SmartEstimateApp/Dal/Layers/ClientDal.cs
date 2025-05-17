@@ -221,27 +221,26 @@ namespace Dal.Layers
                 IQueryable<Dal.DbModels.Client> query = _context.Clients;
 
                 if (!searchParams.UserId.HasValue)
-                {
-                    _logger.LogWarning("Поиск клиентов без указания UserId");
                     throw new ArgumentNullException(nameof(searchParams.UserId));
-                }
+
                 query = query.Where(c => c.UserId == searchParams.UserId.Value);
 
-                if (!string.IsNullOrEmpty(searchParams.Name))
+                // Единый поисковый запрос
+                if (!string.IsNullOrWhiteSpace(searchParams.Name) ||
+                    !string.IsNullOrWhiteSpace(searchParams.Email) ||
+                    !string.IsNullOrWhiteSpace(searchParams.Phone))
                 {
-                    query = query.Where(c => c.Name.ToLower().Contains(searchParams.Name.ToLower()));
+                    var name = searchParams.Name?.ToLower() ?? "";
+                    var email = searchParams.Email?.ToLower() ?? "";
+                    var phone = searchParams.Phone?.ToLower() ?? "";
+
+                    query = query.Where(c =>
+                        (!string.IsNullOrWhiteSpace(name) && c.Name.ToLower().Contains(name)) ||
+                        (!string.IsNullOrWhiteSpace(email) && c.Email.ToLower().Contains(email)) ||
+                        (!string.IsNullOrWhiteSpace(phone) && c.Phone.ToLower().Contains(phone))
+                    );
                 }
 
-                if (!string.IsNullOrEmpty(searchParams.Email))
-                {
-                    query = query.Where(c => c.Email.ToLower().Contains(searchParams.Email.ToLower()));
-                }
-
-                if (!string.IsNullOrEmpty(searchParams.Phone))
-                {
-                    query = query.Where(c => c.Phone.ToLower().Contains(searchParams.Phone.ToLower()));
-                }
-                _logger.LogDebug("Сформирован запрос к БД для поиска клиентов");
                 return query;
             }
             catch (Exception ex)

@@ -13,17 +13,15 @@ namespace SmartEstimateApp.Views.Windows
     {
         private readonly IServiceProvider _serviceProvider;
         public Frame MainFrame { get; private set; }
-        private MainWindowViewModel _viewModel;
         private WindowResizeManager _resizeManager;
 
-        public MainWindow(IServiceProvider serviceProvider)
+        public MainWindow(IServiceProvider serviceProvider, MainWindowViewModel mainWindowViewModel)
         {
             InitializeComponent();
 
             _serviceProvider = serviceProvider;
             MainFrame = FindName("MainFrameU") as Frame;
-            _viewModel = serviceProvider.GetService<MainWindowViewModel>();
-            DataContext = _viewModel;
+            DataContext = mainWindowViewModel;
 
             _resizeManager = new WindowResizeManager(this);
 

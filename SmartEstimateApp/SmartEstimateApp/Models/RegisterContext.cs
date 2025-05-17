@@ -17,7 +17,7 @@ public class RegisterContext : IRegisterContext
         MainWindow mainWindow,
         CredentialsManager credentialsManager,
         MainWindowViewModel mainWindowViewModel,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, HomeWindowViewModel homeWindowViewModel)
     {
         UserBL = userBL;
         NavigationService = navigationService;
@@ -26,6 +26,7 @@ public class RegisterContext : IRegisterContext
         CredentialsManager = credentialsManager;
         MainWindowViewModel = mainWindowViewModel;
         ServiceProvider = serviceProvider;
+        HomeWindowViewModel = homeWindowViewModel;
     }
 
     public IUserBL UserBL { get; }
@@ -34,5 +35,6 @@ public class RegisterContext : IRegisterContext
     public MainWindow MainWindow { get; }
     public CredentialsManager CredentialsManager { get; }
     public MainWindowViewModel MainWindowViewModel { get; }
+    public HomeWindowViewModel HomeWindowViewModel { get; }
     public IServiceProvider ServiceProvider { get; }
 }

@@ -15,5 +15,6 @@ public interface ILoginContext
     MainWindow MainWindow { get; }
     CredentialsManager CredentialsManager { get; }
     MainWindowViewModel MainWindowViewModel { get; }
+    HomeWindowViewModel HomeWindowViewModel { get; }
     IServiceProvider ServiceProvider { get; }
 }

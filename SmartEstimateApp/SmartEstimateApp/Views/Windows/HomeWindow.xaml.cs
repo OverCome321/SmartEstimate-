@@ -2,6 +2,7 @@
 using SmartEstimateApp.Manager;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
+using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,13 +19,14 @@ namespace SmartEstimateApp.Views.Windows
         private INavigationService _navigationService;
 
 
-        public HomeWindow(IServiceProvider serviceProvider)
+        public HomeWindow(IServiceProvider serviceProvider, HomeWindowViewModel homeWindowViewModel)
         {
             InitializeComponent();
             MainFrame = FindName("MainFrameHome") as Frame;
             _serviceProvider = serviceProvider;
             _resizeManager = new WindowResizeManager(this);
             Loaded += MainWindow_Loaded;
+            this.DataContext = homeWindowViewModel;
         }
 
         private void UpdateNavigationButtons(NavigationPage page)

@@ -74,10 +74,10 @@ namespace SmartEstimateApp.ViewModels
 
         #region Commands
         private ICommand _hideErrorCommand;
-        public ICommand HideErrorCommand => _hideErrorCommand ??= new RelayCommand(HideError);
+        public ICommand HideErrorCommand => _hideErrorCommand ??= new RelayCommand(obj => HideError());
 
         private ICommand _hideSuccessCommand;
-        public ICommand HideSuccessCommand => _hideSuccessCommand ??= new RelayCommand(HideSuccess);
+        public ICommand HideSuccessCommand => _hideSuccessCommand ??= new RelayCommand(obj => HideSuccess());
         #endregion
 
         #region Constructor

@@ -63,9 +63,17 @@ namespace SmartEstimateApp.ViewModels
             _navigationService = navigationService;
             _emailVerificationService = emailVerificationService;
 
-            VerifyCodeCommand = new RelayCommand(VerifyCodeAsync, () => !string.IsNullOrWhiteSpace(VerificationCode));
-            CancelVerificationCommand = new RelayCommand(CancelVerification);
-            ResendCodeCommand = new RelayCommand(ResendCodeAsync, () => IsResendEnabled);
+            VerifyCodeCommand = new RelayCommand(
+                obj => VerifyCodeAsync(),
+                obj => !string.IsNullOrWhiteSpace(VerificationCode)
+            );
+
+            CancelVerificationCommand = new RelayCommand(obj => CancelVerification());
+
+            ResendCodeCommand = new RelayCommand(
+                obj => ResendCodeAsync(),
+                obj => IsResendEnabled
+            );
 
             IsResendEnabled = true;
             IsResendCooldownActive = false;

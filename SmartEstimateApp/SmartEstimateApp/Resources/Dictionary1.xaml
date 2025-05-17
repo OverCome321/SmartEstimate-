@@ -373,4 +373,64 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="SuccessNotificationBarStyle" TargetType="Border">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Opacity" Value="0"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSuccessVisible}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0" To="1"
+                                                 Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="1" To="0"
+                                                 Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ErrorNotificationBarStyle" TargetType="Border">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Opacity" Value="0"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsErrorVisible}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="0" To="1"
+                                                 Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="1" To="0"
+                                                 Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

@@ -44,8 +44,12 @@ namespace SmartEstimateApp.ViewModels
             _navigationService = navigationService;
             _userBL = userBl;
 
-            ChangePasswordCommand = new RelayCommand(ChangePassword, () => !string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword));
-            GoBackCommand = new RelayCommand(GoBack);
+            ChangePasswordCommand = new RelayCommand(
+                obj => ChangePassword(),
+                obj => !string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword)
+            );
+
+            GoBackCommand = new RelayCommand(obj => GoBack());
         }
 
         public void SetEmail(string email)

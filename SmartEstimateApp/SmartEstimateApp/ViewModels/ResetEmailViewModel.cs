@@ -30,8 +30,12 @@ namespace SmartEstimateApp.ViewModels
             _navigationService = navigationService;
             _serviceProvider = serviceProvider;
 
-            SendVerificationCodeCommand = new RelayCommand(SendCode, () => !string.IsNullOrWhiteSpace(Email));
-            GoBackCommand = new RelayCommand(GoBack);
+            SendVerificationCodeCommand = new RelayCommand(
+                obj => SendCode(),
+                obj => !string.IsNullOrWhiteSpace(Email)
+            );
+
+            GoBackCommand = new RelayCommand(obj => GoBack());
         }
 
         private void SendCode()

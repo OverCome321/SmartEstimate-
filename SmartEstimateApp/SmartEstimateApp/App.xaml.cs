@@ -111,8 +111,9 @@ namespace SmartEstimateApp
 
             // Регистрация окон
             services.AddSingleton<MainWindow>();
-            services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindow>();
+
+            //Регистрация Managers зависимостей
             services.AddSingleton<CurrentUser>(provider => CurrentUser.Instance);
             services.AddSingleton<CredentialsManager>();
 
@@ -120,18 +121,24 @@ namespace SmartEstimateApp
             services.AddSingleton<INavigationServiceFactory, NavigationServiceFactory>();
             services.AddScoped<INavigationService, NavigationService>();
 
+            //Регистрация ViewModels
+            services.AddTransient<ClientsViewModel>();
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<HomeWindowViewModel>();
+
             // Регистрация страниц
             services.AddScoped<LoginPage>();
             services.AddScoped<RegisterPage>();
             services.AddScoped<VerificationPage>();
             services.AddScoped<PasswordResetPage>();
             services.AddScoped<ResetEmailPage>();
-            services.AddScoped<DashboardPage>();
-            services.AddScoped<ProjectsPage>();
-            services.AddScoped<ClientsPage>();
+            services.AddTransient<DashboardPage>();
+            services.AddTransient<ProjectsPage>();
+            services.AddTransient<ClientsPage>();
             services.AddScoped<SettingsPage>();
-            services.AddScoped<AnalyticsPage>();
+            services.AddTransient<AnalyticsPage>();
 
+            //Контекст зависимостей
             services.AddScoped<ILoginContext, LoginContext>();
             services.AddScoped<IRegisterContext, RegisterContext>();
 

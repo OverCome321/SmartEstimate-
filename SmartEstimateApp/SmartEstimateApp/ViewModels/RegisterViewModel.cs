@@ -54,9 +54,12 @@ namespace SmartEstimateApp.ViewModels
         {
             _ctx = ctx;
 
-            RegisterCommand = new RelayCommand(async () => await RegisterAsync(), CanRegister);
+            RegisterCommand = new RelayCommand(
+                async obj => await RegisterAsync(),
+                obj => CanRegister()
+            );
 
-            NavigateToLoginCommand = new RelayCommand(NavigateToLogin);
+            NavigateToLoginCommand = new RelayCommand(obj => NavigateToLogin());
         }
 
         private async Task RegisterAsync()
@@ -123,7 +126,7 @@ namespace SmartEstimateApp.ViewModels
             _ctx.CurrentUser.SetUser(user);
             _ctx.CredentialsManager.SaveCredentials(Email, _storedPassword, RememberMe);
 
-            var homeWindow = new HomeWindow(_ctx.ServiceProvider);
+            var homeWindow = new HomeWindow(_ctx.ServiceProvider, _ctx.HomeWindowViewModel);
             homeWindow.Show();
 
             _ctx.MainWindow.Close();

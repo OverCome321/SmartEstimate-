@@ -304,10 +304,75 @@
                         Margin="8,16,16,16" 
                         CornerRadius="16">
                     <Frame x:Name="MainFrameHome" 
-                          NavigationUIVisibility="Hidden"/>
+                          NavigationUIVisibility="Hidden" />
                 </Border>
             </Grid>
 
+            <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
+                    Background="Transparent"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                Value="0"
+                IsIndeterminate="True"
+                Width="40"
+                Height="40"
+                Foreground="{StaticResource ApplePrimaryBrush}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"/>
+            </materialDesign:Card>
+            <Border Grid.Row="2" 
+        Style="{StaticResource ErrorNotificationBarStyle}"
+        Background="{StaticResource AppleErrorBrush}"
+        Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                   Text="{Binding ErrorMessage}" 
+                   Foreground="White" 
+                   FontFamily="{StaticResource AppleFont}" 
+                   FontSize="12" 
+                   VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                Width="20" Height="20" 
+                Margin="0,0,15,0" 
+                Style="{StaticResource NotificationCloseButtonStyle}"
+                Command="{Binding HideErrorCommand}"
+                Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Success Notification Bar -->
+            <Border Grid.Row="2" 
+        Style="{StaticResource SuccessNotificationBarStyle}"
+        Background="{StaticResource AppleSuccessBrush}"
+        Visibility="{Binding IsSuccessVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                   Text="{Binding SuccessMessage}" 
+                   Foreground="White" 
+                   FontFamily="{StaticResource AppleFont}" 
+                   FontSize="12" 
+                   VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                Width="20" Height="20" 
+                Margin="0,0,15,0" 
+                Style="{StaticResource NotificationCloseButtonStyle}"
+                Command="{Binding HideSuccessCommand}"
+                Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
             <!-- Status Bar -->
             <Border Grid.Row="2" 
                     Background="#FFFFFF">

@@ -18,12 +18,19 @@
                 <ResourceDictionary Source="/Resources/Dictionary1.xaml"/>
                 <ResourceDictionary Source="/Resources/DashboardDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/HomeDictionary.xaml"/>
+                <ResourceDictionary Source="/Resources/ClientsDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Конвертеры -->
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:TextToVisibilityConverter x:Key="TextToVisibilityConverter"/>
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+            <converters:StatusToBrushConverter x:Key="StatusToBrushConverter"/>
+            <converters:StatusToStringConverter x:Key="StatusToStringConverter"/>
+            <converters:StringNullOrEmptyToVisibilityConverter x:Key="StringNullOrEmptyToVisibilityConverter"/>
+            <converters:StringNullOrEmptyToInverseVisibilityConverter x:Key="StringNullOrEmptyToInverseVisibilityConverter"/>
+            <converters:BooleanToInverseVisibilityConverter x:Key="BooleanToInverseVisibilityConverter"/>
+            <converters:PageNumberToIsActiveConverter x:Key="PageNumberToIsActiveConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
