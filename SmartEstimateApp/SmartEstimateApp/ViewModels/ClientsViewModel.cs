@@ -135,6 +135,7 @@ namespace SmartEstimateApp.ViewModels
 
         private async Task LoadClientsAsync()
         {
+
             try
             {
                 var searchParams = new ClientSearchParams
