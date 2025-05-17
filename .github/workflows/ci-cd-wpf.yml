@@ -16,16 +16,20 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore SmartEstimateApp/SmartEstimateApp.sln
+        run: dotnet restore SmartEstimateApp.sln
+        working-directory: SmartEstimateApp
 
       - name: Build
-        run: dotnet build SmartEstimateApp/SmartEstimateApp.sln --configuration Release --no-restore
+        run: dotnet build SmartEstimateApp.sln --configuration Release --no-restore
+        working-directory: SmartEstimateApp
 
       - name: Run tests
-        run: dotnet test SmartEstimateApp/SmartEstimateApp.sln --no-restore --verbosity normal
+        run: dotnet test SmartEstimateApp.sln --no-restore --verbosity normal
+        working-directory: SmartEstimateApp
 
       - name: Publish
-        run: dotnet publish SmartEstimateApp/SmartEstimateApp.csproj -c Release -o ./publish
+        run: dotnet publish SmartEstimateApp.csproj -c Release -o ../publish
+        working-directory: SmartEstimateApp
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
