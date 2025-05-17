@@ -31,6 +31,7 @@ namespace SmartEstimateApp
             base.OnStartup(e);
 
             var configuration = BuildConfiguration();
+
             ServiceProvider = ConfigureServices(configuration);
 
             AppDomain.CurrentDomain.UnhandledException += (s, exArgs) =>
