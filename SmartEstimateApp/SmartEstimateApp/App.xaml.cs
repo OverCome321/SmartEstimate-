@@ -71,6 +71,7 @@ namespace SmartEstimateApp
             string connectionString = ConnectionStringManager.GetConnectionString(configuration);
 
             Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .WriteTo.MSSqlServer(

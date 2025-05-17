@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Dal\Dal.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

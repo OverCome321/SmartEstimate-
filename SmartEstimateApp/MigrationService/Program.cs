@@ -1,8 +1,8 @@
 ﻿using Common.Managers;
+using Dal.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MigrationService.Data;
 
 namespace MigrationService
 {
@@ -16,7 +16,7 @@ namespace MigrationService
             {
                 var services = ConfigureServices();
                 using var scope = services.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<SmartEstimateContext>();
+                var context = scope.ServiceProvider.GetRequiredService<SmartEstimateDbContext>();
 
 
                 context.Database.Migrate();
@@ -41,7 +41,7 @@ namespace MigrationService
             var services = new ServiceCollection();
 
             string connectionString = ConnectionStringManager.GetConnectionString(configuration);
-            services.AddDbContext<SmartEstimateContext>(options =>
+            services.AddDbContext<SmartEstimateDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             return services.BuildServiceProvider();
