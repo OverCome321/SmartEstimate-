@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
+using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -17,6 +18,7 @@ namespace SmartEstimateApp.ViewModels
         private readonly IClientBL _clientBL;
         private readonly CurrentUser _currentUser;
         private readonly HomeWindowViewModel _homeWindowViewModel;
+        private readonly INavigationService _navigationService;
 
         // Only current page clients
         public ObservableCollection<Client> Clients { get; set; } = new();
@@ -116,11 +118,13 @@ namespace SmartEstimateApp.ViewModels
         public ICommand GoToFirstPageCommand { get; }
         public ICommand GoToLastPageCommand { get; }
 
-        public ClientsViewModel(IClientBL clientBL, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel)
+        public ClientsViewModel(IClientBL clientBL, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel, INavigationService navigationService)
         {
             _clientBL = clientBL ?? throw new ArgumentNullException(nameof(clientBL));
             _currentUser = currentUser;
             _homeWindowViewModel = homeWindowViewModel;
+            _navigationService = navigationService;
+
             // Initialize commands
             DetailsCommand = new RelayCommand(obj => OnDetails(obj as Client), obj => CanShowDetails(obj));
             DeleteCommand = new RelayCommand(obj => OnDelete(obj as Client), obj => CanDelete(obj));
@@ -268,14 +272,8 @@ namespace SmartEstimateApp.ViewModels
 
         private void OnAddNewClient()
         {
-            // Открываем страницу без клиента (создание нового)
-            var editPage = App.ServiceProvider.GetService<ClientsEditPage>();
-            if (editPage != null)
-                editPage.SetClient(null); // или передай новый Client() если требуется
+            _navigationService.NavigateTo<ClientsEditPage>();
 
-            var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
-            if (frame != null && editPage != null)
-                frame.Navigate(editPage);
         }
 
         private void OnClearSearch()
@@ -320,7 +318,5 @@ namespace SmartEstimateApp.ViewModels
         {
             CurrentPage = TotalPages;
         }
-    
-    
     }
 }
