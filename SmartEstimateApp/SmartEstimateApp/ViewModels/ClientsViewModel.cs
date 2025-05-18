@@ -8,6 +8,10 @@ using SmartEstimateApp.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using SmartEstimateApp.Commands;
+using SmartEstimateApp.Models;
+using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
@@ -222,7 +226,7 @@ namespace SmartEstimateApp.ViewModels
         {
             if (client == null)
                 return;
-
+                
             // Получаем страницу через DI
             var editPage = App.ServiceProvider.GetService<ClientsEditPage>();
             if (editPage != null)
@@ -232,6 +236,7 @@ namespace SmartEstimateApp.ViewModels
             var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
             if (frame != null && editPage != null)
                 frame.Navigate(editPage);
+            // TODO: Add navigation logic to client details page
         }
 
         private bool CanShowDetails(object obj) => obj != null;
@@ -276,6 +281,7 @@ namespace SmartEstimateApp.ViewModels
             var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
             if (frame != null && editPage != null)
                 frame.Navigate(editPage);
+            // TODO: Implement navigation to add client page or show dialog
         }
 
         private void OnClearSearch()
@@ -320,7 +326,5 @@ namespace SmartEstimateApp.ViewModels
         {
             CurrentPage = TotalPages;
         }
-    
-    
     }
 }

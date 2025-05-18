@@ -1,0 +1,182 @@
+﻿<Window x:Class="SmartEstimateApp.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SmartEstimateApp"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Умный счетчик смет" Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppleBackgroundBrush}" 
+        Icon="/Resources/smart-estimate-icon-for-calculating.ico"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Style x:Key="WindowControlButton" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppleBorderBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F0F0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="10" Background="{StaticResource AppleBackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Custom Title Bar -->
+            <Border Grid.Row="0" Style="{StaticResource HeaderBorderStyle}" 
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown" 
+                    CornerRadius="10,10,0,0">
+                <Grid Height="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Умный счетчик смет" Margin="20,0,0,0" Style="{StaticResource HeaderTextStyle}"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,15,0" VerticalAlignment="Center">
+                        <Button Style="{StaticResource WindowControlButton}" Click="MinimizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMinimize" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                        <Button Style="{StaticResource WindowControlButton}" Click="MaximizeButton_Click">
+                            <materialDesign:PackIcon Kind="WindowMaximize" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                        <Button Style="{StaticResource WindowControlButton}" Click="CloseButton_Click">
+                            <materialDesign:PackIcon Kind="Close" Width="14" Height="14" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content Area -->
+            <Border Grid.Row="1" Margin="16" Background="{StaticResource AppleCardBackgroundBrush}" CornerRadius="8">
+                <Frame x:Name="MainFrameU" NavigationUIVisibility="Hidden"/>
+            </Border>
+
+            <!-- Loading Indicator -->
+            <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
+                                Background="#40FFFFFF"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Value="0"
+                            IsIndeterminate="True"
+                            Width="40"
+                            Height="40"
+                            Foreground="{StaticResource ApplePrimaryBrush}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+            </materialDesign:Card>
+
+            <!-- Error Notification Bar -->
+            <Border Grid.Row="2" 
+                    Style="{StaticResource ErrorNotificationBarStyle}"
+                    Background="{StaticResource AppleErrorBrush}"
+                    Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                               Text="{Binding ErrorMessage}" 
+                               Foreground="White" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                            Width="20" Height="20" 
+                            Margin="0,0,15,0" 
+                            Style="{StaticResource NotificationCloseButtonStyle}"
+                            Command="{Binding HideErrorCommand}"
+                            Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Success Notification Bar -->
+            <Border Grid.Row="2" 
+                    Style="{StaticResource SuccessNotificationBarStyle}"
+                    Background="{StaticResource AppleSuccessBrush}"
+                    Visibility="{Binding IsSuccessVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="15,0" 
+                               Text="{Binding SuccessMessage}" 
+                               Foreground="White" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" 
+                            Width="20" Height="20" 
+                            Margin="0,0,15,0" 
+                            Style="{StaticResource NotificationCloseButtonStyle}"
+                            Command="{Binding HideSuccessCommand}"
+                            Foreground="White">
+                        <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Regular Status Bar (always visible) -->
+            <StatusBar Grid.Row="2" x:Name="StatusBar"
+                       Visibility="{Binding Path=IsNotificationVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <StatusBar.Style>
+                    <Style TargetType="StatusBar" BasedOn="{StaticResource ModernStatusBarStyle}">
+                        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+                    </Style>
+                </StatusBar.Style>
+                <StatusBarItem>
+                    <TextBlock Margin="15,0" 
+                               Text="Готово" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontSize="12" 
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right" Margin="0,0,15,0">
+                    <TextBlock x:Name="DateTimeDisplay" 
+                               Text="{Binding CurrentDateTime}"
+                               FontSize="12"
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                               FontFamily="{StaticResource AppleFont}"/>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Border>
+</Window>

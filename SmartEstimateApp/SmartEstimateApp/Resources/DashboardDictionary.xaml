@@ -1,0 +1,57 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+
+    <!-- Card Style -->
+    <Style x:Key="DashboardCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Margin" Value="12"/>
+    </Style>
+
+    <!-- Card Title Style -->
+    <Style x:Key="CardTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
+        <Setter Property="Margin" Value="0,0,0,16"/>
+    </Style>
+
+    <!-- Card Value Style -->
+    <Style x:Key="CardValueStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
+    </Style>
+
+    <!-- Apple Button Style -->
+    <Style x:Key="AppleButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryGradient}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="24,12"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="12"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="0" 
+                                        Opacity="0.2" Color="{StaticResource ApplePrimary}"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>
