@@ -22,6 +22,9 @@ using System.Windows;
 
 namespace SmartEstimateApp
 {
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
     public partial class App : Application
     {
         public static IServiceProvider ServiceProvider { get; private set; }
@@ -125,6 +128,7 @@ namespace SmartEstimateApp
             services.AddTransient<ClientsViewModel>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindowViewModel>();
+            services.AddTransient<ClientEditViewModel>();
 
             // Регистрация страниц
             services.AddScoped<LoginPage>();
@@ -137,6 +141,8 @@ namespace SmartEstimateApp
             services.AddTransient<ClientsPage>();
             services.AddScoped<SettingsPage>();
             services.AddTransient<AnalyticsPage>();
+            services.AddTransient<ClientsEditPage>();
+
 
             //Контекст зависимостей
             services.AddScoped<ILoginContext, LoginContext>();
@@ -175,4 +181,5 @@ namespace SmartEstimateApp
             }
         }
     }
+
 }

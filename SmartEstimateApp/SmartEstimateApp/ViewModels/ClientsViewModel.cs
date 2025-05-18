@@ -3,6 +3,8 @@ using Common.Search;
 using Entities;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
+using SmartEstimateApp.Navigation.Interfaces;
+using SmartEstimateApp.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -14,6 +16,7 @@ namespace SmartEstimateApp.ViewModels
         private readonly IClientBL _clientBL;
         private readonly CurrentUser _currentUser;
         private readonly HomeWindowViewModel _homeWindowViewModel;
+        private readonly INavigationService _navigationService;
 
         // Only current page clients
         public ObservableCollection<Client> Clients { get; set; } = new();
@@ -113,11 +116,13 @@ namespace SmartEstimateApp.ViewModels
         public ICommand GoToFirstPageCommand { get; }
         public ICommand GoToLastPageCommand { get; }
 
-        public ClientsViewModel(IClientBL clientBL, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel)
+        public ClientsViewModel(IClientBL clientBL, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel, INavigationService navigationService)
         {
             _clientBL = clientBL ?? throw new ArgumentNullException(nameof(clientBL));
             _currentUser = currentUser;
             _homeWindowViewModel = homeWindowViewModel;
+            _navigationService = navigationService;
+
             // Initialize commands
             DetailsCommand = new RelayCommand(obj => OnDetails(obj as Client), obj => CanShowDetails(obj));
             DeleteCommand = new RelayCommand(obj => OnDelete(obj as Client), obj => CanDelete(obj));
@@ -220,7 +225,7 @@ namespace SmartEstimateApp.ViewModels
             if (client == null)
                 return;
 
-            // TODO: Add navigation logic to client details page
+            _navigationService.NavigateTo<ClientsEditPage>(client);
         }
 
         private bool CanShowDetails(object obj) => obj != null;
@@ -241,14 +246,13 @@ namespace SmartEstimateApp.ViewModels
             var deleted = await _clientBL.DeleteAsync(client.Id);
             if (deleted)
             {
-                // Если на странице остался один элемент и это не первая страница — вернемся назад
                 if (Clients.Count == 1 && CurrentPage > 1)
                 {
                     CurrentPage--;
                 }
                 else
                 {
-                    Task.Run(LoadClientsAsync);
+                    await Task.Run(LoadClientsAsync);
                 }
             }
         }
@@ -257,7 +261,8 @@ namespace SmartEstimateApp.ViewModels
 
         private void OnAddNewClient()
         {
-            // TODO: Implement navigation to add client page or show dialog
+            _navigationService.NavigateTo<ClientsEditPage>();
+
         }
 
         private void OnClearSearch()

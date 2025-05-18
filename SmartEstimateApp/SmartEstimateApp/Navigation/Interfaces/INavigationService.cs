@@ -6,6 +6,7 @@ namespace SmartEstimateApp.Navigation.Interfaces
     {
         void Initialize(Frame frame);
         void NavigateTo<TPage>() where TPage : Page;
+        void NavigateTo<TPage>(object parameter) where TPage : Page;
         void GoBack();
     }
 }
