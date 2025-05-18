@@ -1,13 +1,13 @@
 ﻿using Bl.Interfaces;
-using SmartEstimateApp.Models;
-using SmartEstimateApp.ViewModels;
-using SmartEstimateApp.Navigation.Interfaces;
-using System.Windows.Controls;
 using Entities;
+using SmartEstimateApp.Models;
+using SmartEstimateApp.Navigation.Interfaces;
+using SmartEstimateApp.ViewModels;
+using System.Windows.Controls;
 
 namespace SmartEstimateApp.Views.Pages
 {
-    public partial class ClientsEditPage : Page
+    public partial class ClientsEditPage : Page, IParameterReceiver
     {
         private readonly ClientEditViewModel _viewModel;
 
@@ -18,9 +18,12 @@ namespace SmartEstimateApp.Views.Pages
             this.DataContext = _viewModel;
         }
 
-        public void SetClient(Client client)
+        public void SetParameter(object parameter)
         {
-            _viewModel.LoadClient(client);
+            if (parameter is Client client)
+            {
+                _viewModel.LoadClient(client);
+            }
         }
     }
 }

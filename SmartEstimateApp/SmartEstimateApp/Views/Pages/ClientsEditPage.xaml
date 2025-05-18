@@ -160,7 +160,7 @@
                                 BorderBrush="{StaticResource AppleBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="12"
-                                Height="96">
+                                Height="56">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -174,10 +174,10 @@
                                     <TextBox Grid.Column="1" 
                                          Text="{Binding Client.Address, UpdateSourceTrigger=PropertyChanged}" 
                                          Style="{StaticResource ClientSeacrhBox}"
-                                         Height="80"
+                                         Height="40"
                                          materialDesign:HintAssist.Hint="Введите адрес клиента"
                                          materialDesign:HintAssist.HintOpacity="0.5"
-                                         Margin="8,8,16,8"
+                                         Margin="8,0,16,8"
                                          TextWrapping="Wrap"
                                          AcceptsReturn="True"
                                          VerticalContentAlignment="Top"

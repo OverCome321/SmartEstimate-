@@ -1,8 +1,8 @@
 ﻿using Bl.Interfaces;
 using Entities;
 using SmartEstimateApp.Commands;
-using SmartEstimateApp.Models;
 using SmartEstimateApp.Mappings;
+using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
 using System.Windows;
 using System.Windows.Input;
@@ -37,7 +37,7 @@ namespace SmartEstimateApp.ViewModels
 
         public void LoadClient(Client client)
         {
-            // Клонируем, чтобы изменения не применялись к коллекции до сохранения
+            // Clone to prevent changes affecting the collection until saved
             Client = client != null ? new Client
             {
                 Id = client.Id,
@@ -70,21 +70,6 @@ namespace SmartEstimateApp.ViewModels
             {
                 MessageBox.Show($"Ошибка сохранения клиента: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-        public void SetClient(Client client)
-        {
-            // Клонируем, чтобы изменения не применялись к коллекции до сохранения
-            Client = client != null ? new Client
-            {
-                Id = client.Id,
-                Name = client.Name,
-                Email = client.Email,
-                Phone = client.Phone,
-                Address = client.Address,
-                Status = client.Status,
-                CreatedAt = client.CreatedAt,
-                User = client.User
-            } : new Client();
         }
     }
 }

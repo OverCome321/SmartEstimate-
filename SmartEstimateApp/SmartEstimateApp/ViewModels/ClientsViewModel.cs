@@ -1,14 +1,12 @@
 ﻿using Bl.Interfaces;
 using Common.Search;
 using Entities;
-using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
@@ -227,15 +225,7 @@ namespace SmartEstimateApp.ViewModels
             if (client == null)
                 return;
 
-            // Получаем страницу через DI
-            var editPage = App.ServiceProvider.GetService<ClientsEditPage>();
-            if (editPage != null)
-                editPage.SetClient(client);
-
-            // Навигация через Frame
-            var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
-            if (frame != null && editPage != null)
-                frame.Navigate(editPage);
+            _navigationService.NavigateTo<ClientsEditPage>(client);
         }
 
         private bool CanShowDetails(object obj) => obj != null;
@@ -256,14 +246,13 @@ namespace SmartEstimateApp.ViewModels
             var deleted = await _clientBL.DeleteAsync(client.Id);
             if (deleted)
             {
-                // Если на странице остался один элемент и это не первая страница — вернемся назад
                 if (Clients.Count == 1 && CurrentPage > 1)
                 {
                     CurrentPage--;
                 }
                 else
                 {
-                    Task.Run(LoadClientsAsync);
+                    await Task.Run(LoadClientsAsync);
                 }
             }
         }

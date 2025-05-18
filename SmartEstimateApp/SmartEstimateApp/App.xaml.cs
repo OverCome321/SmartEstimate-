@@ -128,6 +128,7 @@ namespace SmartEstimateApp
             services.AddTransient<ClientsViewModel>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindowViewModel>();
+            services.AddTransient<ClientEditViewModel>();
 
             // Регистрация страниц
             services.AddScoped<LoginPage>();
@@ -141,7 +142,6 @@ namespace SmartEstimateApp
             services.AddScoped<SettingsPage>();
             services.AddTransient<AnalyticsPage>();
             services.AddTransient<ClientsEditPage>();
-            services.AddTransient<ClientEditViewModel>();
 
 
             //Контекст зависимостей
