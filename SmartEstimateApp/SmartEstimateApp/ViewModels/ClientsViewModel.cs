@@ -1,10 +1,13 @@
 ﻿using Bl.Interfaces;
 using Common.Search;
 using Entities;
+using Microsoft.Extensions.DependencyInjection;
 using SmartEstimateApp.Commands;
 using SmartEstimateApp.Models;
+using SmartEstimateApp.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
@@ -220,7 +223,15 @@ namespace SmartEstimateApp.ViewModels
             if (client == null)
                 return;
 
-            // TODO: Add navigation logic to client details page
+            // Получаем страницу через DI
+            var editPage = App.ServiceProvider.GetService<ClientsEditPage>();
+            if (editPage != null)
+                editPage.SetClient(client);
+
+            // Навигация через Frame
+            var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
+            if (frame != null && editPage != null)
+                frame.Navigate(editPage);
         }
 
         private bool CanShowDetails(object obj) => obj != null;
@@ -257,7 +268,14 @@ namespace SmartEstimateApp.ViewModels
 
         private void OnAddNewClient()
         {
-            // TODO: Implement navigation to add client page or show dialog
+            // Открываем страницу без клиента (создание нового)
+            var editPage = App.ServiceProvider.GetService<ClientsEditPage>();
+            if (editPage != null)
+                editPage.SetClient(null); // или передай новый Client() если требуется
+
+            var frame = Application.Current.MainWindow.FindName("MainFrame") as Frame;
+            if (frame != null && editPage != null)
+                frame.Navigate(editPage);
         }
 
         private void OnClearSearch()
@@ -302,5 +320,7 @@ namespace SmartEstimateApp.ViewModels
         {
             CurrentPage = TotalPages;
         }
+    
+    
     }
 }

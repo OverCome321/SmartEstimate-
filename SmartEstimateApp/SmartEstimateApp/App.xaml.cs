@@ -1,29 +1,16 @@
-﻿using Bl.DI;
-using Bl.Interfaces;
-using Common.Managers;
-using Dal.DI;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Sinks.MSSqlServer;
-using SmartEstimateApp.Context;
-using SmartEstimateApp.Interfaces;
-using SmartEstimateApp.Manager;
-using SmartEstimateApp.Mappings;
-using SmartEstimateApp.Models;
-using SmartEstimateApp.Navigation;
-using SmartEstimateApp.Navigation.Interfaces;
-using SmartEstimateApp.ViewModels;
-using SmartEstimateApp.Views.Pages;
-using SmartEstimateApp.Views.Windows;
-using System.IO;
+﻿using System.Configuration;
+using System.Data;
 using System.Windows;
 
 namespace SmartEstimateApp
 {
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
     public partial class App : Application
     {
+<<<<<<< Updated upstream
+=======
         public static IServiceProvider ServiceProvider { get; private set; }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -137,6 +124,9 @@ namespace SmartEstimateApp
             services.AddTransient<ClientsPage>();
             services.AddScoped<SettingsPage>();
             services.AddTransient<AnalyticsPage>();
+            services.AddTransient<ClientsEditPage>();
+            services.AddTransient<ClientEditViewModel>();
+
 
             //Контекст зависимостей
             services.AddScoped<ILoginContext, LoginContext>();
@@ -174,5 +164,7 @@ namespace SmartEstimateApp
                 return false;
             }
         }
+>>>>>>> Stashed changes
     }
+
 }
