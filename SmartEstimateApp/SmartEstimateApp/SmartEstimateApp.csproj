@@ -6,15 +6,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>smart-estimate-icon-for-calculating.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\smart-estimate-main-variant-second-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\smart-estimate-icon-for-calculating.ico" />
+    <None Remove="Resources\smart-estimate-main-icon.ico" />
+    <None Remove="Resources\smart-estimate-main-variant-second-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="smart-estimate-icon-for-calculating.ico" />
+    <Content Include="Resources\smart-estimate-main-variant-second-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +39,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\smart-estimate-icon-for-calculating.ico" />
+    <Resource Include="Resources\smart-estimate-main-icon.ico" />
+    <Resource Include="Resources\smart-estimate-main-variant-second-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

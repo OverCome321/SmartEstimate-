@@ -69,5 +69,25 @@ namespace SmartEstimateApp {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] smart_estimate_main_icon {
+            get {
+                object obj = ResourceManager.GetObject("smart-estimate-main-icon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] smart_estimate_main_variant_second_icon {
+            get {
+                object obj = ResourceManager.GetObject("smart-estimate-main-variant-second-icon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

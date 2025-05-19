@@ -121,4 +121,10 @@
   <data name="smart-estimate-icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\smart-estimate-icon-for-calculating.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="smart-estimate-main-icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\smart-estimate-main-icon.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="smart-estimate-main-variant-second-icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\smart-estimate-main-variant-second-icon.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
