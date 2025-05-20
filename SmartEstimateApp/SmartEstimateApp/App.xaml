@@ -31,6 +31,8 @@
             <converters:StringNullOrEmptyToInverseVisibilityConverter x:Key="StringNullOrEmptyToInverseVisibilityConverter"/>
             <converters:BooleanToInverseVisibilityConverter x:Key="BooleanToInverseVisibilityConverter"/>
             <converters:PageNumberToIsActiveConverter x:Key="PageNumberToIsActiveConverter"/>
+            <converters:CardViewVisibilityConverter  x:Key="CardViewVisibilityConverter"/>
+            <converters:TableViewVisibilityConverter  x:Key="TableViewVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

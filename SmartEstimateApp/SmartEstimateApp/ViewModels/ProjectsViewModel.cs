@@ -1,40 +1,39 @@
 ﻿using Bl.Interfaces;
 using Common.Search;
-using Entities;
 using SmartEstimateApp.Commands;
+using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
-using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Input;
 
 namespace SmartEstimateApp.ViewModels
 {
-    public class ClientsViewModel : BasePaginatedViewModel<Client>
+    public class ProjectsViewModel : BasePaginatedViewModel<Project>
     {
-        private readonly IClientBL _clientBL;
+        private readonly IProjectBL _projectBL;
         private readonly CurrentUser _currentUser;
         private readonly HomeWindowViewModel _homeWindowViewModel;
         private readonly INavigationService _navigationService;
 
-        public ICommand DetailsCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand AddNewClientCommand { get; }
+        public ICommand ShowProjectDetailsCommand { get; }
+        public ICommand DeleteProjectCommand { get; }
+        public ICommand AddProjectCommand { get; }
 
-        public ClientsViewModel(
-            IClientBL clientBL,
+        public ProjectsViewModel(
+            IProjectBL projectBL,
             CurrentUser currentUser,
             HomeWindowViewModel homeWindowViewModel,
             INavigationService navigationService)
         {
-            _clientBL = clientBL ?? throw new ArgumentNullException(nameof(clientBL));
+            _projectBL = projectBL;
             _currentUser = currentUser;
             _homeWindowViewModel = homeWindowViewModel;
             _navigationService = navigationService;
 
-            DetailsCommand = new RelayCommand(obj => OnDetails(obj as Client), obj => obj != null);
-            DeleteCommand = new RelayCommand(obj => OnDelete(obj as Client), obj => obj != null);
-            AddNewClientCommand = new RelayCommand(_ => OnAddNewClient());
+            ShowProjectDetailsCommand = new RelayCommand(obj => OnDetails(obj as Project), obj => obj != null);
+            DeleteProjectCommand = new RelayCommand(obj => OnDelete(obj as Project), obj => obj != null);
+            AddProjectCommand = new RelayCommand(obj => OnAddProject());
 
             Task.Run(LoadItemsAsync);
         }
@@ -43,7 +42,7 @@ namespace SmartEstimateApp.ViewModels
         {
             try
             {
-                var searchParams = new ClientSearchParams
+                var searchParams = new ProjectSearchParams
                 {
                     UserId = _currentUser.User.Id,
                     StartIndex = (CurrentPage - 1) * PageSize,
@@ -53,21 +52,19 @@ namespace SmartEstimateApp.ViewModels
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
                     searchParams.Name = SearchText;
-                    searchParams.Email = SearchText;
-                    searchParams.Phone = SearchText;
                 }
                 else _homeWindowViewModel.ShowLoading();
 
-                var result = await _clientBL.GetAsync(searchParams, includeRelated: true);
+                var result = await _projectBL.GetAsync(searchParams, includeRelated: false);
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     Items.Clear();
-                    foreach (var c in result.Objects)
-                        Items.Add(c);
+                    foreach (var p in result.Objects)
+                        Items.Add(Mapper.ToModel(p));
 
                     TotalCount = result.Total;
-                    TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+                    TotalPages = (int)System.Math.Ceiling(TotalCount / (double)PageSize);
                     if (TotalPages == 0) TotalPages = 1;
 
                     UpdatePageNumbers();
@@ -76,9 +73,9 @@ namespace SmartEstimateApp.ViewModels
                     OnPropertyChanged(nameof(PageInfo));
                 });
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading clients: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error loading projects: {ex.Message}");
             }
             finally
             {
@@ -86,20 +83,19 @@ namespace SmartEstimateApp.ViewModels
             }
         }
 
-        private void OnDetails(Client client)
+        private void OnDetails(Project project)
         {
-            if (client == null)
+            if (project == null)
                 return;
-
-            _navigationService.NavigateTo<ClientsEditPage>(client);
+            //_navigationService.NavigateTo<ProjectsEditPage>(project);
         }
 
-        private async void OnDelete(Client client)
+        private async void OnDelete(Project project)
         {
-            if (client == null) return;
+            if (project == null) return;
 
             var result = MessageBox.Show(
-                $"Вы уверены, что хотите удалить клиента \"{client.Name}\"?",
+                $"Вы уверены, что хотите удалить проект \"{project.Name}\"?",
                 "Подтверждение удаления",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -107,7 +103,7 @@ namespace SmartEstimateApp.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            var deleted = await _clientBL.DeleteAsync(client.Id);
+            var deleted = await _projectBL.DeleteAsync(project.Id);
             if (deleted)
             {
                 if (Items.Count == 1 && CurrentPage > 1)
@@ -121,9 +117,9 @@ namespace SmartEstimateApp.ViewModels
             }
         }
 
-        private void OnAddNewClient()
+        private void OnAddProject()
         {
-            _navigationService.NavigateTo<ClientsEditPage>();
+            //_navigationService.NavigateTo<ProjectsEditPage>();
         }
     }
 }

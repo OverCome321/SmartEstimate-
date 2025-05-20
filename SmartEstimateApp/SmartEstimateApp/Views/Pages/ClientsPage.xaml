@@ -146,7 +146,7 @@
 
                     <!-- Clients Grid -->
                     <ItemsControl Grid.Row="1" 
-                              ItemsSource="{Binding Clients}"
+                              ItemsSource="{Binding Items}"
                               Margin="36,0,36,0"
                               Visibility="{Binding HasResults, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl.ItemsPanel>

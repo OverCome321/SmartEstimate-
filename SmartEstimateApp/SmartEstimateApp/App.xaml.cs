@@ -129,6 +129,7 @@ namespace SmartEstimateApp
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindowViewModel>();
             services.AddTransient<ClientEditViewModel>();
+            services.AddTransient<ProjectsViewModel>();
 
             // Регистрация страниц
             services.AddScoped<LoginPage>();

@@ -17,11 +17,11 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует модель пользователя в сущность
+        /// Преобразует модель пользователя в сущность.
         /// </summary>
-        /// <param name="model">Модель пользователя</param>
-        /// <returns>Сущность пользователя</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null</exception>
+        /// <param name="model">Модель пользователя.</param>
+        /// <returns>Сущность пользователя.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
         public static Entities.User ToEntity(User model)
         {
             if (model == null)
@@ -30,11 +30,11 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует сущность пользователя в модель
+        /// Преобразует сущность пользователя в модель.
         /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <returns>Модель пользователя</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null</exception>
+        /// <param name="entity">Сущность пользователя.</param>
+        /// <returns>Модель пользователя.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
         public static User ToModel(Entities.User entity)
         {
             if (entity == null)
@@ -43,11 +43,11 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует модель роли в сущность
+        /// Преобразует модель роли в сущность.
         /// </summary>
-        /// <param name="model">Модель роли</param>
-        /// <returns>Сущность роли</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null</exception>
+        /// <param name="model">Модель роли.</param>
+        /// <returns>Сущность роли.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
         public static Entities.Role ToEntity(Role model)
         {
             if (model == null)
@@ -56,16 +56,42 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует сущность роли в модель
+        /// Преобразует сущность роли в модель.
         /// </summary>
-        /// <param name="entity">Сущность роли</param>
-        /// <returns>Модель роли</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null</exception>
+        /// <param name="entity">Сущность роли.</param>
+        /// <returns>Модель роли.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
         public static Role ToModel(Entities.Role entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             return _mapper.Map<Role>(entity);
+        }
+
+        /// <summary>
+        /// Преобразует модель проекта в сущность.
+        /// </summary>
+        /// <param name="model">Модель проекта (UI-слой).</param>
+        /// <returns>Сущность проекта (Entity-слой).</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
+        public static Entities.Project ToEntity(Project model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.Project>(model);
+        }
+
+        /// <summary>
+        /// Преобразует сущность проекта в модель.
+        /// </summary>
+        /// <param name="entity">Сущность проекта (Entity-слой).</param>
+        /// <returns>Модель проекта (UI-слой).</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
+        public static Project ToModel(Entities.Project entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<Project>(entity);
         }
     }
 }
