@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entiti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A07FB9AF-EB48-46EE-8485-C63852D7DD9D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAIService", "OpenAIService\OpenAIService.csproj", "{A411852C-C94C-407D-A263-9D4267A758BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A07FB9AF-EB48-46EE-8485-C63852D7DD9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A07FB9AF-EB48-46EE-8485-C63852D7DD9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A07FB9AF-EB48-46EE-8485-C63852D7DD9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A411852C-C94C-407D-A263-9D4267A758BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A411852C-C94C-407D-A263-9D4267A758BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A411852C-C94C-407D-A263-9D4267A758BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A411852C-C94C-407D-A263-9D4267A758BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

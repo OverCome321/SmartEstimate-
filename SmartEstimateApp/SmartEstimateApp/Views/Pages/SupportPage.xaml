@@ -1,0 +1,45 @@
+﻿<Page x:Class="SmartEstimateApp.Views.Pages.SupportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      Background="{StaticResource AppleBackgroundBrush}">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- История сообщений -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="MessagesPanel">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#F1F1F1" CornerRadius="8" Margin="0,8" Padding="12">
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Ввод сообщения -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
+            <TextBox x:Name="InputBox"
+                     Height="44"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource ClientSeacrhBox}"
+                     Width="Auto"
+                     MinWidth="200"
+                     Margin="0,0,12,0"
+                     materialDesign:HintAssist.Hint="Введите вопрос..."/>
+            <Button Content="Отправить"
+                    Style="{StaticResource AppleButtonStyle}"
+                    Click="SendMessage_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

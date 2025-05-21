@@ -4,6 +4,7 @@ using SmartEstimateApp.Commands;
 using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
+using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Input;
 
@@ -87,7 +88,7 @@ namespace SmartEstimateApp.ViewModels
         {
             if (project == null)
                 return;
-            //_navigationService.NavigateTo<ProjectsEditPage>(project);
+            _navigationService.NavigateTo<ProjectEditPage>(project);
         }
 
         private async void OnDelete(Project project)
@@ -119,7 +120,7 @@ namespace SmartEstimateApp.ViewModels
 
         private void OnAddProject()
         {
-            //_navigationService.NavigateTo<ProjectsEditPage>();
+            _navigationService.NavigateTo<ProjectEditPage>();
         }
     }
 }

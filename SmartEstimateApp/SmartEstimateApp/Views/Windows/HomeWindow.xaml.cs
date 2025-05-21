@@ -145,10 +145,10 @@ namespace SmartEstimateApp.Views.Windows
         /// <summary>
         /// Переход на страницу Help
         /// </summary>
-        private void NavigateToHelp_Click(object sender, RoutedEventArgs e)
+        private void NavigateToSupport_Click(object sender, RoutedEventArgs e)
         {
             UpdateNavigationButtons(NavigationPage.Help);
-            _navigationService.NavigateTo<AnalyticsPage>();
+            _navigationService.NavigateTo<SupportPage>();
         }
         /// <summary>
         /// Переход на страницу Statistic

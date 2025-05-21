@@ -284,16 +284,18 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButton}"  Tag="Help" Click="NavigateToHelp_Click">
-                                <StackPanel Orientation="Horizontal" >
-                                    <materialDesign:PackIcon Kind="HelpCircleOutline" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Помощь" 
-                                             VerticalAlignment="Center"/>
+                            <Button Style="{StaticResource NavButton}" 
+                                Click="NavigateToSupport_Click" 
+                                Tag="Support">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Robot" 
+                                 Width="24" Height="24" 
+                                 VerticalAlignment="Center" 
+                                 Margin="0,0,16,0"/>
+                                    <TextBlock Text="AI-помощник" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+
                         </StackPanel>
                     </Grid>
                 </Border>
