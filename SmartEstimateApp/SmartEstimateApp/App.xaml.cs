@@ -158,7 +158,10 @@ namespace SmartEstimateApp
 
             // Регистрация OpenAI блока
             services.Configure<HfSettings>(configuration.GetSection("HuggingFace"));
-            services.AddHttpClient<IOpenAiService, HuggingFaceService>();
+            //services.AddHttpClient<IOpenAiService, HuggingFaceService>();
+            services.Configure<LlamaSettings>(configuration.GetSection("Llama"));
+            // вместо HttpClient- or HF registration:
+            services.AddSingleton<IOpenAiService, LocalLlamaService>();
 
             return services.BuildServiceProvider();
         }

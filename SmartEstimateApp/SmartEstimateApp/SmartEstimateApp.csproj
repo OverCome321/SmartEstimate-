@@ -22,6 +22,11 @@
     </Content>
     <Content Include="Resources\smart-estimate-main-variant-second-icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="AIModels\Llama\models\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
