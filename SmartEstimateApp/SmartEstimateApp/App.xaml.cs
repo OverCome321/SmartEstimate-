@@ -5,6 +5,10 @@ using Dal.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenAIService;
+using OpenAIService.Interfaces;
+using OpenAIService.Models;
+using OpenAIService.Security;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using SmartEstimateApp.Context;
@@ -39,11 +43,10 @@ namespace SmartEstimateApp
             AppDomain.CurrentDomain.UnhandledException += (s, exArgs) =>
             {
                 var logger = ServiceProvider.GetService<ILogger<App>>();
-                if (logger != null)
-                {
-                    logger.LogCritical(exArgs.ExceptionObject as Exception, "Fatal error (UnhandledException)");
-                }
+                logger?.LogCritical(exArgs.ExceptionObject as Exception, "Fatal error (UnhandledException)");
             };
+
+            InitializeHfKey();
 
             var userBL = ServiceProvider.GetService<IUserBL>();
             var currentUser = ServiceProvider.GetService<CurrentUser>();
@@ -60,6 +63,7 @@ namespace SmartEstimateApp
                 mainWindow?.Show();
             }
         }
+
 
         private IConfiguration BuildConfiguration()
         {
@@ -143,11 +147,18 @@ namespace SmartEstimateApp
             services.AddScoped<SettingsPage>();
             services.AddTransient<AnalyticsPage>();
             services.AddTransient<ClientsEditPage>();
+            services.AddTransient<ProjectEditPage>();
+            services.AddTransient<SupportPage>();
 
 
             //Контекст зависимостей
             services.AddScoped<ILoginContext, LoginContext>();
             services.AddScoped<IRegisterContext, RegisterContext>();
+
+
+            // Регистрация OpenAI блока
+            services.Configure<HfSettings>(configuration.GetSection("HuggingFace"));
+            services.AddHttpClient<IOpenAiService, HuggingFaceService>();
 
             return services.BuildServiceProvider();
         }
@@ -181,6 +192,30 @@ namespace SmartEstimateApp
                 return false;
             }
         }
+
+        private void InitializeHfKey()
+        {
+            string installDir = AppDomain.CurrentDomain.BaseDirectory;
+            string tempHfKeyFile = Path.Combine(installDir, "initial_key.txt");
+
+            if (File.Exists(tempHfKeyFile) && !ApiKeyEncryptor.ApiKeyExists())
+            {
+                try
+                {
+                    string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
+                    if (!string.IsNullOrEmpty(rawKey))
+                    {
+                        ApiKeyEncryptor.SaveApiKey(rawKey);
+                        File.Delete(tempHfKeyFile);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при инициализации HF-ключа: {ex.Message}");
+                }
+            }
+        }
+
     }
 
 }

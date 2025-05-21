@@ -9,8 +9,7 @@
         mc:Ignorable="d"
         Title="Умный счетчик смет" Height="720" Width="1100"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource AppleBackgroundBrush}" 
-        Icon="/Resources/smart-estimate-main-variant-second-icon.ico"
+        Background="{StaticResource AppleBackgroundBrush}"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResize">
