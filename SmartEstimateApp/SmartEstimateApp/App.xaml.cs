@@ -22,6 +22,7 @@ using SmartEstimateApp.ViewModels;
 using SmartEstimateApp.Views.Pages;
 using SmartEstimateApp.Views.Windows;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 
 namespace SmartEstimateApp
@@ -46,7 +47,7 @@ namespace SmartEstimateApp
                 logger?.LogCritical(exArgs.ExceptionObject as Exception, "Fatal error (UnhandledException)");
             };
 
-            InitializeHfKey();
+            InitializeSberKey();
 
             var userBL = ServiceProvider.GetService<IUserBL>();
             var currentUser = ServiceProvider.GetService<CurrentUser>();
@@ -157,11 +158,23 @@ namespace SmartEstimateApp
 
 
             // Регистрация OpenAI блока
-            services.Configure<HfSettings>(configuration.GetSection("HuggingFace"));
+            //services.Configure<HfSettings>(configuration.GetSection("HuggingFace"));
             //services.AddHttpClient<IOpenAiService, HuggingFaceService>();
-            services.Configure<LlamaSettings>(configuration.GetSection("Llama"));
-            // вместо HttpClient- or HF registration:
-            services.AddSingleton<IOpenAiService, LocalLlamaService>();
+            //services.Configure<LlamaSettings>(configuration.GetSection("Llama"));
+            //services.AddSingleton<IOpenAiService, LocalLlamaService>();
+
+            services.Configure<SberAiSettings>(configuration.GetSection("SberAi"));
+
+            services.AddHttpClient<SberAiService>()
+            .ConfigurePrimaryHttpMessageHandler(() =>
+                new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                }
+            );
+
+            services.AddSingleton<IOpenAiService>(sp => sp.GetRequiredService<SberAiService>());
 
             return services.BuildServiceProvider();
         }
@@ -196,19 +209,42 @@ namespace SmartEstimateApp
             }
         }
 
-        private void InitializeHfKey()
+        //private void InitializeHfKey()
+        //{
+        //    string installDir = AppDomain.CurrentDomain.BaseDirectory;
+        //    string tempHfKeyFile = Path.Combine(installDir, "initial_key.txt");
+
+        //    if (File.Exists(tempHfKeyFile) && !ApiKeyEncryptor.ApiKeyExists())
+        //    {
+        //        try
+        //        {
+        //            string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
+        //            if (!string.IsNullOrEmpty(rawKey))
+        //            {
+        //                ApiKeyEncryptor.SaveApiKey(rawKey);
+        //                File.Delete(tempHfKeyFile);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Ошибка при инициализации HF-ключа: {ex.Message}");
+        //        }
+        //    }
+        //}
+
+        private void InitializeSberKey()
         {
             string installDir = AppDomain.CurrentDomain.BaseDirectory;
-            string tempHfKeyFile = Path.Combine(installDir, "initial_key.txt");
+            string tempHfKeyFile = Path.Combine(installDir, "initial_sber_key.txt");
 
-            if (File.Exists(tempHfKeyFile) && !ApiKeyEncryptor.ApiKeyExists())
+            if (File.Exists(tempHfKeyFile) && !SberApiKeyEncryptor.ApiKeyExists())
             {
                 try
                 {
                     string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
                     if (!string.IsNullOrEmpty(rawKey))
                     {
-                        ApiKeyEncryptor.SaveApiKey(rawKey);
+                        SberApiKeyEncryptor.SaveApiKey(rawKey);
                         File.Delete(tempHfKeyFile);
                     }
                 }
@@ -218,7 +254,6 @@ namespace SmartEstimateApp
                 }
             }
         }
-
     }
 
 }
