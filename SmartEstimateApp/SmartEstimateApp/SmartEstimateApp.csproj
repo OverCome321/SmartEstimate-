@@ -11,13 +11,14 @@
 
   <ItemGroup>
     <None Remove="initial_key.txt" />
+    <None Remove="initial_sber_key.txt" />
     <None Remove="Resources\smart-estimate-icon-for-calculating.ico" />
     <None Remove="Resources\smart-estimate-main-icon.ico" />
     <None Remove="Resources\smart-estimate-main-variant-second-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="initial_key.txt">
+    <Content Include="initial_sber_key.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\smart-estimate-main-variant-second-icon.ico" />
