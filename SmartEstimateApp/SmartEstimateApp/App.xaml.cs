@@ -157,12 +157,7 @@ namespace SmartEstimateApp
             services.AddScoped<IRegisterContext, RegisterContext>();
 
 
-            // Регистрация OpenAI блока
-            //services.Configure<HfSettings>(configuration.GetSection("HuggingFace"));
-            //services.AddHttpClient<IOpenAiService, HuggingFaceService>();
-            //services.Configure<LlamaSettings>(configuration.GetSection("Llama"));
-            //services.AddSingleton<IOpenAiService, LocalLlamaService>();
-
+            // Регистрация OpenAI блока;
             services.Configure<SberAiSettings>(configuration.GetSection("SberAi"));
 
             services.AddHttpClient<SberAiService>()
@@ -208,30 +203,6 @@ namespace SmartEstimateApp
                 return false;
             }
         }
-
-        //private void InitializeHfKey()
-        //{
-        //    string installDir = AppDomain.CurrentDomain.BaseDirectory;
-        //    string tempHfKeyFile = Path.Combine(installDir, "initial_key.txt");
-
-        //    if (File.Exists(tempHfKeyFile) && !ApiKeyEncryptor.ApiKeyExists())
-        //    {
-        //        try
-        //        {
-        //            string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
-        //            if (!string.IsNullOrEmpty(rawKey))
-        //            {
-        //                ApiKeyEncryptor.SaveApiKey(rawKey);
-        //                File.Delete(tempHfKeyFile);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show($"Ошибка при инициализации HF-ключа: {ex.Message}");
-        //        }
-        //    }
-        //}
-
         private void InitializeSberKey()
         {
             string installDir = AppDomain.CurrentDomain.BaseDirectory;
