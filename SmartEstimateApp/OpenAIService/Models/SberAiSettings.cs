@@ -7,4 +7,6 @@ public class SberAiSettings
     public string ModelId { get; set; } = null!;
     public string Scope { get; set; } = null!;
     public string GrantType { get; set; } = "client_credentials";
+    public string SystemPrompt { get; set; } = null!;
+    public List<FewShotExample> FewShotExamples { get; set; } = new();
 }

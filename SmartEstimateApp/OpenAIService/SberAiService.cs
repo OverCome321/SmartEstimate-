@@ -45,40 +45,50 @@ public class SberAiService : IOpenAiService
         using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync());
         _accessToken = doc.RootElement.GetProperty("access_token").GetString();
 
-        // Здесь исправление: expires_at приходит в миллисекундах
         long expMillis = doc.RootElement.GetProperty("expires_at").GetInt64();
         _expiresAt = DateTimeOffset.FromUnixTimeMilliseconds(expMillis);
 
-        // Устанавливаем заголовок для последующих запросов
         _http.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", _accessToken);
     }
-
-
     public async Task<string> AskAsync(string prompt)
     {
         if (_accessToken == null || DateTimeOffset.UtcNow >= _expiresAt)
-            await RefreshTokenAsync(); // Обновляем токен, если нужно
+            await RefreshTokenAsync();
+
+        var messages = new List<object>
+        {
+            new { role = "system", content = _opts.SystemPrompt }
+        };
+
+        foreach (var ex in _opts.FewShotExamples)
+        {
+            messages.Add(new { role = "user", content = ex.User });
+            messages.Add(new { role = "assistant", content = ex.Assistant });
+        }
+
+        messages.Add(new { role = "user", content = prompt });
 
         var payload = new
         {
             model = _opts.ModelId,
-            messages = new[] { new { role = "user", content = prompt } }
+            messages = messages
         };
 
-        var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+        var content = new StringContent(
+            JsonSerializer.Serialize(payload),
+            Encoding.UTF8, "application/json"
+        );
 
         var resp = await _http.PostAsync("/api/v1/chat/completions", content);
-
         resp.EnsureSuccessStatusCode();
 
-        using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync()); // Парсим JSON
-
-        var message = doc.RootElement
-                       .GetProperty("choices")[0]
-                       .GetProperty("message")
-                       .GetProperty("content")
-                       .GetString()!;
-        return message;
+        using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync());
+        return doc.RootElement
+                  .GetProperty("choices")[0]
+                  .GetProperty("message")
+                  .GetProperty("content")
+                  .GetString()!;
     }
+
 }
