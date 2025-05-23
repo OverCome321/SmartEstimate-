@@ -4,42 +4,99 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:SmartEstimateApp.ViewModels"
       mc:Ignorable="d"
       Background="{StaticResource AppleBackgroundBrush}">
 
-    <Grid Margin="24">
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- История сообщений -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-            <ItemsControl x:Name="MessagesPanel">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="#F1F1F1" CornerRadius="8" Margin="0,8" Padding="12">
-                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
+        <Border Grid.Row="0" 
+                Background="{StaticResource AppleCardBackgroundBrush}"
+                BorderBrush="#E5E5EA"
+                BorderThickness="0,0,0,1"
+                Padding="24,16">
+            <StackPanel>
+                <TextBlock Text="Поддержка" 
+                          FontFamily="{StaticResource AppleFont}"
+                          FontSize="28"
+                          FontWeight="Bold"
+                          Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                <TextBlock Text="Задайте вопрос нашему AI-ассистенту"
+                          FontFamily="{StaticResource AppleFont}"
+                          FontSize="15"
+                          Foreground="{StaticResource AppleTextSecondaryBrush}"
+                          Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" 
+                      x:Name="MessageScrollViewer"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="0,16,0,16">
+            <ItemsControl ItemsSource="{Binding Messages}"
+                         ItemTemplateSelector="{StaticResource MessageTemplateSelector}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
 
-        <!-- Ввод сообщения -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
-            <TextBox x:Name="InputBox"
-                     Height="44"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Style="{StaticResource ClientSeacrhBox}"
-                     Width="Auto"
-                     MinWidth="200"
-                     Margin="0,0,12,0"
-                     materialDesign:HintAssist.Hint="Введите вопрос..."/>
-            <Button Content="Отправить"
-                    Style="{StaticResource AppleButtonStyle}"
-                    Click="SendMessage_Click"/>
-        </StackPanel>
+        <Border Grid.Row="2"
+                Background="{StaticResource AppleCardBackgroundBrush}"
+                BorderBrush="#E5E5EA"
+                BorderThickness="0,1,0,0"
+                Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="MessageInput"
+                        Grid.Column="0"
+                        Style="{StaticResource ChatInputBox}"
+                        Text="{Binding CurrentMessage, UpdateSourceTrigger=PropertyChanged}"
+                        Tag="Введите сообщение..."
+                        KeyDown="MessageInput_KeyDown"
+                        Margin="0,0,12,0"/>
+
+                <Button Grid.Column="1"
+                       Style="{StaticResource SendButton}"
+                       Command="{Binding SendMessageCommand}"
+                       IsEnabled="{Binding CanSendMessage}">
+                    <materialDesign:PackIcon Kind="Send" 
+                                           Width="20" 
+                                           Height="20" Margin="4,0,0,0"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="#80FFFFFF"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                CornerRadius="12"
+                Padding="24,16">
+            <StackPanel Orientation="Horizontal">
+                <ProgressBar IsIndeterminate="True"
+                           Width="20"
+                           Height="20"
+                           Margin="0,0,12,0"/>
+                <TextBlock Text="Печатает..."
+                          FontFamily="{StaticResource AppleFont}"
+                          FontSize="15"
+                          Foreground="{StaticResource AppleTextSecondaryBrush}"
+                          VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

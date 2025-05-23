@@ -1,35 +1,43 @@
 ﻿using OpenAIService.Interfaces;
-using System.Windows;
+using SmartEstimateApp.ViewModels;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SmartEstimateApp.Views.Pages
 {
     public partial class SupportPage : Page
     {
-        private readonly IOpenAiService _openAiService;
+        private SupportPageViewModel ViewModel { get; set; }
 
         public SupportPage(IOpenAiService openAiService)
         {
             InitializeComponent();
-            _openAiService = openAiService;
+            ViewModel = new SupportPageViewModel(openAiService);
+            this.DataContext = ViewModel;
+
+            if (ViewModel != null)
+            {
+                ViewModel.Messages.CollectionChanged += Messages_CollectionChanged;
+            }
         }
 
-        private async void SendMessage_Click(object sender, RoutedEventArgs e)
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            string userInput = InputBox.Text;
-            if (string.IsNullOrWhiteSpace(userInput)) return;
-
-            MessagesPanel.Items.Add("Вы: " + userInput);
-            InputBox.Text = "";
-
-            try
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                string response = await _openAiService.AskAsync(userInput);
-                MessagesPanel.Items.Add("AI: " + response);
-            }
-            catch (Exception ex)
+                MessageScrollViewer.ScrollToEnd();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private void MessageInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
             {
-                MessagesPanel.Items.Add("Ошибка: " + ex.Message);
+                e.Handled = true;
+                if (ViewModel?.SendMessageCommand.CanExecute(null) == true)
+                {
+                    ViewModel.SendMessageCommand.Execute(null);
+                }
             }
         }
     }
