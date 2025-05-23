@@ -1,0 +1,3 @@
+Перед командой надо дать CD на корень проекта где есть csproj файл C:\Users\Никита\Desktop\SmartEstimate-\SmartEstimateApp
+
+dotnet ef migrations add AddChatAndBot ^  --project .\Dal\Dal.csproj ^ --startup-project .\MigrationService\MigrationService.csproj

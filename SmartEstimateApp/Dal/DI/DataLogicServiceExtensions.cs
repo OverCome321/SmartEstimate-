@@ -21,6 +21,7 @@ namespace Dal.DI
             services.AddScoped<IUserDal, UserDal>();
             services.AddScoped<IClientDal, ClientDal>();
             services.AddScoped<IProjectDal, ProjectDal>();
+            services.AddScoped<IChatDal, ChatDal>();
 
             return services;
         }

@@ -34,6 +34,7 @@
             <converters:PageNumberToIsActiveConverter x:Key="PageNumberToIsActiveConverter"/>
             <converters:CardViewVisibilityConverter  x:Key="CardViewVisibilityConverter"/>
             <converters:TableViewVisibilityConverter  x:Key="TableViewVisibilityConverter"/>
+            <converters:NullToVisibilityConverter  x:Key="NullToVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

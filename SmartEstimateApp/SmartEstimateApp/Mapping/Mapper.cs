@@ -93,5 +93,58 @@ namespace SmartEstimateApp.Mappings
                 throw new ArgumentNullException(nameof(entity));
             return _mapper.Map<Project>(entity);
         }
+
+        /// <summary>
+        /// Преобразует UI-модель чата в бизнес-сущность.
+        /// </summary>
+        /// <param name="model">UI-модель чата.</param>
+        /// <returns>Бизнес-сущность <see cref="Entities.Chat"/>.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="model"/> равна null.</exception>
+        public static Entities.Chat ToEntity(Chat model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.Chat>(model);
+        }
+
+        /// <summary>
+        /// Преобразует бизнес-сущность чата в UI-модель.
+        /// </summary>
+        /// <param name="entity">Бизнес-сущность <see cref="Entities.Chat"/>.</param>
+        /// <returns>UI-модель <see cref="Chat"/>.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="entity"/> равна null.</exception>
+        public static Chat ToModel(Entities.Chat entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<Chat>(entity);
+        }
+
+        /// <summary>
+        /// Преобразует UI-модель сообщения в бизнес-сущность.
+        /// </summary>
+        /// <param name="model">UI-модель сообщения.</param>
+        /// <returns>Бизнес-сущность <see cref="Entities.Message"/>.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="model"/> равна null.</exception>
+        public static Entities.Message ToEntity(Message model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.Message>(model);
+        }
+
+        /// <summary>
+        /// Преобразует бизнес-сущность сообщения в UI-модель.
+        /// </summary>
+        /// <param name="entity">Бизнес-сущность <see cref="Entities.Message"/>.</param>
+        /// <returns>UI-модель <see cref="Message"/>.</returns>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="entity"/> равна null.</exception>
+        public static Message ToModel(Entities.Message entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<Message>(entity);
+        }
+
     }
 }

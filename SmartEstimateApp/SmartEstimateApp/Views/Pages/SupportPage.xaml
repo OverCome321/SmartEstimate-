@@ -9,94 +9,254 @@
       Background="{StaticResource AppleBackgroundBrush}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" MinWidth="250"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" MinWidth="400"/>
+        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" 
+        <!-- Sidebar with Chat List -->
+        <Border Grid.Column="0" 
                 Background="{StaticResource AppleCardBackgroundBrush}"
                 BorderBrush="#E5E5EA"
-                BorderThickness="0,0,0,1"
-                Padding="24,16">
-            <StackPanel>
-                <TextBlock Text="Поддержка" 
-                          FontFamily="{StaticResource AppleFont}"
-                          FontSize="28"
-                          FontWeight="Bold"
-                          Foreground="{StaticResource AppleTextPrimaryBrush}"/>
-                <TextBlock Text="Задайте вопрос нашему AI-ассистенту"
-                          FontFamily="{StaticResource AppleFont}"
-                          FontSize="15"
-                          Foreground="{StaticResource AppleTextSecondaryBrush}"
-                          Margin="0,4,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <ScrollViewer Grid.Row="1" 
-                      x:Name="MessageScrollViewer"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Padding="0,16,0,16">
-            <ItemsControl ItemsSource="{Binding Messages}"
-                         ItemTemplateSelector="{StaticResource MessageTemplateSelector}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </ScrollViewer>
-
-        <Border Grid.Row="2"
-                Background="{StaticResource AppleCardBackgroundBrush}"
-                BorderBrush="#E5E5EA"
-                BorderThickness="0,1,0,0"
-                Padding="24,16">
+                BorderThickness="0,0,1,0">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <TextBox x:Name="MessageInput"
-                        Grid.Column="0"
-                        Style="{StaticResource ChatInputBox}"
-                        Text="{Binding CurrentMessage, UpdateSourceTrigger=PropertyChanged}"
-                        Tag="Введите сообщение..."
-                        KeyDown="MessageInput_KeyDown"
-                        Margin="0,0,12,0"/>
+                <!-- Header -->
+                <Border Grid.Row="0" 
+                        Padding="20,16">
+                    <TextBlock Text="Поддержка" 
+                              FontFamily="{StaticResource AppleFont}"
+                              FontSize="24"
+                              FontWeight="SemiBold"
+                              Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                </Border>
 
-                <Button Grid.Column="1"
-                       Style="{StaticResource SendButton}"
-                       Command="{Binding SendMessageCommand}"
-                       IsEnabled="{Binding CanSendMessage}">
-                    <materialDesign:PackIcon Kind="Send" 
-                                           Width="20" 
-                                           Height="20" Margin="4,0,0,0"/>
-                </Button>
+                <!-- New Chat Button -->
+                <Border Grid.Row="1"
+                        Padding="20,8,20,16">
+                    <Button Style="{StaticResource NewChatButton}"
+                            Command="{Binding CreateNewChatCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" 
+                                                   Width="16" 
+                                                   Height="16" 
+                                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="Новый чат" 
+                                     FontFamily="{StaticResource AppleFont}"
+                                     FontSize="14"
+                                     FontWeight="Medium"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
+
+                <!-- Chat List -->
+                <ScrollViewer Grid.Row="2"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Chats}"
+                                 Margin="0,0,0,16">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Основная область чата -->
+                                    <Border Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            Style="{StaticResource ChatItemBorder}"
+                                            Cursor="Hand">
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick"
+                                                        Command="{Binding DataContext.SelectChatCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                        CommandParameter="{Binding}"/>
+                                        </Border.InputBindings>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Текст чата -->
+                                            <StackPanel Grid.Column="0"
+                                                       Margin="0,0,12,0">
+                                                <TextBlock Text="{Binding Title}"
+                                                          Style="{StaticResource ChatItemTitleText}"
+                                                          TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding StartedAt, StringFormat='dd.MM.yyyy HH:mm'}"
+                                                          Style="{StaticResource ChatItemDateText}"/>
+                                            </StackPanel>
+
+                                            <!-- Кнопка удаления -->
+                                            <Button Grid.Column="1"
+                                                   Command="{Binding DataContext.DeleteChatCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                   CommandParameter="{Binding}"
+                                                   Style="{StaticResource DeleteChatButtonStyle}"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </Grid>
         </Border>
 
-        <Border Grid.Row="1"
-                Background="#80FFFFFF"
-                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                CornerRadius="12"
-                Padding="24,16">
-            <StackPanel Orientation="Horizontal">
-                <ProgressBar IsIndeterminate="True"
-                           Width="20"
-                           Height="20"
-                           Margin="0,0,12,0"/>
-                <TextBlock Text="Печатает..."
-                          FontFamily="{StaticResource AppleFont}"
-                          FontSize="15"
-                          Foreground="{StaticResource AppleTextSecondaryBrush}"
-                          VerticalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+        <!-- Splitter -->
+        <GridSplitter Grid.Column="1" 
+                     Width="1" 
+                     Background="#E5E5EA" 
+                     HorizontalAlignment="Center" 
+                     VerticalAlignment="Stretch"/>
+
+        <!-- Chat Area -->
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Chat Header -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource AppleCardBackgroundBrush}"
+                    BorderBrush="#E5E5EA"
+                    BorderThickness="0,0,0,1"
+                    Padding="24,16">
+                <Grid>
+                    <StackPanel Visibility="{Binding SelectedChat, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{Binding SelectedChat.Title}" 
+                                  FontFamily="{StaticResource AppleFont}"
+                                  FontSize="20"
+                                  FontWeight="SemiBold"
+                                  Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <TextBlock Text="AI-ассистент готов помочь"
+                                  FontFamily="{StaticResource AppleFont}"
+                                  FontSize="14"
+                                  Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                  Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding SelectedChat, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}">
+                        <TextBlock Text="Выберите чат" 
+                                  FontFamily="{StaticResource AppleFont}"
+                                  FontSize="20"
+                                  FontWeight="SemiBold"
+                                  Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        <TextBlock Text="Создайте новый чат или выберите существующий"
+                                  FontFamily="{StaticResource AppleFont}"
+                                  FontSize="14"
+                                  Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                  Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Messages Area -->
+            <ScrollViewer Grid.Row="1" 
+                          x:Name="MessageScrollViewer"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="0,16,0,16"
+                          Visibility="{Binding SelectedChat, Converter={StaticResource NullToVisibilityConverter}}">
+                <ItemsControl ItemsSource="{Binding Messages}"
+                             ItemTemplateSelector="{StaticResource MessageTemplateSelector}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Empty State -->
+            <Grid Grid.Row="1"
+                  Visibility="{Binding SelectedChat, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}">
+                <StackPanel HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="ChatOutline"
+                                           Width="64"
+                                           Height="64"
+                                           Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                           Opacity="0.5"
+                                           HorizontalAlignment="Center"/>
+                    <TextBlock Text="Начните новый разговор"
+                              FontFamily="{StaticResource AppleFont}"
+                              FontSize="18"
+                              FontWeight="Medium"
+                              Foreground="{StaticResource AppleTextSecondaryBrush}"
+                              HorizontalAlignment="Center"
+                              Margin="0,16,0,8"/>
+                    <TextBlock Text="Нажмите &quot;Новый чат&quot; чтобы начать"
+                              FontFamily="{StaticResource AppleFont}"
+                              FontSize="14"
+                              Foreground="{StaticResource AppleTextSecondaryBrush}"
+                              HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Input Area -->
+            <Border Grid.Row="2"
+                    Background="{StaticResource AppleCardBackgroundBrush}"
+                    BorderBrush="#E5E5EA"
+                    BorderThickness="0,1,0,0"
+                    Padding="24,16"
+                    Visibility="{Binding SelectedChat, Converter={StaticResource NullToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="MessageInput"
+                            Grid.Column="0"
+                            Style="{StaticResource ChatInputBox}"
+                            Text="{Binding CurrentMessage, UpdateSourceTrigger=PropertyChanged}"
+                            Tag="Введите сообщение..."
+                            KeyDown="MessageInput_KeyDown"
+                            Margin="0,0,12,0"/>
+
+                    <Button Grid.Column="1"
+                           Style="{StaticResource SendButton}"
+                           Command="{Binding SendMessageCommand}"
+                           IsEnabled="{Binding CanSendMessage}">
+                        <materialDesign:PackIcon Kind="Send" 
+                                               Width="20" 
+                                               Height="20" 
+                                               Margin="4,0,0,0"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Loading Indicator -->
+            <Border Grid.Row="1"
+                    Background="#80FFFFFF"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    CornerRadius="12"
+                    Padding="24,16">
+                <StackPanel Orientation="Horizontal">
+                    <ProgressBar IsIndeterminate="True"
+                               Width="20"
+                               Height="20"
+                               Margin="0,0,12,0"/>
+                    <TextBlock Text="Печатает..."
+                              FontFamily="{StaticResource AppleFont}"
+                              FontSize="15"
+                              Foreground="{StaticResource AppleTextSecondaryBrush}"
+                              VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

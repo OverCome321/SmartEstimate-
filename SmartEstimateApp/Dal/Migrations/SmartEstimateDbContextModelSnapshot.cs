@@ -22,6 +22,29 @@ namespace Dal.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Dal.DbModels.Chat", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("StartedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chats");
+                });
+
             modelBuilder.Entity("Dal.DbModels.Client", b =>
                 {
                     b.Property<long>("Id")
@@ -171,6 +194,38 @@ namespace Dal.Migrations
                     b.ToTable("EstimateItems");
                 });
 
+            modelBuilder.Entity("Dal.DbModels.Message", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ChatId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SenderUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("SentAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Dal.DbModels.Project", b =>
                 {
                     b.Property<long>("Id")
@@ -271,6 +326,27 @@ namespace Dal.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CreatedAt = new DateTime(2025, 5, 23, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "ai-bot@smartestimate.local",
+                            PasswordHash = "4oE1mrDmrgwLT6c18gux3DKApC6SsZF6CpBElbufU5/1hgDRxyGt8Ap/IYHWOmCi",
+                            RoleId = 1L
+                        });
+                });
+
+            modelBuilder.Entity("Dal.DbModels.Chat", b =>
+                {
+                    b.HasOne("Dal.DbModels.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Dal.DbModels.Client", b =>
@@ -305,6 +381,25 @@ namespace Dal.Migrations
                     b.Navigation("Estimate");
                 });
 
+            modelBuilder.Entity("Dal.DbModels.Message", b =>
+                {
+                    b.HasOne("Dal.DbModels.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dal.DbModels.User", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("SenderUser");
+                });
+
             modelBuilder.Entity("Dal.DbModels.Project", b =>
                 {
                     b.HasOne("Dal.DbModels.Client", "Client")
@@ -327,6 +422,11 @@ namespace Dal.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Dal.DbModels.Chat", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("Dal.DbModels.Estimate", b =>
                 {
                     b.Navigation("Items");
@@ -339,6 +439,8 @@ namespace Dal.Migrations
 
             modelBuilder.Entity("Dal.DbModels.User", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("Clients");
                 });
 #pragma warning restore 612, 618

@@ -21,6 +21,6 @@ namespace Dal.DbModels
 
         public Client Client { get; set; }
 
-        public List<Estimate> Estimates { get; set; } = new List<Estimate>();
+        public List<Estimate> Estimates { get; set; }
     }
 }

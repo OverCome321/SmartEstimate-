@@ -19,6 +19,7 @@ namespace Bl.DI
             services.AddScoped<IClientBL, ClientBL>();
             services.AddScoped<IProjectBL, ProjectBL>();
             services.AddScoped<IEmailService, EmailServiceBL>();
+            services.AddScoped<IChatBL, ChatBL>();
             services.AddScoped<EmailVerificationServiceBL>();
             return services;
         }

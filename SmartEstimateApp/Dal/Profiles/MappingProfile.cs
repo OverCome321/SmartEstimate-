@@ -140,6 +140,38 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.DisplayOrder, opt => opt.MapFrom(src => src.DisplayOrder))
                 .ForMember(dest => dest.EstimateId, opt => opt.MapFrom(src => src.Estimate != null ? src.Estimate.Id : 0))
                 .ForMember(dest => dest.Estimate, opt => opt.Ignore());
+            // Маппинг Dal.DbModels.Chat → Entities.Chat (чтение из БД)
+            CreateMap<Dal.DbModels.Chat, Entities.Chat>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.StartedAt, opt => opt.MapFrom(src => src.StartedAt))
+                .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
+
+            // Маппинг Entities.Chat → Dal.DbModels.Chat (сохранение в БД)
+            CreateMap<Entities.Chat, Dal.DbModels.Chat>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.StartedAt, opt => opt.MapFrom(src => src.StartedAt))
+                .ForMember(dest => dest.User, opt => opt.Ignore())    // навигация 
+                .ForMember(dest => dest.Messages, opt => opt.Ignore());  // сообщения пушатся через DAL
+
+            // Маппинг Dal.DbModels.Message → Entities.Message (чтение из БД)
+            CreateMap<Dal.DbModels.Message, Entities.Message>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId))
+                .ForMember(dest => dest.SenderUserId, opt => opt.MapFrom(src => src.SenderUserId))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
+                .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => src.SentAt));
+
+            // Маппинг Entities.Message → Dal.DbModels.Message (сохранение в БД)
+            CreateMap<Entities.Message, Dal.DbModels.Message>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId))
+                .ForMember(dest => dest.SenderUserId, opt => opt.MapFrom(src => src.SenderUserId))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
+                .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => src.SentAt))
+                .ForMember(dest => dest.Chat, opt => opt.Ignore())  // навигация
+                .ForMember(dest => dest.SenderUser, opt => opt.Ignore()); // навигация
         }
     }
 }

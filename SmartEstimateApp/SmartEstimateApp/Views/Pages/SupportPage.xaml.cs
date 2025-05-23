@@ -1,4 +1,6 @@
-﻿using OpenAIService.Interfaces;
+﻿using AutoMapper;
+using Bl.Interfaces;
+using OpenAIService.Interfaces;
 using SmartEstimateApp.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,10 +11,10 @@ namespace SmartEstimateApp.Views.Pages
     {
         private SupportPageViewModel ViewModel { get; set; }
 
-        public SupportPage(IOpenAiService openAiService)
+        public SupportPage(IOpenAiService openAiService, IMapper mapper, HomeWindowViewModel homeWindowViewModel, IChatBL chatBL)
         {
             InitializeComponent();
-            ViewModel = new SupportPageViewModel(openAiService);
+            ViewModel = new SupportPageViewModel(chatBL, openAiService, mapper, homeWindowViewModel);
             this.DataContext = ViewModel;
 
             if (ViewModel != null)
