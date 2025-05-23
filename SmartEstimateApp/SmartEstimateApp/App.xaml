@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="/Resources/DashboardDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/HomeDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/ClientsDictionary.xaml"/>
+                <ResourceDictionary Source="/Resources/SupportChatDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Конвертеры -->

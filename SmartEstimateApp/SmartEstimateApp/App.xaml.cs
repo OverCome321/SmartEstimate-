@@ -210,21 +210,13 @@ namespace SmartEstimateApp
 
             if (File.Exists(tempHfKeyFile) && !SberApiKeyEncryptor.ApiKeyExists())
             {
-                try
+                string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
+                if (!string.IsNullOrEmpty(rawKey))
                 {
-                    string rawKey = File.ReadAllText(tempHfKeyFile).Trim();
-                    if (!string.IsNullOrEmpty(rawKey))
-                    {
-                        SberApiKeyEncryptor.SaveApiKey(rawKey);
-                        File.Delete(tempHfKeyFile);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при инициализации HF-ключа: {ex.Message}");
+                    SberApiKeyEncryptor.SaveApiKey(rawKey);
+                    File.Delete(tempHfKeyFile);
                 }
             }
         }
     }
-
 }
