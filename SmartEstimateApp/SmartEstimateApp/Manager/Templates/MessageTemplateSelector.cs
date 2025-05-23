@@ -8,14 +8,16 @@ public class MessageTemplateSelector : DataTemplateSelector
 {
     public DataTemplate UserTemplate { get; set; }
     public DataTemplate AssistantTemplate { get; set; }
+    private const long BotUserId = 1;
 
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
     {
-        if (item is ChatMessage message)
+        if (item is Message msg)
         {
-            return message.IsFromUser ? UserTemplate : AssistantTemplate;
+            return msg.SenderUserId == BotUserId
+                ? AssistantTemplate
+                : UserTemplate;
         }
-
         return base.SelectTemplate(item, container);
     }
 }

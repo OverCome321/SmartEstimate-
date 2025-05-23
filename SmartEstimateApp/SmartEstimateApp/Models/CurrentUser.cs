@@ -4,11 +4,11 @@
     {
         private static readonly Lazy<CurrentUser> _instance = new Lazy<CurrentUser>(() => new CurrentUser(), isThreadSafe: true);
 
-        private User _user;
+        private User? _user;
 
         public static CurrentUser Instance => _instance.Value;
 
-        public User User
+        public User? User
         {
             get => _user;
             private set => _user = value;

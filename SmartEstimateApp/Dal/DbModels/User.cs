@@ -20,6 +20,8 @@ namespace Dal.DbModels
 
         public DateTime? LastLogin { get; set; }
 
-        public ICollection<Client> Clients { get; set; } = new List<Client>();
+        public ICollection<Client> Clients { get; set; }
+
+        public ICollection<Chat> Chats { get; set; }
     }
 }

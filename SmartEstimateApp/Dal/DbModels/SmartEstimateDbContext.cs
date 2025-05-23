@@ -13,6 +13,8 @@ namespace Dal.DbModels
         public DbSet<User> Users { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         /// <summary>
         /// Конструктор контекста базы данных
@@ -171,6 +173,52 @@ namespace Dal.DbModels
                       .WithMany(e => e.Items)
                       .HasForeignKey(e => e.EstimateId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<Chat>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                                      .UseIdentityColumn();
+                entity.Property(e => e.StartedAt)
+                                      .IsRequired()
+                                      .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.HasOne(e => e.User)
+                                      .WithMany(u => u.Chats)
+                                      .HasForeignKey(e => e.UserId)
+                                      .OnDelete(DeleteBehavior.Cascade);
+            });
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                                      .UseIdentityColumn();
+                entity.Property(e => e.Text)
+                                      .IsRequired();
+                entity.Property(e => e.SentAt)
+                                      .IsRequired()
+                                      .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.HasOne(e => e.Chat)
+                                      .WithMany(c => c.Messages)
+                                      .HasForeignKey(e => e.ChatId)
+                                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.SenderUser)
+                                      .WithMany()
+                                      .HasForeignKey(e => e.SenderUserId)
+                                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            const long BotUserId = 1;
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = BotUserId,
+                Email = "ai-bot@smartestimate.local",
+                PasswordHash = "4oE1mrDmrgwLT6c18gux3DKApC6SsZF6CpBElbufU5/1hgDRxyGt8Ap/IYHWOmCi",
+                RoleId = 1,
+                CreatedAt = new DateTime(2025, 5, 23, 0, 0, 0, DateTimeKind.Utc),
+                LastLogin = null
             });
         }
     }

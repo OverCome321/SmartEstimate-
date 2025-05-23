@@ -2,12 +2,53 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                    
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"       
                     xmlns:template="clr-namespace:SmartEstimateApp.Manager.Templates">
-    
+
+    <!-- Avatar Styles -->
+    <Style x:Key="UserAvatarBorder" TargetType="Border">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#007AFF" Offset="0"/>
+                    <GradientStop Color="#5856D6" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style x:Key="AssistantAvatarBorder" TargetType="Border">
+        <Setter Property="Width" Value="32"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#F2F2F7" Offset="0"/>
+                    <GradientStop Color="#E5E5EA" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#D1D1D6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style x:Key="AvatarIcon" TargetType="materialDesign:PackIcon">
+        <Setter Property="Width" Value="18"/>
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Message Bubble Styles -->
     <Style x:Key="UserMessageBubble" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource ApplePrimaryBrush}"/>
         <Setter Property="CornerRadius" Value="18,18,4,18"/>
         <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="Margin" Value="60,4,16,4"/>
+        <Setter Property="Margin" Value="12,4,16,4"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="MaxWidth" Value="320"/>
     </Style>
@@ -16,13 +57,14 @@
         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
         <Setter Property="CornerRadius" Value="18,18,18,4"/>
         <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="Margin" Value="16,4,60,4"/>
+        <Setter Property="Margin" Value="12,4,16,4"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="MaxWidth" Value="320"/>
         <Setter Property="BorderBrush" Value="#E5E5EA"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
+    <!-- Message Text Styles -->
     <Style x:Key="UserMessageText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
@@ -44,10 +86,148 @@
     <Style x:Key="MessageTimeText" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="Regular"/>
         <Setter Property="Margin" Value="0,4,0,0"/>
         <Setter Property="Opacity" Value="0.7"/>
+    </Style>
+
+    <!-- Chat List Styles -->
+    <Style x:Key="ChatItemBorder" TargetType="Border">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="16,14"/>
+        <Setter Property="Margin" Value="8,1,8,1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#F8F9FA"/>
+                <Setter Property="BorderBrush" Value="#E5E5EA"/>
+            </Trigger>
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="Background" Value="#E3F2FD"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ApplePrimaryBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ChatItemTitleText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <Style x:Key="ChatItemDateText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Regular"/>
+        <Setter Property="Foreground" Value="{StaticResource AppleTextSecondaryBrush}"/>
+    </Style>
+
+    <!-- Delete Chat Button Style -->
+    <Style x:Key="DeleteChatButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="28"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Background" Value="#FF3B30"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="8,0,0,0"/>
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="14">
+                        <materialDesign:PackIcon Kind="TrashCanOutline"
+                                               Width="14"
+                                               Height="14"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#D70015"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="#FF3B30" Opacity="0.3" ShadowDepth="2" BlurRadius="8"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#B8000F"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=IsMouseOver}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                           To="1"
+                                           Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                           To="0"
+                                           Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- New Chat Button Style -->
+    <Style x:Key="NewChatButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource ApplePrimaryBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#0056CC"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#004499"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#C7C7CC"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Input Box Style -->
@@ -67,21 +247,21 @@
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="22">
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="22">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost" 
-                                            Margin="{TemplateBinding Padding}"
-                                            VerticalAlignment="Center"/>
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
                             <TextBlock x:Name="PlaceholderText"
-                                         Text="{TemplateBinding Tag}"
-                                         Foreground="{StaticResource AppleTextSecondaryBrush}"
-                                         Margin="{TemplateBinding Padding}"
-                                         VerticalAlignment="Center"
-                                         IsHitTestVisible="False"
-                                         Visibility="Collapsed"/>
+                                     Text="{TemplateBinding Tag}"
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                     Margin="{TemplateBinding Padding}"
+                                     VerticalAlignment="Center"
+                                     IsHitTestVisible="False"
+                                     Visibility="Collapsed"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -118,10 +298,10 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="22">
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="22">
                         <ContentPresenter HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"/>
+                                        VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -139,32 +319,77 @@
         </Setter>
     </Style>
 
+    <!-- Message Templates -->
     <DataTemplate x:Key="UserMessageTemplate">
-        <StackPanel>
-            <Border Style="{StaticResource UserMessageBubble}">
-                <TextBlock Text="{Binding Content}" Style="{StaticResource UserMessageText}"/>
+        <Grid Margin="0,6,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Time -->
+            <TextBlock Grid.Column="0"
+                       Text="{Binding SentAt, StringFormat='HH:mm'}"
+                       Style="{StaticResource MessageTimeText}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Margin="0,0,0,16"/>
+
+            <!-- Message -->
+            <Border Grid.Column="1"
+                    Style="{StaticResource UserMessageBubble}">
+                <TextBlock Text="{Binding Text}"
+                           Style="{StaticResource UserMessageText}"/>
             </Border>
-            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" 
-                   Style="{StaticResource MessageTimeText}"
-                   HorizontalAlignment="Right"
-                   Margin="0,0,16,8"/>
-        </StackPanel>
+
+            <!-- Avatar -->
+            <Border Grid.Column="2"
+                    Style="{StaticResource UserAvatarBorder}"
+                    Margin="0,0,16,0">
+                <materialDesign:PackIcon Kind="Account"
+                                       Style="{StaticResource AvatarIcon}"
+                                       Foreground="White"/>
+            </Border>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="AssistantMessageTemplate">
-        <StackPanel>
-            <Border Style="{StaticResource AssistantMessageBubble}">
-                <TextBlock Text="{Binding Content}" Style="{StaticResource AssistantMessageText}"/>
+        <Grid Margin="0,6,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Avatar -->
+            <Border Grid.Column="0"
+                    Style="{StaticResource AssistantAvatarBorder}"
+                    Margin="16,0,0,0">
+                <materialDesign:PackIcon Kind="Robot"
+                                       Style="{StaticResource AvatarIcon}"
+                                       Foreground="{StaticResource ApplePrimaryBrush}"/>
             </Border>
-            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" 
-                   Style="{StaticResource MessageTimeText}"
-                   HorizontalAlignment="Left"
-                   Margin="16,0,0,8"/>
-        </StackPanel>
+
+            <!-- Message -->
+            <Border Grid.Column="1"
+                    Style="{StaticResource AssistantMessageBubble}">
+                <TextBlock Text="{Binding Text}"
+                           Style="{StaticResource AssistantMessageText}"/>
+            </Border>
+
+            <!-- Time -->
+            <TextBlock Grid.Column="2"
+                       Text="{Binding SentAt, StringFormat='HH:mm'}"
+                       Style="{StaticResource MessageTimeText}"
+                       VerticalAlignment="Bottom"
+                       Margin="0,0,0,16"/>
+        </Grid>
     </DataTemplate>
 
-    <template:MessageTemplateSelector x:Key="MessageTemplateSelector"
-                              UserTemplate="{StaticResource UserMessageTemplate}"
-                              AssistantTemplate="{StaticResource AssistantMessageTemplate}"/>
+    <template:MessageTemplateSelector
+      x:Key="MessageTemplateSelector"
+      UserTemplate="{StaticResource UserMessageTemplate}"
+      AssistantTemplate="{StaticResource AssistantMessageTemplate}"/>
 
 </ResourceDictionary>
