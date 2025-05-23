@@ -48,7 +48,7 @@
         <Setter Property="Background" Value="{StaticResource ApplePrimaryBrush}"/>
         <Setter Property="CornerRadius" Value="18,18,4,18"/>
         <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="Margin" Value="44,4,16,4"/>
+        <Setter Property="Margin" Value="12,4,16,4"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="MaxWidth" Value="320"/>
     </Style>
@@ -57,7 +57,7 @@
         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
         <Setter Property="CornerRadius" Value="18,18,18,4"/>
         <Setter Property="Padding" Value="16,12"/>
-        <Setter Property="Margin" Value="44,4,60,4"/>
+        <Setter Property="Margin" Value="12,4,16,4"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="MaxWidth" Value="320"/>
         <Setter Property="BorderBrush" Value="#E5E5EA"/>
@@ -334,7 +334,7 @@
                        Style="{StaticResource MessageTimeText}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
-                       Margin="0,0,12,16"/>
+                       Margin="0,0,0,16"/>
 
             <!-- Message -->
             <Border Grid.Column="1"
@@ -346,7 +346,7 @@
             <!-- Avatar -->
             <Border Grid.Column="2"
                     Style="{StaticResource UserAvatarBorder}"
-                    Margin="8,0,16,0">
+                    Margin="0,0,16,0">
                 <materialDesign:PackIcon Kind="Account"
                                        Style="{StaticResource AvatarIcon}"
                                        Foreground="White"/>
@@ -365,7 +365,7 @@
             <!-- Avatar -->
             <Border Grid.Column="0"
                     Style="{StaticResource AssistantAvatarBorder}"
-                    Margin="16,0,8,0">
+                    Margin="16,0,0,0">
                 <materialDesign:PackIcon Kind="Robot"
                                        Style="{StaticResource AvatarIcon}"
                                        Foreground="{StaticResource ApplePrimaryBrush}"/>
@@ -383,7 +383,7 @@
                        Text="{Binding SentAt, StringFormat='HH:mm'}"
                        Style="{StaticResource MessageTimeText}"
                        VerticalAlignment="Bottom"
-                       Margin="12,0,0,16"/>
+                       Margin="0,0,0,16"/>
         </Grid>
     </DataTemplate>
 
