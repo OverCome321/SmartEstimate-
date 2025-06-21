@@ -5,397 +5,210 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:converters="clr-namespace:SmartEstimateApp.Converters"
       mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="1200"
+      d:DesignHeight="1200" d:DesignWidth="1000"
       Title="Редактировать проект">
-
+    
     <Grid Background="{StaticResource AppleBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Заголовок -->
         <Border Grid.Row="0" Background="{StaticResource AppleCardBackgroundBrush}" 
                 BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="0,0,0,1"
-                Padding="32,24" Margin="0,0,0,24">
-            <Grid>
+                Padding="24">
+            <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Vertical">
-                    <TextBlock Text="Редактировать проект" FontFamily="{StaticResource AppleFont}" 
+                <Button Grid.Column="0" 
+                        Style="{StaticResource AppleCloseButtonStyle}" 
+                        Command="{Binding CancelCommand}"
+                        VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Close" Width="20" Height="20"/>
+                </Button>
+
+                <!-- Заголовок -->
+                <StackPanel Grid.Column="1" Orientation="Vertical" 
+                            VerticalAlignment="Center" 
+                            Margin="24,0,0,0">
+                    <!-- Отступ слева от крестика -->
+                    <TextBlock Text="Проект и сметы" FontFamily="{StaticResource AppleFont}" 
                                FontWeight="SemiBold" FontSize="28" 
                                Foreground="{StaticResource AppleTextPrimaryBrush}"/>
-                    <TextBlock Text="Обновите сведения и параметры проекта" 
+                    <TextBlock Text="Заполните информацию о проекте и добавьте необходимые сметы" 
                                FontFamily="{StaticResource AppleFont}" FontSize="16"
                                Foreground="{StaticResource AppleTextSecondaryBrush}"
                                Margin="0,8,0,0"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="Отмена" Style="{StaticResource AppleCardPrimaryButton}" 
-                            Margin="0,0,16,0" Command="{Binding CancelCommand}"/>
-                    <Button Content="Сохранить изменения" Width="160" Height="36" 
-                            FontFamily="{StaticResource AppleFont}" FontSize="15" 
-                            FontWeight="SemiBold" Foreground="White"
-                            Background="{StaticResource ApplePrimaryBrush}" 
-                            BorderBrush="{StaticResource ApplePrimaryBrush}" 
-                            BorderThickness="0" Cursor="Hand"
-                            Command="{Binding SaveCommand}" 
-                            materialDesign:ButtonAssist.CornerRadius="12">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="border"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="12">
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                                     VerticalAlignment="Center"
-                                                     RecognizesAccessKey="True"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="border" Property="Background" Value="{StaticResource AppleSecondaryBrush}"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="border" Property="Background" Value="#0262CA"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter TargetName="border" Property="Opacity" Value="0.6"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </StackPanel>
+                <!-- Кнопка Сохранить -->
+                <Button Grid.Column="2" Content="Сохранить" 
+                        Style="{StaticResource ApplePrimaryButton}"
+                        Command="{Binding SaveProjectCommand}" Width="100"
+                        VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
-        <!-- Содержимое -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" 
-                      HorizontalScrollBarVisibility="Disabled" Padding="32,0,32,32">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Левая колонка -->
-                <StackPanel Grid.Column="0" Margin="24">
-                    <!-- Информация о проекте -->
-                    <Border Style="{StaticResource DashboardCardAnimated}" Background="{StaticResource AppleCardBackgroundBrush}" 
-                            BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="1"
-                            CornerRadius="16" Padding="24">
-                        <StackPanel>
-                            <TextBlock Text="Информация о проекте" FontFamily="{StaticResource AppleFont}" 
-                                       FontWeight="SemiBold" FontSize="18" 
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,16"/>
-
-                            <TextBlock Text="Название проекта" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,8"/>
-                            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource ClientSeacrhBox}"
-                                     materialDesign:HintAssist.Hint="Введите название проекта"
-                                     Margin="0,0,0,16"/>
-
-                            <TextBlock Text="Клиент" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,8"/>
-                            <ComboBox ItemsSource="{Binding Clients}" 
-                                      SelectedItem="{Binding SelectedClient}"
+                      HorizontalScrollBarVisibility="Disabled" Padding="32,24">
+            <StackPanel>
+                <Border Style="{StaticResource DashboardProjectCardAnimated}">
+                    <StackPanel>
+                        <TextBlock Text="Информация о проекте" FontFamily="{StaticResource AppleFont}" 
+                                   FontWeight="SemiBold" FontSize="18" 
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
+                                   Margin="0,0,0,20"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Название проекта" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Project.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{StaticResource ProjectInputField}"
+                                        materialDesign:HintAssist.HintOpacity="0.5"
+                                         materialDesign:HintAssist.Hint="Введите название проекта"/>
+                                <TextBlock Text="Клиент" Style="{StaticResource LabelStyle}" Margin="0,16,0,8"/>
+                                <ComboBox ItemsSource="{Binding Clients}" 
+                                      SelectedItem="{Binding SelectedClient, UpdateSourceTrigger=PropertyChanged}"
                                       DisplayMemberPath="Name"
-                                      Height="44" Padding="12,8"
-                                      BorderThickness="0"
-                                      Background="{StaticResource AppleCardBackgroundBrush}"
-                                      Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                      FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                      materialDesign:HintAssist.Hint="Выберите клиента">
-                                <!-- шаблон оставлен без изменений -->
-                            </ComboBox>
+                                      Style="{StaticResource AppleComboBoxStyle}"
+                                      materialDesign:HintAssist.Hint="Выберите клиента"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Описание" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Project.Description, UpdateSourceTrigger=PropertyChanged}" 
+                                        Style="{StaticResource ProjectInputField}"
+                                        materialDesign:HintAssist.HintOpacity="0.5"
+                                         materialDesign:HintAssist.Hint="Введите описание проекта"
+                                         TextWrapping="Wrap" AcceptsReturn="True"
+                                         Height="100" VerticalContentAlignment="Top" Padding="12"/>
+                                <TextBlock Text="Статус проекта" Style="{StaticResource LabelStyle}" Margin="0,16,0,8"/>
+                                <ComboBox ItemsSource="{Binding ProjectStatusOptions}" 
+                                          DisplayMemberPath="Name"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding Project.Status, UpdateSourceTrigger=PropertyChanged}"
+                                          Style="{StaticResource AppleComboBoxStyle}"
+                                          materialDesign:HintAssist.Hint="Выберите статус"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
-                            <TextBlock Text="Описание" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,16,0,8"/>
-                            <TextBox Text="{Binding ProjectDescription, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource ClientSeacrhBox}"
-                                     materialDesign:HintAssist.Hint="Введите описание проекта"
-                                     TextWrapping="Wrap" AcceptsReturn="True"
-                                     Height="100" VerticalContentAlignment="Top"
-                                     Padding="12"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Временная шкала проекта -->
-                    <Border Style="{StaticResource DashboardCardAnimated}" 
-                            Background="{StaticResource AppleCardBackgroundBrush}" 
-                            BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="1"
-                            CornerRadius="16" Padding="24">
-                        <StackPanel>
-                            <TextBlock Text="Временные рамки проекта" FontFamily="{StaticResource AppleFont}" 
+                <!-- 2. СМЕТЫ ПРОЕКТА -->
+                <Border Style="{StaticResource DashboardProjectCardAnimated}">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Сметы проекта" FontFamily="{StaticResource AppleFont}" 
                                        FontWeight="SemiBold" FontSize="18" 
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,16"/>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Дата начала" 
-                                           FontFamily="{StaticResource AppleFont}" 
-                                           FontSize="14" FontWeight="Medium"
-                                           Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                           Margin="0,0,0,8"/>
-
-                                <DatePicker Grid.Column="0" Grid.Row="1" 
-                                            SelectedDate="{Binding StartDate}" 
-                                            Height="44" Padding="12,8"
-                                            BorderThickness="0"
-                                            Background="{StaticResource AppleCardBackgroundBrush}"
-                                            Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                            FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                            materialDesign:HintAssist.Hint="Выберите дату начала"/>
-
-                                <TextBlock Grid.Column="2" Grid.Row="0" Text="Дата окончания" 
-                                           FontFamily="{StaticResource AppleFont}" 
-                                           FontSize="14" FontWeight="Medium"
-                                           Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                           Margin="0,0,0,8"/>
-
-                                <DatePicker Grid.Column="2" Grid.Row="1" 
-                                            SelectedDate="{Binding EndDate}" 
-                                            Height="44" Padding="12,8"
-                                            BorderThickness="0"
-                                            Background="{StaticResource AppleCardBackgroundBrush}"
-                                            Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                            FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                            materialDesign:HintAssist.Hint="Выберите дату окончания"/>
-                            </Grid>
-
-                            <TextBlock Text="Крайний срок" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,16,0,8"/>
-                            <DatePicker SelectedDate="{Binding Deadline}" 
-                                        Height="44" Padding="12,8"
-                                        BorderThickness="0"
-                                        Background="{StaticResource AppleCardBackgroundBrush}"
-                                        Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                        FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                        materialDesign:HintAssist.Hint="Выберите крайний срок"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-
-                <!-- Правая колонка -->
-                <StackPanel Grid.Column="2" Margin="24">
-                    <!-- Бюджет -->
-                    <Border Style="{StaticResource DashboardCardAnimated}" 
-                            Background="{StaticResource AppleCardBackgroundBrush}" 
-                            BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="1"
-                            CornerRadius="16" Padding="24">
-                        <StackPanel>
-                            <TextBlock Text="Информация о бюджете" FontFamily="{StaticResource AppleFont}" 
-                                       FontWeight="SemiBold" FontSize="18" 
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,16"/>
-
-                            <TextBlock Text="Сумма бюджета" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,8"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#F5F5F7" CornerRadius="12,0,0,12" 
-                                        Width="44" Height="44">
-                                    <TextBlock Text="₽" 
-                                               FontFamily="{StaticResource AppleFont}"
-                                               FontSize="18" FontWeight="Medium"
-                                               Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                </Border>
-                                <TextBox Grid.Column="1" Text="{Binding Budget, StringFormat=N2, UpdateSourceTrigger=PropertyChanged}" 
-                                         Height="44" Padding="12,8"
-                                         BorderThickness="0"
-                                         Background="{StaticResource AppleCardBackgroundBrush}"
-                                         Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                         FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                         materialDesign:HintAssist.Hint="Введите сумму бюджета"
-                                         VerticalContentAlignment="Center"/>
-                            </Grid>
-
-                            <TextBlock Text="Валюта" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,16,0,8"/>
-                            <ComboBox ItemsSource="{Binding Currencies}" 
-                                      SelectedItem="{Binding SelectedCurrency}"
-                                      Height="44" Padding="12,8"
-                                      BorderThickness="0"
-                                      Background="{StaticResource AppleCardBackgroundBrush}"
-                                      Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                      FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                      materialDesign:HintAssist.Hint="Выберите валюту"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Статус проекта -->
-                    <Border Style="{StaticResource DashboardCardAnimated}" 
-                            Background="{StaticResource AppleCardBackgroundBrush}" 
-                            BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="1"
-                            CornerRadius="16" Padding="24">
-                        <StackPanel>
-                            <TextBlock Text="Статус проекта" FontFamily="{StaticResource AppleFont}" 
-                                       FontWeight="SemiBold" FontSize="18" 
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,16"/>
-
-                            <TextBlock Text="Текущий статус" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,0,0,8"/>
-                            <ComboBox ItemsSource="{Binding StatusOptions}" 
-                                      SelectedItem="{Binding SelectedStatus}"
-                                      Height="44" Padding="12,8"
-                                      BorderThickness="0"
-                                      Background="{StaticResource AppleCardBackgroundBrush}"
-                                      Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                      FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                      materialDesign:HintAssist.Hint="Выберите статус"/>
-
-                            <TextBlock Text="Приоритет" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,16,0,8"/>
-                            <ComboBox ItemsSource="{Binding PriorityOptions}" 
-                                      SelectedItem="{Binding SelectedPriority}"
-                                      Height="44" Padding="12,8"
-                                      BorderThickness="0"
-                                      Background="{StaticResource AppleCardBackgroundBrush}"
-                                      Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                      FontFamily="{StaticResource AppleFont}" FontSize="14"
-                                      materialDesign:HintAssist.Hint="Выберите приоритет"/>
-
-                            <TextBlock Text="Выполнено (%)" FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       Margin="0,16,0,8"/>
-                            <Slider Value="{Binding CompletionPercentage}" 
-                                    Minimum="0" Maximum="100" 
-                                    TickFrequency="5" 
-                                    IsSnapToTickEnabled="True"
-                                    Foreground="{StaticResource ApplePrimaryBrush}"
-                                    materialDesign:SliderAssist.OnlyShowFocusVisualWhileDragging="True"/>
-                            <TextBlock Text="{Binding CompletionPercentage, StringFormat={}{0:0}%}" 
-                                       FontFamily="{StaticResource AppleFont}" 
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,8,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Участники команды -->
-                    <Border Style="{StaticResource DashboardCardAnimated}" 
-                            Background="{StaticResource AppleCardBackgroundBrush}" 
-                            BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="1"
-                            CornerRadius="16" Padding="24">
-                        <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0" Text="Участники команды" 
-                                           FontFamily="{StaticResource AppleFont}" 
-                                           FontWeight="SemiBold" FontSize="18" 
-                                           Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                           Margin="0,0,0,16"/>
-
-                                <Button Grid.Column="1" Content="Добавить участника" 
-                                        Style="{StaticResource AppleSecondaryButton}"
-                                        Command="{Binding AddMemberCommand}"/>
-                            </Grid>
-
-                            <ItemsControl ItemsSource="{Binding TeamMembers}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Background="#F5F5F7" CornerRadius="12" 
-                                                Margin="0,0,0,8" Padding="16,12">
+                                       Foreground="{StaticResource AppleTextPrimaryBrush}" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Content="Добавить смету" Style="{StaticResource AppleSecondaryButton}"
+                                    Command="{Binding AddEstimateCommand}"/>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding Project.Estimates}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Expander Style="{StaticResource EstimateExpanderStyle}">
+                                        <Expander.Header>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-
-                                                <Ellipse Grid.Column="0" Width="36" Height="36">
-                                                    <Ellipse.Fill>
-                                                        <ImageBrush ImageSource="{Binding AvatarUrl}"/>
-                                                    </Ellipse.Fill>
-                                                </Ellipse>
-
-                                                <StackPanel Grid.Column="1" Margin="12,0,0,0">
-                                                    <TextBlock Text="{Binding Name}" 
-                                                               FontFamily="{StaticResource AppleFont}" 
-                                                               FontSize="14" FontWeight="Medium"
-                                                               Foreground="{StaticResource AppleTextPrimaryBrush}"/>
-                                                    <TextBlock Text="{Binding Role}" 
-                                                               FontFamily="{StaticResource AppleFont}" 
-                                                               FontSize="12"
-                                                               Foreground="{StaticResource AppleTextSecondaryBrush}"
-                                                               Margin="0,2,0,0"/>
-                                                </StackPanel>
-
-                                                <Button Grid.Column="2" 
-                                                        Style="{StaticResource MaterialDesignIconButton}"
-                                                        Command="{Binding DataContext.RemoveMemberCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                <TextBlock Grid.Column="0" FontFamily="{StaticResource AppleFont}" FontWeight="SemiBold" FontSize="16"
+                                                           Foreground="{StaticResource AppleTextPrimaryBrush}">
+                                                    <Run Text="Смета №"/>
+                                                    <Run Text="{Binding Number}"/>
+                                                </TextBlock>
+                                                <TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{StaticResource AppleSuccessBrush}"
+                                                           FontWeight="Medium" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding TotalAmount, StringFormat='{}{0:C}'}" 
+                                                           FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource AppleTextPrimaryBrush}"
+                                                           VerticalAlignment="Center" Margin="0,0,24,0"/>
+                                                <Button Grid.Column="3" Style="{StaticResource MaterialDesignIconButton}"
+                                                        Command="{Binding DataContext.RemoveEstimateCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                         CommandParameter="{Binding}">
-                                                    <materialDesign:PackIcon Kind="Close" 
-                                                                             Width="16" Height="16"
-                                                                             Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                                                    <materialDesign:PackIcon Kind="DeleteOutline" Foreground="{StaticResource AppleErrorBrush}"/>
                                                 </Button>
                                             </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <Border Background="#F5F5F7" CornerRadius="12" 
-                                    Margin="0,8,0,0" Padding="16,12"
-                                    BorderThickness="2" BorderBrush="#DCDCE2"
-                                    Visibility="{Binding HasNoTeamMembers, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Text="Пока нет ни одного участника" 
-                                           FontFamily="{StaticResource AppleFont}" 
-                                           FontSize="14" 
-                                           Foreground="{StaticResource AppleTextSecondaryBrush}"
-                                           HorizontalAlignment="Center"/>
-                            </Border>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Grid>
+                                        </Expander.Header>
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,24">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="24"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="24"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Действительна до" Style="{StaticResource LabelStyle}"/>
+                                                    <DatePicker SelectedDate="{Binding ValidUntil}" Style="{StaticResource AppleDatePickerStyle}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="Скидка, %" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBox Text="{Binding DiscountRate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ProjectInputField}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="4">
+                                                    <TextBlock Text="Валюта" Style="{StaticResource LabelStyle}"/>
+                                                    <ComboBox ItemsSource="{Binding DataContext.Currencies, RelativeSource={RelativeSource AncestorType=Page}}" 
+                                                              SelectedItem="{Binding Currency}" Style="{StaticResource AppleComboBoxStyle}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            <Grid Margin="0,0,0,12">
+                                                <TextBlock Text="Позиции сметы" FontFamily="{StaticResource AppleFont}" 
+                                                           FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                                                <Button Content="Добавить позицию" Style="{StaticResource AppleSecondaryButton}" HorizontalAlignment="Right"
+                                                        Command="{Binding DataContext.AddEstimateItemCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </Grid>
+                                            <DataGrid ItemsSource="{Binding Items}"
+                                                      Style="{StaticResource AppleDataGridStyle}"
+                                                      ColumnHeaderStyle="{StaticResource AppleDataGridColumnHeaderStyle}"
+                                                      CellStyle="{StaticResource AppleDataGridCellStyle}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="3*"/>
+                                                    <DataGridTextColumn Header="Кол-во" Binding="{Binding Quantity, StringFormat=N2}" Width="*"/>
+                                                    <DataGridTextColumn Header="Цена за ед." Binding="{Binding UnitPrice, StringFormat=N2}" Width="*"/>
+                                                    <DataGridTextColumn Header="Сумма" Binding="{Binding TotalPrice, StringFormat=N2}" Width="*" IsReadOnly="True"/>
+                                                    <DataGridTemplateColumn Width="Auto">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                                        Command="{Binding DataContext.RemoveEstimateItemCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                                        CommandParameter="{Binding}">
+                                                                    <materialDesign:PackIcon Kind="Close" Width="16" Height="16" Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                                                                </Button>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </StackPanel>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="В этом проекте еще нет ни одной сметы. Нажмите 'Добавить смету', чтобы начать."
+                               Style="{StaticResource PlaceholderTextStyle}"
+                               Visibility="{Binding NoEstimates, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </Page>

@@ -74,11 +74,8 @@
                          materialDesign:HintAssist.Hint="Поиск по имени, email, телефону или адресу..."
                          materialDesign:HintAssist.HintOpacity="0.5"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         CaretBrush="{StaticResource AppleTextPrimaryBrush}"
-                         SelectionBrush="#8086868B"
                          VerticalAlignment="Center"
                          FontSize="14"
-                         Foreground="{StaticResource AppleTextPrimaryBrush}"
                          Height="40" Margin="0,0,8,0"/>
 
                     <Button Grid.Column="2" 

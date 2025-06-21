@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="/Resources/HomeDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/ClientsDictionary.xaml"/>
                 <ResourceDictionary Source="/Resources/SupportChatDictionary.xaml"/>
+                <ResourceDictionary Source="/Resources/ProjectsDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Конвертеры -->
@@ -35,6 +36,7 @@
             <converters:CardViewVisibilityConverter  x:Key="CardViewVisibilityConverter"/>
             <converters:TableViewVisibilityConverter  x:Key="TableViewVisibilityConverter"/>
             <converters:NullToVisibilityConverter  x:Key="NullToVisibilityConverter"/>
+            <converters:CollectionEmptyToVisibilityConverter  x:Key="CollectionEmptyToVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

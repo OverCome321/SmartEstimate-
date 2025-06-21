@@ -1,4 +1,6 @@
-﻿namespace Entities
+﻿using System.Collections.ObjectModel;
+
+namespace Entities
 {
     public class Project
     {
@@ -14,10 +16,12 @@
 
         public int Status { get; set; }
 
-        public Client Client { get; set; }
+        public long? ClientId { get; set; }
 
-        public User User { get; set; }
+        public string ClientName { get; set; }
 
-        public List<Estimate> Estimates { get; set; } = new List<Estimate>();
+        public long UserId { get; set; }
+
+        public ObservableCollection<Estimate> Estimates { get; set; } = new ObservableCollection<Estimate>();
     }
 }

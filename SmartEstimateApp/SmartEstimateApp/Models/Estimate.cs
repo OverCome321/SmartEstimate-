@@ -1,4 +1,4 @@
-﻿namespace Entities
+﻿namespace SmartEstimateApp.Models
 {
     public class Estimate
     {

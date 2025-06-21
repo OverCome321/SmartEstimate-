@@ -29,7 +29,7 @@ public class ProjectBLTests
         {
             Id = 0,
             Name = "Test Project",
-            Client = new Client { Id = 1 },
+            ClientId = 1,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
@@ -58,7 +58,7 @@ public class ProjectBLTests
     public async Task AddOrUpdateAsync_EmptyName_ThrowsArgumentException()
     {
         // Arrange
-        var project = new Project { Name = "", Client = new Client { Id = 1 } };
+        var project = new Project { Name = "", ClientId = 1 };
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _projectBL.AddOrUpdateAsync(project));
@@ -70,11 +70,11 @@ public class ProjectBLTests
     public async Task AddOrUpdateAsync_NoClient_ThrowsArgumentException()
     {
         // Arrange
-        var project = new Project { Name = "Test Project", Client = null };
+        var project = new Project { Name = "Test Project", ClientId = null };
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _projectBL.AddOrUpdateAsync(project));
-        Assert.Equal(ErrorMessages.ClientIdNotSpecified + " (Parameter 'Client')", exception.Message);
+        Assert.Equal(ErrorMessages.ClientIdNotSpecified + " (Parameter 'ClientId')", exception.Message);
         _loggerMock.VerifyLog(LogLevel.Warning, Times.AtLeastOnce());
     }
 
@@ -86,7 +86,7 @@ public class ProjectBLTests
         {
             Id = 0,
             Name = "Test Project",
-            Client = new Client { Id = 1, User = new User { Id = 1 } }
+            ClientId = 1
         };
 
         _projectDalMock
@@ -142,7 +142,7 @@ public class ProjectBLTests
     {
         // Arrange
         const long id = 1;
-        var project = new Project { Id = id, Name = "Test Project", Client = new Client { Id = 1 } };
+        var project = new Project { Id = id, Name = "Test Project", ClientId = 1 };
         _projectDalMock.Setup(d => d.GetAsync(id, true))
             .ReturnsAsync(project);
 
@@ -152,7 +152,7 @@ public class ProjectBLTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(id, result.Id);
-        Assert.NotNull(result.Client);
+        Assert.NotNull(result.ClientId);
         _loggerMock.VerifyLog(LogLevel.Debug, Times.AtLeastOnce());
     }
 
@@ -176,7 +176,7 @@ public class ProjectBLTests
     {
         // Arrange
         var searchParams = new ProjectSearchParams { Name = "Test", UserId = 1 };
-        var project = new Project { Id = 1, Name = "Test Project", Client = new Client { Id = 1 } };
+        var project = new Project { Id = 1, Name = "Test Project", ClientId = 1 };
         var searchResult = new SearchResult<Project> { Objects = new[] { project }, Total = 1 };
         _projectDalMock.Setup(d => d.GetAsync(It.Is<ProjectSearchParams>(p => p.Name == searchParams.Name && p.UserId == searchParams.UserId), true))
             .ReturnsAsync(searchResult);
@@ -189,7 +189,7 @@ public class ProjectBLTests
         Assert.Equal(1, result.Total);
         Assert.Single(result.Objects);
         Assert.Equal(project.Name, result.Objects.First().Name);
-        Assert.NotNull(result.Objects.First().Client);
+        Assert.NotNull(result.Objects.First().ClientId);
         _loggerMock.VerifyLog(LogLevel.Debug, Times.AtLeastOnce());
     }
 

@@ -16,12 +16,13 @@ namespace SmartEstimateApp.Mappings
             _mapper = config.CreateMapper();
         }
 
+        // --- User Mappings ---
+
         /// <summary>
-        /// Преобразует модель пользователя в сущность.
+        /// Преобразует модель пользователя (UI) в сущность пользователя (Entity).
         /// </summary>
-        /// <param name="model">Модель пользователя.</param>
+        /// <param name="model">Модель пользователя для преобразования.</param>
         /// <returns>Сущность пользователя.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
         public static Entities.User ToEntity(User model)
         {
             if (model == null)
@@ -30,11 +31,10 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует сущность пользователя в модель.
+        /// Преобразует сущность пользователя (Entity) в модель пользователя (UI).
         /// </summary>
-        /// <param name="entity">Сущность пользователя.</param>
+        /// <param name="entity">Сущность пользователя для преобразования.</param>
         /// <returns>Модель пользователя.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
         public static User ToModel(Entities.User entity)
         {
             if (entity == null)
@@ -42,12 +42,13 @@ namespace SmartEstimateApp.Mappings
             return _mapper.Map<User>(entity);
         }
 
+        // --- Role Mappings ---
+
         /// <summary>
-        /// Преобразует модель роли в сущность.
+        /// Преобразует модель роли (UI) в сущность роли (Entity).
         /// </summary>
-        /// <param name="model">Модель роли.</param>
+        /// <param name="model">Модель роли для преобразования.</param>
         /// <returns>Сущность роли.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
         public static Entities.Role ToEntity(Role model)
         {
             if (model == null)
@@ -56,11 +57,10 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует сущность роли в модель.
+        /// Преобразует сущность роли (Entity) в модель роли (UI).
         /// </summary>
-        /// <param name="entity">Сущность роли.</param>
+        /// <param name="entity">Сущность роли для преобразования.</param>
         /// <returns>Модель роли.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
         public static Role ToModel(Entities.Role entity)
         {
             if (entity == null)
@@ -68,12 +68,13 @@ namespace SmartEstimateApp.Mappings
             return _mapper.Map<Role>(entity);
         }
 
+        // --- Project Mappings ---
+
         /// <summary>
-        /// Преобразует модель проекта в сущность.
+        /// Преобразует модель проекта (UI) в сущность проекта (Entity).
         /// </summary>
-        /// <param name="model">Модель проекта (UI-слой).</param>
-        /// <returns>Сущность проекта (Entity-слой).</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если модель null.</exception>
+        /// <param name="model">Модель проекта для преобразования.</param>
+        /// <returns>Сущность проекта.</returns>
         public static Entities.Project ToEntity(Project model)
         {
             if (model == null)
@@ -82,11 +83,10 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует сущность проекта в модель.
+        /// Преобразует сущность проекта (Entity) в модель проекта (UI).
         /// </summary>
-        /// <param name="entity">Сущность проекта (Entity-слой).</param>
-        /// <returns>Модель проекта (UI-слой).</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если сущность null.</exception>
+        /// <param name="entity">Сущность проекта для преобразования.</param>
+        /// <returns>Модель проекта.</returns>
         public static Project ToModel(Entities.Project entity)
         {
             if (entity == null)
@@ -94,12 +94,63 @@ namespace SmartEstimateApp.Mappings
             return _mapper.Map<Project>(entity);
         }
 
+        // --- Estimate Mappings ---
+
         /// <summary>
-        /// Преобразует UI-модель чата в бизнес-сущность.
+        /// Преобразует модель сметы (UI) в сущность сметы (Entity).
         /// </summary>
-        /// <param name="model">UI-модель чата.</param>
-        /// <returns>Бизнес-сущность <see cref="Entities.Chat"/>.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="model"/> равна null.</exception>
+        /// <param name="model">Модель сметы для преобразования.</param>
+        /// <returns>Сущность сметы.</returns>
+        public static Entities.Estimate ToEntity(Estimate model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.Estimate>(model);
+        }
+
+        /// <summary>
+        /// Преобразует сущность сметы (Entity) в модель сметы (UI).
+        /// </summary>
+        /// <param name="entity">Сущность сметы для преобразования.</param>
+        /// <returns>Модель сметы.</returns>
+        public static Estimate ToModel(Entities.Estimate entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<Estimate>(entity);
+        }
+
+        /// <summary>
+        /// Преобразует модель позиции сметы (UI) в сущность позиции сметы (Entity).
+        /// </summary>
+        /// <param name="model">Модель позиции сметы для преобразования.</param>
+        /// <returns>Сущность позиции сметы.</returns>
+        public static Entities.EstimateItem ToEntity(EstimateItem model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.EstimateItem>(model);
+        }
+
+        /// <summary>
+        /// Преобразует сущность позиции сметы (Entity) в модель позиции сметы (UI).
+        /// </summary>
+        /// <param name="entity">Сущность позиции сметы для преобразования.</param>
+        /// <returns>Модель позиции сметы.</returns>
+        public static EstimateItem ToModel(Entities.EstimateItem entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<EstimateItem>(entity);
+        }
+
+        // --- Chat Mappings ---
+
+        /// <summary>
+        /// Преобразует модель чата (UI) в сущность чата (Entity).
+        /// </summary>
+        /// <param name="model">Модель чата для преобразования.</param>
+        /// <returns>Сущность чата.</returns>
         public static Entities.Chat ToEntity(Chat model)
         {
             if (model == null)
@@ -108,11 +159,10 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует бизнес-сущность чата в UI-модель.
+        /// Преобразует сущность чата (Entity) в модель чата (UI).
         /// </summary>
-        /// <param name="entity">Бизнес-сущность <see cref="Entities.Chat"/>.</param>
-        /// <returns>UI-модель <see cref="Chat"/>.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="entity"/> равна null.</exception>
+        /// <param name="entity">Сущность чата для преобразования.</param>
+        /// <returns>Модель чата.</returns>
         public static Chat ToModel(Entities.Chat entity)
         {
             if (entity == null)
@@ -120,12 +170,13 @@ namespace SmartEstimateApp.Mappings
             return _mapper.Map<Chat>(entity);
         }
 
+        // --- Message Mappings ---
+
         /// <summary>
-        /// Преобразует UI-модель сообщения в бизнес-сущность.
+        /// Преобразует модель сообщения (UI) в сущность сообщения (Entity).
         /// </summary>
-        /// <param name="model">UI-модель сообщения.</param>
-        /// <returns>Бизнес-сущность <see cref="Entities.Message"/>.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="model"/> равна null.</exception>
+        /// <param name="model">Модель сообщения для преобразования.</param>
+        /// <returns>Сущность сообщения.</returns>
         public static Entities.Message ToEntity(Message model)
         {
             if (model == null)
@@ -134,17 +185,15 @@ namespace SmartEstimateApp.Mappings
         }
 
         /// <summary>
-        /// Преобразует бизнес-сущность сообщения в UI-модель.
+        /// Преобразует сущность сообщения (Entity) в модель сообщения (UI).
         /// </summary>
-        /// <param name="entity">Бизнес-сущность <see cref="Entities.Message"/>.</param>
-        /// <returns>UI-модель <see cref="Message"/>.</returns>
-        /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="entity"/> равна null.</exception>
+        /// <param name="entity">Сущность сообщения для преобразования.</param>
+        /// <returns>Модель сообщения.</returns>
         public static Message ToModel(Entities.Message entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             return _mapper.Map<Message>(entity);
         }
-
     }
 }
