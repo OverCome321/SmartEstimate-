@@ -118,7 +118,7 @@ namespace SmartEstimateApp.ViewModels
         private async Task LoadClientsAsync()
         {
             var searchParams = new ClientSearchParams { ObjectsCount = int.MaxValue, UserId = _currentUser.User.Id };
-            var result = await _clientBL.GetAsync(searchParams);
+            var result = await Task.Run(() => _clientBL.GetAsync(searchParams));
 
             Clients = new ObservableCollection<Entities.Client>(result.Objects);
         }
