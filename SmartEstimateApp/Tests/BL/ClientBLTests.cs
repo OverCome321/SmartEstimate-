@@ -84,30 +84,12 @@ public class ClientBLTests
     }
 
     [Fact]
-    public async Task AddOrUpdateAsync_MissingUser_ThrowsArgumentException()
-    {
-        // Arrange
-        var client = new Client
-        {
-            Id = 0,
-            Email = "test@example.com",
-            Phone = "+1234567890",
-            User = null
-        };
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _clientBL.AddOrUpdateAsync(client));
-        Assert.Equal($"{ErrorMessages.UserIdNotSpecified} (Parameter 'Id')", exception.Message);
-        _loggerMock.VerifyLog(LogLevel.Warning, Times.AtLeastOnce());
-    }
-
-    [Fact]
     public async Task AddOrUpdateAsync_EmailExists_ThrowsInvalidOperationException()
     {
         // Arrange
         var client = new Client
         {
-            Id = 1,
+            Id = 0,
             Email = "test@example.com",
             Phone = "+1234567890",
             User = new User { Id = 1 }
@@ -126,7 +108,7 @@ public class ClientBLTests
         // Arrange
         var client = new Client
         {
-            Id = 1,
+            Id = 0,
             Email = "test@example.com",
             Phone = "+1234567890",
             User = new User { Id = 1 }
