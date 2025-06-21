@@ -1,4 +1,6 @@
-﻿namespace SmartEstimateApp.Models;
+﻿using System.Collections.ObjectModel;
+
+namespace SmartEstimateApp.Models;
 
 public class Project
 {
@@ -14,10 +16,11 @@ public class Project
 
     public int Status { get; set; }
 
-    public long ClientId { get; set; }
+    public long? ClientId { get; set; }
 
     public string ClientName { get; set; }
 
     public long UserId { get; set; }
 
+    public ObservableCollection<Estimate> Estimates { get; set; } = new ObservableCollection<Estimate>();
 }

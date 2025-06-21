@@ -355,19 +355,19 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- Стиль кнопки AppleSecondaryButton -->
+    
     <Style x:Key="AppleSecondaryButton" TargetType="Button">
         <Setter Property="Height" Value="36"/>
         <Setter Property="FontFamily" Value="{StaticResource AppleFont}"/>
-        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="{StaticResource AppleSecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="{StaticResource AppleSecondaryBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ApplePrimaryBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="12"/>
+        <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="16,0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -375,19 +375,20 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="12">
+                        CornerRadius="10">
                         <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
-                                      RecognizesAccessKey="True"/>
+                                      RecognizesAccessKey="True"
+                                      Margin="{TemplateBinding Padding}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#F5F5F7"/>
-                            <Setter Property="Foreground" Value="{StaticResource AppleSecondaryBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="#1A007AFF"/>
+                            <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#E1E1E7"/>
-                            <Setter Property="Foreground" Value="{StaticResource AppleSecondaryBrush}"/>
+                            <Setter TargetName="border" Property="Background" Value="#33007AFF"/>
+                            <Setter Property="Foreground" Value="{StaticResource ApplePrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="border" Property="Opacity" Value="0.6"/>
@@ -398,5 +399,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

@@ -68,7 +68,7 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client))
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
                 .ForMember(dest => dest.Estimates, opt => opt.MapFrom(src => src.Estimates));
 
             // Маппинг Entities.Project → Dal.DbModels.Project (сохранение в БД)
@@ -79,7 +79,7 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.Client != null ? src.Client.Id : 0))
+                .ForMember(dest => dest.ClientId, opt => opt.MapFrom(src => src.ClientId))
                 .ForMember(dest => dest.Estimates, opt => opt.Ignore());
 
             // Маппинг Dal.DbModels.Estimate → Entities.Estimate (чтение из БД)
@@ -97,7 +97,7 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
                 .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project))
+                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src => src.ProjectId))
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
             // Маппинг Entities.Estimate → Dal.DbModels.Estimate (сохранение в БД)
@@ -115,7 +115,7 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
                 .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Currency))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src => src.Project != null ? src.Project.Id : (long?)null))
+                .ForMember(dest => dest.ProjectId, opt => opt.MapFrom(src => src.ProjectId))
                 .ForMember(dest => dest.Items, opt => opt.Ignore());
 
             // Маппинг Dal.DbModels.EstimateItem → Entities.EstimateItem (чтение из БД)
@@ -126,8 +126,8 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
-                .ForMember(dest => dest.DisplayOrder, opt => opt.MapFrom(src => src.DisplayOrder))
-                .ForMember(dest => dest.Estimate, opt => opt.MapFrom(src => src.Estimate));
+                .ForMember(dest => dest.EstimateId, opt => opt.MapFrom(src => src.EstimateId))
+                .ForMember(dest => dest.DisplayOrder, opt => opt.MapFrom(src => src.DisplayOrder));
 
             // Маппинг Entities.EstimateItem → Dal.DbModels.EstimateItem (сохранение в БД)
             CreateMap<Entities.EstimateItem, Dal.DbModels.EstimateItem>()
@@ -138,7 +138,7 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
                 .ForMember(dest => dest.DisplayOrder, opt => opt.MapFrom(src => src.DisplayOrder))
-                .ForMember(dest => dest.EstimateId, opt => opt.MapFrom(src => src.Estimate != null ? src.Estimate.Id : 0))
+                .ForMember(dest => dest.EstimateId, opt => opt.MapFrom(src => src.EstimateId))
                 .ForMember(dest => dest.Estimate, opt => opt.Ignore());
             // Маппинг Dal.DbModels.Chat → Entities.Chat (чтение из БД)
             CreateMap<Dal.DbModels.Chat, Entities.Chat>()

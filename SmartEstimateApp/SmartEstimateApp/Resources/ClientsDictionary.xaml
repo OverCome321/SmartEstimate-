@@ -165,6 +165,9 @@
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Foreground" Value="{StaticResource AppleTextPrimaryBrush}"/>
         <Setter Property="Background" Value="{StaticResource AppleCardBackgroundBrush}"/>
+        <Setter Property="CaretBrush" Value="{StaticResource AppleTextPrimaryBrush}"/>
+        <Setter Property="SelectionBrush" Value="#8086868B"/>
+        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">

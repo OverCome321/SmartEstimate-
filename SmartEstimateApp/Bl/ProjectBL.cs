@@ -49,10 +49,10 @@ namespace Bl
                     throw new ArgumentException(ErrorMessages.ProjectNameRequired, nameof(entity.Name));
                 }
 
-                if (entity.Client == null)
+                if (entity.ClientId == null)
                 {
                     _logger.LogWarning("Попытка добавить/обновить проект с неуказанным клиентом");
-                    throw new ArgumentException(ErrorMessages.ClientIdNotSpecified, nameof(entity.Client));
+                    throw new ArgumentException(ErrorMessages.ClientIdNotSpecified, nameof(entity.ClientId));
                 }
 
                 if (entity.Id == 0 && await _projectDal.ExistsAsync(entity.Id))
