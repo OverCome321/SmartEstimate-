@@ -17,16 +17,14 @@ public class ChatDal
       IChatDal
 {
     private readonly SmartEstimateDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ILogger<ChatDal> _logger;
 
     public ChatDal(
         SmartEstimateDbContext context,
         IMapper mapper,
-        ILogger<ChatDal> logger)
+        ILogger<ChatDal> logger) : base(mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -87,41 +85,62 @@ public class ChatDal
             q = q.Include(c => c.Messages);
         var dbList = await q.ToListAsync();
 
-        return dbList.Select(MapToEntityChat).ToList();
+        return dbList.Select(MapToEntity).ToList();
     }
 
-    protected override async Task<long> AddOrUpdateInternalAsync(Entities.Chat entity)
+    protected override async Task<Dal.DbModels.Chat> AddOrUpdateInternalAsync(Entities.Chat entity)
     {
-        if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null)
+        {
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        var dbObj = MapToDbChat(entity);
-        if (entity.Id > 0 && await _context.Chats.AnyAsync(c => c.Id == entity.Id))
+        try
         {
-            _context.Chats.Update(dbObj);
-            _logger.LogInformation("Обновлён чат Id={ChatId}", dbObj.Id);
+            var existingChat = entity.Id > 0
+                ? await _context.Chats.FindAsync(entity.Id)
+                : null;
+
+            if (existingChat != null)
+            {
+                _logger.LogInformation("Обновление чата Id={ChatId}", entity.Id);
+                _mapper.Map(entity, existingChat);
+                await UpdateBeforeSavingAsync(entity, existingChat, true);
+                return existingChat;
+            }
+
+            _logger.LogInformation("Добавление чата для пользователя UserId={UserId}", entity.UserId);
+            var newDbChat = _mapper.Map<Chat>(entity);
+
+            await UpdateBeforeSavingAsync(entity, newDbChat, false);
+            await _context.Chats.AddAsync(newDbChat);
+
+            return newDbChat;
         }
-        else
+        catch (Exception ex)
         {
-            dbObj.StartedAt = DateTime.UtcNow;
-            await _context.Chats.AddAsync(dbObj);
-            _logger.LogInformation("Добавлен новый чат для UserId={UserId}", dbObj.UserId);
+            _logger.LogError(ex, "Ошибка при добавлении/обновлении чата : {@ChatEntity}", entity);
+            throw;
         }
-        return dbObj.Id;
     }
 
-    protected override async Task<IList<long>> AddOrUpdateInternalAsync(
+
+    protected override async Task<IList<Dal.DbModels.Chat>> AddOrUpdateInternalAsync(
         IList<Entities.Chat> entities)
     {
-        var ids = new List<long>();
+        var chats = new List<Dal.DbModels.Chat>();
         foreach (var e in entities)
-            ids.Add(await AddOrUpdateInternalAsync(e));
-        return ids;
+            chats.Add(await AddOrUpdateInternalAsync(e));
+        return chats;
     }
 
     protected override Task UpdateBeforeSavingAsync(
         Entities.Chat entity, Chat dbObject, bool exists)
     {
-        // Всё что нужно для StartedAt делаем в AddOrUpdateInternalAsync
+        if (!exists)
+        {
+            dbObject.StartedAt = DateTime.UtcNow;
+        }
         return Task.CompletedTask;
     }
 
@@ -158,22 +177,6 @@ public class ChatDal
 
     protected override IQueryable<Chat> Where(Expression<Func<Chat, bool>> predicate)
         => _context.Chats.Where(predicate);
-
-    #endregion
-
-    #region Mapping Helpers
-
-    /// <summary>
-    /// Преобразовать из Dal.DbModels.Chat в Entities.Chat
-    /// </summary>
-    private Entities.Chat MapToEntityChat(Chat dbChat)
-        => _mapper.Map<Entities.Chat>(dbChat);
-
-    /// <summary>
-    /// Преобразовать из Entities.Chat в Dal.DbModels.Chat
-    /// </summary>
-    private Chat MapToDbChat(Entities.Chat entity)
-        => _mapper.Map<Chat>(entity);
 
     #endregion
 }

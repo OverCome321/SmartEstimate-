@@ -51,6 +51,7 @@ public class SberAiService : IOpenAiService
         _http.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", _accessToken);
     }
+
     public async Task<string> AskAsync(string prompt)
     {
         if (_accessToken == null || DateTimeOffset.UtcNow >= _expiresAt)

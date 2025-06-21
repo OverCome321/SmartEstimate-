@@ -27,7 +27,7 @@ namespace SmartEstimateApp.Navigation
 
         private void Frame_Navigated(object sender, NavigationEventArgs e)
         {
-            if (e.ExtraData != null && e.Content is Page page)
+            if (e.Content is Page page)
             {
                 if (page is IParameterReceiver parameterReceiver)
                 {
@@ -50,7 +50,8 @@ namespace SmartEstimateApp.Navigation
                 throw new InvalidOperationException("Navigation service not initialized. Call Initialize first.");
 
             var page = _serviceProvider.GetService<TPage>();
-            _frame.Navigate(page);
+
+            _frame.Navigate(page, null);
         }
 
         public void NavigateTo<TPage>(object parameter) where TPage : Page

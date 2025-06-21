@@ -8,10 +8,13 @@ namespace SmartEstimateApp.Views.Pages
 {
     public partial class ClientsPage : Page
     {
+        private readonly ClientsViewModel _viewModel;
+
         public ClientsPage(IClientBL clientBL, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel, INavigationService navigationService)
         {
             InitializeComponent();
-            this.DataContext = new ClientsViewModel(clientBL, currentUser, homeWindowViewModel, navigationService);
+            _viewModel = new ClientsViewModel(clientBL, currentUser, homeWindowViewModel, navigationService);
+            this.DataContext = _viewModel;
         }
     }
 }

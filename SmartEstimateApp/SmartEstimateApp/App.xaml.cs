@@ -130,7 +130,7 @@ namespace SmartEstimateApp
             services.AddScoped<INavigationService, NavigationService>();
 
             //Регистрация ViewModels
-            services.AddTransient<ClientsViewModel>();
+            services.AddSingleton<ClientsViewModel>();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeWindowViewModel>();
             services.AddTransient<ClientEditViewModel>();

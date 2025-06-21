@@ -62,7 +62,7 @@ namespace Bl
                     throw new InvalidOperationException(ErrorMessages.ClientEmailAlreadyExists);
                 }
 
-                if (entity.Id == 0 && await _clientDal.ExistsPhoneAsync(entity.Phone, entity.User.Id))
+                if (entity.Id == 0 && !string.IsNullOrWhiteSpace(entity.Phone) && await _clientDal.ExistsPhoneAsync(entity.Phone, entity.User.Id))
                 {
                     _logger.LogWarning("Попытка добавить клиента с уже существующим телефоном: {Phone}, userId: {UserId}", entity.Phone, entity.User.Id);
                     throw new InvalidOperationException(ErrorMessages.ClientPhoneAlreadyExists);

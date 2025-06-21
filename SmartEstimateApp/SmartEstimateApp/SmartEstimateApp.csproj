@@ -41,6 +41,7 @@
     <ProjectReference Include="..\Dal\Dal.csproj" />
     <ProjectReference Include="..\Entities\Entities.csproj" />
     <ProjectReference Include="..\OpenAIService\OpenAIService.csproj" />
+    <ProjectReference Include="..\UI.Helpers\UI.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

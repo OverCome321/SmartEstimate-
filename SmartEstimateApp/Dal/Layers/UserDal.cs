@@ -15,7 +15,6 @@ namespace Dal.Layers
     public class UserDal : BaseDal<Dal.DbModels.User, Entities.User, long, UserSearchParams, ConvertParams>, IUserDal
     {
         private readonly SmartEstimateDbContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger<UserDal> _logger;
 
         /// <summary>
@@ -24,10 +23,9 @@ namespace Dal.Layers
         /// <param name="context">Контекст базы данных</param>
         /// <param name="mapper">Маппер для преобразования между моделями</param>
         /// <param name="logger">Логгер</param>
-        public UserDal(SmartEstimateDbContext context, IMapper mapper, ILogger<UserDal> logger)
+        public UserDal(SmartEstimateDbContext context, IMapper mapper, ILogger<UserDal> logger) : base(mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -128,41 +126,51 @@ namespace Dal.Layers
         }
 
         /// <summary>
-        /// Добавляет или обновляет пользователя в базе данных
+        /// Добавляет или обновляет пользователя в базе данных.
         /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <returns>Идентификатор сохраненного пользователя</returns>
-        protected override async Task<long> AddOrUpdateInternalAsync(Entities.User entity)
+        /// <param name="entity">Сущность пользователя.</param>
+        /// <returns>Идентификатор сохраненного пользователя.</returns>
+        protected override async Task<Dal.DbModels.User> AddOrUpdateInternalAsync(Entities.User entity)
         {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             try
             {
-                if (entity == null)
-                {
-                    _logger.LogWarning("Попытка добавить или обновить пользователя с null entity");
-                    throw new ArgumentNullException(nameof(entity));
-                }
+                var existingUser = entity.Id > 0
+                    ? await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Id == entity.Id)
+                    : null;
 
-                var dbUser = MapToDbUser(entity);
-                bool exists = dbUser.Id > 0 && await _context.Users.AnyAsync(u => u.Id == dbUser.Id);
-
-                if (exists)
+                if (existingUser != null)
                 {
-                    await UpdateBeforeSavingAsync(entity, dbUser, true);
-                    _context.Users.Update(dbUser);
-                    _logger.LogInformation("Пользователь обновлен в базе: {@User}", dbUser);
+                    _logger.LogInformation("Обновление пользователя Id={UserId}, Email={UserEmail}", entity.Id, entity.Email);
+
+                    _mapper.Map(entity, existingUser);
+
+                    await UpdateBeforeSavingAsync(entity, existingUser, true);
+
+                    return existingUser;
                 }
                 else
                 {
-                    await UpdateBeforeSavingAsync(entity, dbUser, false);
-                    await _context.Users.AddAsync(dbUser);
-                    _logger.LogInformation("Пользователь добавлен в базу: {@User}", dbUser);
-                }
+                    _logger.LogInformation("Добавление нового пользователя: {UserEmail}", entity.Email);
 
-                return dbUser.Id;
+                    var newDbUser = _mapper.Map<Dal.DbModels.User>(entity);
+
+                    await UpdateBeforeSavingAsync(entity, newDbUser, false);
+
+                    await _context.Users.AddAsync(newDbUser);
+
+                    return newDbUser;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при добавлении/обновлении пользователя: {@User}", entity);
+                _logger.LogError(ex, "Ошибка при добавлении/обновлении пользователя: {@UserEntity}", entity);
                 throw;
             }
         }
@@ -172,7 +180,7 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="entities">Список сущностей пользователей</param>
         /// <returns>Список идентификаторов сохраненных пользователей</returns>
-        protected override async Task<IList<long>> AddOrUpdateInternalAsync(IList<Entities.User> entities)
+        protected override async Task<IList<Dal.DbModels.User>> AddOrUpdateInternalAsync(IList<Entities.User> entities)
         {
             try
             {
@@ -182,16 +190,16 @@ namespace Dal.Layers
                     throw new ArgumentNullException(nameof(entities));
                 }
                 if (!entities.Any())
-                    return new List<long>();
+                    return new List<Dal.DbModels.User>();
 
-                var ids = new List<long>();
+                var users = new List<Dal.DbModels.User>();
                 foreach (var entity in entities)
                 {
-                    ids.Add(await AddOrUpdateInternalAsync(entity));
+                    users.Add(await AddOrUpdateInternalAsync(entity));
                 }
 
-                _logger.LogInformation("Массовое добавление/обновление пользователей завершено. Всего: {Count}", ids.Count);
-                return ids;
+                _logger.LogInformation("Массовое добавление/обновление пользователей завершено. Всего: {Count}", users.Count);
+                return users;
             }
             catch (Exception ex)
             {
@@ -240,7 +248,7 @@ namespace Dal.Layers
                 }
 
                 var dbUsers = await query.ToListAsync();
-                var entities = dbUsers.Select(MapToEntityUser).ToList();
+                var entities = dbUsers.Select(MapToEntity).ToList();
                 _logger.LogDebug("Построен список пользователей, количество: {Count}", entities.Count);
                 return entities;
             }
@@ -414,19 +422,5 @@ namespace Dal.Layers
             _logger.LogDebug("Применена сортировка по CreatedAt");
             return sorted;
         }
-
-        /// <summary>
-        /// Преобразует сущность в DB модель
-        /// </summary>
-        /// <param name="entity">Сущность пользователя</param>
-        /// <returns>DB модель пользователя</returns>
-        private Dal.DbModels.User MapToDbUser(Entities.User entity) => _mapper.Map<Dal.DbModels.User>(entity);
-
-        /// <summary>
-        /// Преобразует DB модель в сущность
-        /// </summary>
-        /// <param name="dbUser">DB модель пользователя</param>
-        /// <returns>Сущность пользователя</returns>
-        private Entities.User MapToEntityUser(Dal.DbModels.User dbUser) => _mapper.Map<Entities.User>(dbUser);
     }
 }

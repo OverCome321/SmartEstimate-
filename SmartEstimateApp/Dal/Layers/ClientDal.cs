@@ -14,19 +14,16 @@ namespace Dal.Layers
     public class ClientDal : BaseDal<Dal.DbModels.Client, Entities.Client, long, ClientSearchParams, object>, IClientDal
     {
         private readonly SmartEstimateDbContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger<ClientDal> _logger;
 
         /// <summary>
         /// Конструктор класса ClientDal
         /// </summary>
         /// <param name="context">Контекст базы данных</param>
-        /// <param name="mapper">Маппер для преобразования между моделями</param>
         /// <param name="logger">Логгер</param>
-        public ClientDal(SmartEstimateDbContext context, IMapper mapper, ILogger<ClientDal> logger)
+        public ClientDal(SmartEstimateDbContext context, IMapper mapper, ILogger<ClientDal> logger) : base(mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -103,37 +100,38 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="entity">Сущность клиента</param>
         /// <returns>Идентификатор сохраненного клиента</returns>
-        protected override async Task<long> AddOrUpdateInternalAsync(Entities.Client entity)
+        protected override async Task<Dal.DbModels.Client> AddOrUpdateInternalAsync(Entities.Client entity)
         {
+            if (entity == null)
+            {
+                _logger.LogWarning("Попытка добавить или обновить клиента с null entity");
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             try
             {
-                if (entity == null)
-                {
-                    _logger.LogWarning("Попытка добавить или обновить клиента с null entity");
-                    throw new ArgumentNullException(nameof(entity));
-                }
+                var existingClient = entity.Id > 0 ? await _context.Clients.FindAsync(entity.Id) : null;
 
-                var dbClient = MapToDbClient(entity);
-                bool exists = dbClient.Id > 0 && await ExistsAsync(dbClient.Id);
-
-                if (exists)
+                if (existingClient != null)
                 {
-                    await UpdateBeforeSavingAsync(entity, dbClient, true);
-                    _context.Clients.Update(dbClient);
-                    _logger.LogInformation("Клиент обновлен в базе: {@Client}", dbClient);
+                    _logger.LogInformation("Обновление клиента с Id={ClientId}", entity.Id);
+                    _mapper.Map(entity, existingClient);
+                    await UpdateBeforeSavingAsync(entity, existingClient, true);
+                    return existingClient;
                 }
                 else
                 {
-                    await UpdateBeforeSavingAsync(entity, dbClient, false);
-                    await _context.Clients.AddAsync(dbClient);
-                    _logger.LogInformation("Клиент добавлен в базу: {@Client}", dbClient);
-                }
+                    _logger.LogInformation("Добавление нового клиента: {ClientName}", entity.Name);
+                    var newDbClient = _mapper.Map<Dal.DbModels.Client>(entity);
+                    await UpdateBeforeSavingAsync(entity, newDbClient, false);
+                    await _context.Clients.AddAsync(newDbClient);
 
-                return dbClient.Id;
+                    return newDbClient;
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при добавлении/обновлении клиента: {@Client}", entity);
+                _logger.LogError(ex, "Ошибка при добавлении/обновлении клиента с Id={ClientId} и Name={ClientName}", entity.Id, entity.Name);
                 throw;
             }
         }
@@ -143,7 +141,7 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="entities">Список сущностей клиентов</param>
         /// <returns>Список идентификаторов сохраненных клиентов</returns>
-        protected override async Task<IList<long>> AddOrUpdateInternalAsync(IList<Entities.Client> entities)
+        protected override async Task<IList<Dal.DbModels.Client>> AddOrUpdateInternalAsync(IList<Entities.Client> entities)
         {
             try
             {
@@ -153,15 +151,15 @@ namespace Dal.Layers
                     throw new ArgumentNullException(nameof(entities));
                 }
                 if (!entities.Any())
-                    return new List<long>();
+                    return new List<Dal.DbModels.Client>();
 
-                var ids = new List<long>();
+                var clients = new List<Dal.DbModels.Client>();
                 foreach (var entity in entities)
                 {
-                    ids.Add(await AddOrUpdateInternalAsync(entity));
+                    clients.Add(await AddOrUpdateInternalAsync(entity));
                 }
-                _logger.LogInformation("Массовое добавление/обновление клиентов завершено. Всего: {Count}", ids.Count);
-                return ids;
+                _logger.LogInformation("Массовое добавление/обновление клиентов завершено. Всего: {Count}", clients.Count);
+                return clients;
             }
             catch (Exception ex)
             {
@@ -198,7 +196,7 @@ namespace Dal.Layers
             {
                 var query = dbObjects.AsNoTracking();
                 var dbClients = await query.ToListAsync();
-                var entities = dbClients.Select(MapToEntityClient).ToList();
+                var entities = dbClients.Select(MapToEntity).ToList();
                 _logger.LogDebug("Построен список клиентов, количество: {Count}", entities.Count);
                 return entities;
             }
@@ -382,19 +380,5 @@ namespace Dal.Layers
             _logger.LogDebug("Применена сортировка по CreatedAt");
             return sorted;
         }
-
-        /// <summary>
-        /// Преобразует сущность в DB модель
-        /// </summary>
-        /// <param name="entity">Сущность клиента</param>
-        /// <returns>DB модель клиента</returns>
-        private Dal.DbModels.Client MapToDbClient(Entities.Client entity) => _mapper.Map<Dal.DbModels.Client>(entity);
-
-        /// <summary>
-        /// Преобразует DB модель в сущность
-        /// </summary>
-        /// <param name="dbClient">DB модель клиента</param>
-        /// <returns>Сущность клиента</returns>
-        private Entities.Client MapToEntityClient(Dal.DbModels.Client dbClient) => _mapper.Map<Entities.Client>(dbClient);
     }
 }

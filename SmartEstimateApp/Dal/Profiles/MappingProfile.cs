@@ -58,7 +58,8 @@ namespace Dal.Profiles
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User != null ? src.User.Id : 0));
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User != null ? src.User.Id : 0))
+                .ForMember(dest => dest.User, opt => opt.Ignore());
 
             // Маппинг Dal.DbModels.Project → Entities.Project (чтение из БД)
             CreateMap<Dal.DbModels.Project, Entities.Project>()
