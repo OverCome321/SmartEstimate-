@@ -7,6 +7,7 @@ using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Input;
+using UI.Helpers;
 
 namespace SmartEstimateApp.ViewModels
 {
@@ -35,6 +36,9 @@ namespace SmartEstimateApp.ViewModels
             DetailsCommand = new RelayCommand(obj => OnDetails(obj as Client), obj => obj != null);
             DeleteCommand = new RelayCommand(obj => OnDelete(obj as Client), obj => obj != null);
             AddNewClientCommand = new RelayCommand(_ => OnAddNewClient());
+
+            AppMessenger.RegisterForEntityUpdate<Client>(OnClientUpdated);
+            AppMessenger.RegisterForEntityDelete<Client>(OnClientDeleted);
 
             Task.Run(LoadItemsAsync);
         }
@@ -107,23 +111,68 @@ namespace SmartEstimateApp.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            var deleted = await _clientBL.DeleteAsync(client.Id);
-            if (deleted)
+            _homeWindowViewModel.ShowLoading();
+            try
             {
-                if (Items.Count == 1 && CurrentPage > 1)
+                var deleted = await _clientBL.DeleteAsync(client.Id);
+                if (deleted)
                 {
-                    CurrentPage--;
+                    AppMessenger.SendEntityDeleteMessage<Client>(client.Id);
                 }
-                else
-                {
-                    await Task.Run(LoadItemsAsync);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _homeWindowViewModel.HideLoading();
             }
         }
 
         private void OnAddNewClient()
         {
             _navigationService.NavigateTo<ClientsEditPage>();
+        }
+
+
+        private void OnClientUpdated(Client updatedClient)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var existingClient = Items.FirstOrDefault(c => c.Id == updatedClient.Id);
+                if (existingClient != null)
+                {
+                    var index = Items.IndexOf(existingClient);
+                    Items[index] = updatedClient;
+                }
+                else
+                {
+                    Items.Insert(0, updatedClient);
+                    TotalCount++;
+                    UpdatePageNumbers();
+                    OnPropertyChanged(nameof(HasResults));
+                    OnPropertyChanged(nameof(ResultsInfo));
+                    OnPropertyChanged(nameof(PageInfo));
+                }
+            });
+        }
+
+        private void OnClientDeleted(long deletedClientId)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var clientToRemove = Items.FirstOrDefault(c => c.Id == deletedClientId);
+                if (clientToRemove != null)
+                {
+                    Items.Remove(clientToRemove);
+                    TotalCount--;
+                    UpdatePageNumbers();
+                    OnPropertyChanged(nameof(HasResults));
+                    OnPropertyChanged(nameof(ResultsInfo));
+                    OnPropertyChanged(nameof(PageInfo));
+                }
+            });
         }
     }
 }

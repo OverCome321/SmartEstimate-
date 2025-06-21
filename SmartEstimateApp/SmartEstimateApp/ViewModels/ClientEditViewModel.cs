@@ -5,10 +5,9 @@ using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
 using System.Collections.ObjectModel;
-using System.Linq; // <-- Добавлено
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using UI.Helpers;
 
 namespace SmartEstimateApp.ViewModels
 {
@@ -25,14 +24,12 @@ namespace SmartEstimateApp.ViewModels
             set => SetProperty(ref _client, value, nameof(Client));
         }
 
-        // --- ИЗМЕНЕНО: Тип коллекции изменен со string на StatusOption ---
         private ObservableCollection<StatusOption> _statusOptions;
         public ObservableCollection<StatusOption> StatusOptions
         {
             get => _statusOptions;
             set => SetProperty(ref _statusOptions, value, nameof(StatusOptions));
         }
-        // -----------------------------------------------------------------
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
@@ -49,7 +46,6 @@ namespace SmartEstimateApp.ViewModels
             LoadStatusOptions();
         }
 
-        // --- ИЗМЕНЕНО: Метод теперь создает объекты StatusOption ---
         private void LoadStatusOptions()
         {
             StatusOptions = new ObservableCollection<StatusOption>
@@ -58,34 +54,25 @@ namespace SmartEstimateApp.ViewModels
                 new StatusOption { Id = 2, Name = "Неактивен" }
             };
         }
-        // ---------------------------------------------------------
 
-        public void LoadClient(Client client)
+        public void LoadClient(Client? client = null)
         {
-            // --- ИЗМЕНЕНО: Логика загрузки и создания клиента под int статус ---
-            Client = client != null ? new Client
+            if (client != null)
             {
-                Id = client.Id,
-                Name = client.Name,
-                Email = client.Email,
-                Phone = client.Phone,
-                Address = client.Address,
-                // Если у существующего клиента статус не задан (равен 0), ставим по умолчанию 1 ("Активен")
-                Status = client.Status > 0 ? client.Status : 1,
-                CreatedAt = client.CreatedAt,
-                User = client.User ?? Mapper.ToEntity(_currentUser.User)
-            } : new Client
+                Client = client;
+            }
+            else
             {
-                User = Mapper.ToEntity(_currentUser.User),
-                // Для нового клиента ставим статус по умолчанию "Активен"
-                Status = 1
-            };
-            // ----------------------------------------------------------------------
+                Client = new Client
+                {
+                    User = Mapper.ToEntity(_currentUser.User),
+                    Status = 1
+                };
+            }
         }
 
         private bool CanSave()
         {
-            // Добавим проверку статуса для надежности
             return Client != null && !string.IsNullOrWhiteSpace(Client.Name) && Client.Status > 0;
         }
 
@@ -102,7 +89,21 @@ namespace SmartEstimateApp.ViewModels
                 if (Client.User == null)
                     Client.User = Mapper.ToEntity(_currentUser.User);
 
-                await _clientBL.AddOrUpdateAsync(Client);
+
+                if (Client.Id == 0)
+                {
+                    Client.CreatedAt = DateTime.UtcNow;
+                    Client.UpdatedAt = DateTime.UtcNow;
+                }
+
+                var savedClientId = await _clientBL.AddOrUpdateAsync(Client);
+
+                if (Client.Id == 0)
+                {
+                    Client.Id = savedClientId;
+                }
+
+                AppMessenger.SendEntityUpdateMessage<Client>(this.Client);
                 _navigationService.GoBack();
             }
             catch (System.Exception ex)

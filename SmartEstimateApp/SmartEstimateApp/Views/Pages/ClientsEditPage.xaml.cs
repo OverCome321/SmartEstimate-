@@ -1,5 +1,4 @@
 ﻿using Bl.Interfaces;
-using Entities;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.ViewModels;
@@ -20,10 +19,7 @@ namespace SmartEstimateApp.Views.Pages
 
         public void SetParameter(object parameter)
         {
-            if (parameter is Client client)
-            {
-                _viewModel.LoadClient(client);
-            }
+            _viewModel.LoadClient(parameter as Entities.Client);
         }
     }
 }

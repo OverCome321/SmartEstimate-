@@ -191,28 +191,6 @@
                                  Foreground="{StaticResource AppleTextSecondaryBrush}"/>
                         </Grid>
                     </StackPanel>
-
-                    <!-- Creation Date (Read-only) -->
-                    <StackPanel Grid.Row="5" Margin="0,0,0,24"
-                                Visibility="{Binding Client.Id, Converter={StaticResource StringNullOrEmptyToInverseVisibilityConverter}}">
-                        <TextBlock Text="Дата создания"
-                                   Style="{StaticResource LabelStyle}"
-                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
-                        <Grid>
-                            <TextBox Text="{Binding Client.CreatedAt, StringFormat=dd.MM.yyyy, Mode=OneWay}" 
-                                     Style="{StaticResource ProjectInputField}"
-                                     IsReadOnly="True"
-                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
-                                     Padding="42,8,12,8"/>
-                            <materialDesign:PackIcon Kind="Calendar"
-                                                     Width="20" Height="20"
-                                                     Margin="12,0,0,0"
-                                                     VerticalAlignment="Center"
-                                                     IsHitTestVisible="False"
-                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                        </Grid>
-                    </StackPanel>
                 </Grid>
             </Border>
         </ScrollViewer>
