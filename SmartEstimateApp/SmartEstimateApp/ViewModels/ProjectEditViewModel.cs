@@ -98,13 +98,16 @@ namespace SmartEstimateApp.ViewModels
             LoadStatuses();
             LoadCurrencies();
 
-            SelectedClient = Clients.FirstOrDefault(c => c.Id == Project.ClientId);
-
-            Project.Estimates.CollectionChanged += (s, e) =>
+            if (Project != null)
             {
-                OnPropertyChanged(nameof(HasEstimates));
-                OnPropertyChanged(nameof(NoEstimates));
-            };
+                SelectedClient = Clients.FirstOrDefault(c => c.Id == Project.ClientId);
+
+                Project.Estimates.CollectionChanged += (s, e) =>
+                {
+                    OnPropertyChanged(nameof(HasEstimates));
+                    OnPropertyChanged(nameof(NoEstimates));
+                };
+            }
             OnPropertyChanged(nameof(HasEstimates));
             OnPropertyChanged(nameof(NoEstimates));
         }
