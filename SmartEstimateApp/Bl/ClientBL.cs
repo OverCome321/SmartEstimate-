@@ -62,13 +62,13 @@ namespace Bl
                     throw new ArgumentException(ErrorMessages.UserIdNotSpecified, nameof(entity.Id));
                 }
 
-                if (await _clientDal.ExistsAsync(entity.Email, entity.User.Id))
+                if (entity.Id == 0 && await _clientDal.ExistsAsync(entity.Email, entity.User.Id))
                 {
                     _logger.LogWarning("Попытка добавить клиента с уже существующим email: {Email}, userId: {UserId}", entity.Email, entity.User.Id);
                     throw new InvalidOperationException(ErrorMessages.ClientEmailAlreadyExists);
                 }
 
-                if (await _clientDal.ExistsPhoneAsync(entity.Phone, entity.User.Id))
+                if (entity.Id == 0 && await _clientDal.ExistsPhoneAsync(entity.Phone, entity.User.Id))
                 {
                     _logger.LogWarning("Попытка добавить клиента с уже существующим телефоном: {Phone}, userId: {UserId}", entity.Phone, entity.User.Id);
                     throw new InvalidOperationException(ErrorMessages.ClientPhoneAlreadyExists);

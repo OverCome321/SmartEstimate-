@@ -7,308 +7,215 @@
       xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
       mc:Ignorable="d"
       d:DesignHeight="900" d:DesignWidth="1200"
-      Title="ClientsEditPage">
+      Title="Редактирование клиента">
 
-    <Border CornerRadius="20,0,0,0" Background="{StaticResource AppleBackgroundBrush}">
-        <Grid Background="Transparent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid Background="{StaticResource AppleBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- Top Section: Header -->
-            <Grid Grid.Row="0" Margin="48,32,48,24">
+        <!-- Top Panel: Header -->
+        <Border Grid.Row="0" Background="{StaticResource AppleCardBackgroundBrush}" 
+                BorderBrush="{StaticResource AppleBorderBrush}" BorderThickness="0,0,0,1"
+                Padding="24">
+            <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Header -->
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="{Binding Client.Id, StringFormat={}Редактирование клиента, TargetNullValue=Новый клиент}"
-                           Style="{StaticResource CardTitleStyle}"
-                           FontSize="32"
-                           FontWeight="Bold"
-                           Margin="0,0,0,8"/>
-                    <TextBlock Text="Заполните информацию о клиенте"
-                           Foreground="{StaticResource AppleTextSecondaryBrush}"
-                           FontFamily="{StaticResource AppleFont}"
-                           FontSize="16"
-                           Margin="0,0,0,24"/>
+                <Button Grid.Column="0" 
+                        Style="{StaticResource AppleCloseButtonStyle}" 
+                        Command="{Binding CancelCommand}"
+                        VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="Close" Width="20" Height="20"/>
+                </Button>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical" 
+                            VerticalAlignment="Center" 
+                            Margin="24,0,0,0">
+                    <TextBlock Text="{Binding Client.Id, StringFormat={}Редактирование клиента, TargetNullValue=Новый клиент}" 
+                               FontFamily="{StaticResource AppleFont}" 
+                               FontWeight="SemiBold" FontSize="28" 
+                               Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                    <TextBlock Text="Заполните или измените информацию о клиенте" 
+                               FontFamily="{StaticResource AppleFont}" FontSize="16"
+                               Foreground="{StaticResource AppleTextSecondaryBrush}"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Vertical">
+                    <Button Content="Сохранить" 
+                            Style="{StaticResource ApplePrimaryButton}"
+                            Command="{Binding SaveCommand}" 
+                            Width="120"/>
+
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="0,8,0,0">
+                        <materialDesign:PackIcon Kind="Information"
+                                                 Width="14" Height="14"
+                                                 Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                                 Margin="0,0,4,0"
+                                                 VerticalAlignment="Center"/>
+                        <TextBlock Text="* - обязательные поля"
+                                   FontFamily="{StaticResource AppleFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
+        </Border>
 
-            <!-- Main Content: Client Form -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,16">
-                <Border Background="{StaticResource AppleCardBackgroundBrush}"
-                        CornerRadius="16"
-                        Margin="48,0,48,24">
-                    <Grid Margin="32">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+        <!-- Main Content: Client Form -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Border Style="{StaticResource DashboardProjectCardAnimated}" Margin="24,16,24,24">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                        <!-- Client Name -->
-                        <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                            <TextBlock Text="Имя клиента *"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <TextBox Text="{Binding Client.Name, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource ClientSeacrhBox}"
-                                     Height="40"
+                    <!-- Client Name -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                        <TextBlock Text="Имя клиента *"
+                                   Style="{StaticResource LabelStyle}"
+                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <TextBox Text="{Binding Client.Name, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ProjectInputField}"
                                      materialDesign:HintAssist.Hint="Введите имя клиента"
                                      materialDesign:HintAssist.HintOpacity="0.5"
-                                     Background="Transparent"/>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Email -->
-                        <StackPanel Grid.Row="1" Margin="0,0,0,24">
-                            <TextBlock Text="Email"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="Email"
-                                                         Grid.Column="0"
-                                                         Width="20" Height="20"
-                                                         Margin="16,0,0,0"
-                                                         VerticalAlignment="Center"
-                                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                    <TextBox Grid.Column="1" 
-                                         Text="{Binding Client.Email, UpdateSourceTrigger=PropertyChanged}" 
-                                         Style="{StaticResource ClientSeacrhBox}"
-                                         Height="40"
-                                         materialDesign:HintAssist.Hint="Введите email клиента"
-                                         materialDesign:HintAssist.HintOpacity="0.5"
-                                         Margin="8,0,16,0"
-                                         Background="Transparent"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Phone -->
-                        <StackPanel Grid.Row="2" Margin="0,0,0,24">
-                            <TextBlock Text="Телефон"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="Phone"
-                                                         Grid.Column="0"
-                                                         Width="20" Height="20"
-                                                         Margin="16,0,0,0"
-                                                         VerticalAlignment="Center"
-                                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                    <TextBox Grid.Column="1" 
-                                         Text="{Binding Client.Phone, UpdateSourceTrigger=PropertyChanged}" 
-                                         Style="{StaticResource ClientSeacrhBox}"
-                                         Height="40"
-                                         materialDesign:HintAssist.Hint="Введите номер телефона"
-                                         materialDesign:HintAssist.HintOpacity="0.5"
-                                         Margin="8,0,16,0"
-                                         Background="Transparent"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Address -->
-                        <StackPanel Grid.Row="3" Margin="0,0,0,24">
-                            <TextBlock Text="Адрес"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="MapMarker"
-                                                         Grid.Column="0"
-                                                         Width="20" Height="20"
-                                                         Margin="16,16,0,0"
-                                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                    <TextBox Grid.Column="1" 
-                                         Text="{Binding Client.Address, UpdateSourceTrigger=PropertyChanged}" 
-                                         Style="{StaticResource ClientSeacrhBox}"
-                                         Height="40"
-                                         materialDesign:HintAssist.Hint="Введите адрес клиента"
-                                         materialDesign:HintAssist.HintOpacity="0.5"
-                                         Margin="8,0,16,8"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         VerticalContentAlignment="Top"
-                                         Background="Transparent"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Status -->
-                        <StackPanel Grid.Row="4" Margin="0,0,0,24">
-                            <TextBlock Text="Статус"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="AccountCircle"
-                                                         Grid.Column="0"
-                                                         Width="20" Height="20"
-                                                         Margin="16,0,0,0"
-                                                         VerticalAlignment="Center"
-                                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                    <ComboBox Grid.Column="1"
-                                          SelectedItem="{Binding Client.Status}"
-                                          ItemsSource="{Binding StatusOptions}"
-                                          Height="40"
-                                          Margin="8,0,16,0"
-                                          FontFamily="{StaticResource AppleFont}"
-                                          FontSize="14"
-                                          BorderThickness="0"
-                                          Background="Transparent"
-                                          
-                                          VerticalContentAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Creation Date (Read-only) -->
-                        <StackPanel Grid.Row="5" Margin="0,0,0,24"
-                                Visibility="{Binding Client.Id, Converter={StaticResource StringNullOrEmptyToInverseVisibilityConverter}}">
-                            <TextBlock Text="Дата создания"
-                                   FontFamily="{StaticResource AppleFont}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource AppleTextPrimaryBrush}"
-                                   Margin="0,0,0,8"/>
-                            <Border Background="Transparent"
-                                BorderBrush="{StaticResource AppleBorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12"
-                                Height="56">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Kind="Calendar"
-                                                         Grid.Column="0"
-                                                         Width="20" Height="20"
-                                                         Margin="16,0,0,0"
-                                                         VerticalAlignment="Center"
-                                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                    <TextBox Grid.Column="1" 
-                                         Text="{Binding Client.CreatedAt, StringFormat=dd.MM.yyyy, Mode=OneWay}" 
-                                         Style="{StaticResource ClientSeacrhBox}"
-                                         Height="40"
-                                         IsReadOnly="True"
-                                         Margin="8,0,16,0"
-                                         Background="Transparent"
-                                         Foreground="{StaticResource AppleTextSecondaryBrush}"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </ScrollViewer>
-
-            <!-- Actions Footer -->
-            <Border Grid.Row="2" 
-                Background="{StaticResource AppleCardBackgroundBrush}"
-                BorderThickness="0,1,0,0"
-                BorderBrush="#E5E5E5"
-                Padding="48,16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Validation Info -->
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="Information"
-                                           Width="18" Height="18"
-                                           Foreground="{StaticResource AppleTextSecondaryBrush}"
-                                           Margin="0,0,8,0"
-                                           VerticalAlignment="Center"/>
-                        <TextBlock Text="* - обязательные поля"
-                               FontFamily="{StaticResource AppleFont}"
-                               FontSize="14"
-                               Foreground="{StaticResource AppleTextSecondaryBrush}"
-                               VerticalAlignment="Center"/>
+                                     Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="Account"
+                                                     Width="20" Height="20"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False"
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
                     </StackPanel>
 
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <Button Content="Отмена" 
-                            Style="{StaticResource AppleCardPrimaryButton}"
-                            Command="{Binding CancelCommand}"
-                            Width="120"
-                            Height="44"
-                            Margin="0,0,16,0"/>
-                        <Button Content="Сохранить" 
-                            Style="{StaticResource AppleButtonStyle}"
-                            Command="{Binding SaveCommand}"
-                            Width="160"
-                            Height="44"
-                            Margin="0"/>
+                    <!-- Email -->
+                    <StackPanel Grid.Row="1" Margin="0,0,0,24">
+                        <TextBlock Text="Email"
+                                   Style="{StaticResource LabelStyle}"
+                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <TextBox Text="{Binding Client.Email, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ProjectInputField}"
+                                     materialDesign:HintAssist.Hint="Введите email клиента"
+                                     materialDesign:HintAssist.HintOpacity="0.5"
+                                     Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="Email"
+                                                     Width="20" Height="20"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False"
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Phone -->
+                    <StackPanel Grid.Row="2" Margin="0,0,0,24">
+                        <TextBlock Text="Телефон"
+                                   Style="{StaticResource LabelStyle}"
+                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <TextBox Text="{Binding Client.Phone, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ProjectInputField}"
+                                     materialDesign:HintAssist.Hint="Введите номер телефона"
+                                     materialDesign:HintAssist.HintOpacity="0.5"
+                                     Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="Phone"
+                                                     Width="20" Height="20"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False"
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Address (Single-line) -->
+                    <StackPanel Grid.Row="3" Margin="0,0,0,24">
+                        <TextBlock Text="Адрес"
+                                   Style="{StaticResource LabelStyle}"
+                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <TextBox Text="{Binding Client.Address, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ProjectInputField}"
+                                     materialDesign:HintAssist.Hint="Введите адрес клиента"
+                                     materialDesign:HintAssist.HintOpacity="0.5"
+                                     Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="MapMarker"
+                                                     Width="20" Height="20"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False"
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Status -->
+                    <StackPanel Grid.Row="4" Margin="0,0,0,24">
+                        <TextBlock Text="Статус"
+               Style="{StaticResource LabelStyle}"
+               FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+               Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <!-- ИЗМЕНЕНО: ComboBox теперь привязан к числовому значению Status -->
+                            <ComboBox ItemsSource="{Binding StatusOptions}"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Id"
+                  SelectedValue="{Binding Client.Status, UpdateSourceTrigger=PropertyChanged}"
+                  Style="{StaticResource AppleComboBoxStyle}"
+                  materialDesign:HintAssist.Hint="Выберите статус"
+                  IsEditable="False"
+                  Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="Tag"
+                                 Width="20" Height="20"
+                                 Margin="12,0,0,0"
+                                 VerticalAlignment="Center"
+                                 IsHitTestVisible="False"
+                                 Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Creation Date (Read-only) -->
+                    <StackPanel Grid.Row="5" Margin="0,0,0,24"
+                                Visibility="{Binding Client.Id, Converter={StaticResource StringNullOrEmptyToInverseVisibilityConverter}}">
+                        <TextBlock Text="Дата создания"
+                                   Style="{StaticResource LabelStyle}"
+                                   FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
+                                   Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                        <Grid>
+                            <TextBox Text="{Binding Client.CreatedAt, StringFormat=dd.MM.yyyy, Mode=OneWay}" 
+                                     Style="{StaticResource ProjectInputField}"
+                                     IsReadOnly="True"
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"
+                                     Padding="42,8,12,8"/>
+                            <materialDesign:PackIcon Kind="Calendar"
+                                                     Width="20" Height="20"
+                                                     Margin="12,0,0,0"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False"
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                        </Grid>
                     </StackPanel>
                 </Grid>
             </Border>
-        </Grid>
-    </Border>
+        </ScrollViewer>
+
+    </Grid>
 </Page>
