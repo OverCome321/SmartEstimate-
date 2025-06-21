@@ -56,12 +56,6 @@ namespace Bl
                     throw new ArgumentException(ErrorMessages.InvalidPhoneFormat, nameof(entity.Phone));
                 }
 
-                if (entity.Id == 0)
-                {
-                    _logger.LogWarning("Попытка добавить/обновить клиента с неуказанным идентификатором пользователя (Id=0)");
-                    throw new ArgumentException(ErrorMessages.UserIdNotSpecified, nameof(entity.Id));
-                }
-
                 if (entity.Id == 0 && await _clientDal.ExistsAsync(entity.Email, entity.User.Id))
                 {
                     _logger.LogWarning("Попытка добавить клиента с уже существующим email: {Email}, userId: {UserId}", entity.Email, entity.User.Id);
