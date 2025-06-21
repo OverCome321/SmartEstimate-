@@ -157,15 +157,12 @@ public class SupportPageViewModel : PropertyChangedBase
         {
             IsLoading = true;
 
-            // 1) создаём новый чат
             var newChatId = await _chatBL.CreateChatAsync(_currentUserId);
-            // 2) сразу отправляем туда приветственное сообщение
+
             await _chatBL.SendMessageAsync(newChatId, BotUserId, WelcomeText);
 
-            // 3) обновляем список
             await LoadChatsAsync();
 
-            // 4) и теперь — явно выбираем именно созданный:
             SelectedChat = Chats.FirstOrDefault(c => c.Id == newChatId);
         }
         catch
@@ -220,7 +217,6 @@ public class SupportPageViewModel : PropertyChangedBase
         var text = CurrentMessage.Trim();
         CurrentMessage = string.Empty;
 
-        // добавить сообщение пользователя в UI
         Messages.Add(new Message
         {
             ChatId = SelectedChat.Id,
@@ -233,13 +229,10 @@ public class SupportPageViewModel : PropertyChangedBase
         {
             IsLoading = true;
 
-            // сохранить пользователя
             await _chatBL.SendMessageAsync(SelectedChat.Id, _currentUserId, text);
 
-            // получить ответ AI
             var aiResponse = await _openAiService.AskAsync(text);
 
-            // отобразить в UI
             var botMsg = new Message
             {
                 ChatId = SelectedChat.Id,
@@ -249,7 +242,6 @@ public class SupportPageViewModel : PropertyChangedBase
             };
             Messages.Add(botMsg);
 
-            // сохранить AI-ответ в БД
             await _chatBL.SendMessageAsync(SelectedChat.Id, BotUserId, aiResponse);
         }
         catch (Exception ex)
@@ -257,6 +249,7 @@ public class SupportPageViewModel : PropertyChangedBase
             Messages.Add(new Message
             {
                 ChatId = SelectedChat.Id,
+                SenderUserId = _currentUserId,
                 Text = $"Ошибка: {ex.Message}",
                 SentAt = DateTime.Now
             });
