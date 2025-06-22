@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:SmartEstimateApp.Views.Windows"
+        xmlns:animations="clr-namespace:SmartEstimateApp.Animations"
         mc:Ignorable="d"
         Title="SmartEstimate" 
         Height="780" 
@@ -19,6 +20,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         FontFamily="{StaticResource AppleFont}">
+
     <Border CornerRadius="28,28,0,0" Background="{StaticResource SecondaryGradient}">
         <Grid>
             <Grid.RowDefinitions>
@@ -59,11 +61,10 @@
                     </StackPanel>
 
                     <!-- Search Box -->
-                    <!-- Search Box -->
                     <Border Grid.Column="1" Width="480" Height="44" 
-        Background="#32FFFFFF" CornerRadius="12" 
-        HorizontalAlignment="Center" 
-        VerticalAlignment="Center">
+                            Background="#32FFFFFF" CornerRadius="12" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -87,69 +88,26 @@
                     <StackPanel Grid.Column="2" 
                               Orientation="Horizontal" 
                               Margin="0,0,28,0">
-                        <!-- Notifications -->
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Width="40" Height="40" 
-                                Margin="8,0">
-                            <materialDesign:PackIcon Kind="BellOutline" 
-                                                   Width="24" Height="24" 
-                                                   Foreground="White"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40" Margin="8,0">
+                            <materialDesign:PackIcon Kind="BellOutline" Width="24" Height="24" Foreground="White"/>
                         </Button>
-
-                        <!-- Settings -->
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Width="40" Height="40"  Click="NavigateToSettings_Click"
-                                Margin="8,0">
-                            <materialDesign:PackIcon Kind="CogOutline" 
-                                                   Width="24" Height="24" 
-                                                   Foreground="White"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="40" Height="40" Click="NavigateToSettings_Click" Margin="8,0">
+                            <materialDesign:PackIcon Kind="CogOutline" Width="24" Height="24" Foreground="White"/>
                         </Button>
-
-                        <!-- Profile -->
-                        <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Width="44" Height="44" 
-                                Padding="0" 
-                                Margin="16,0,24,0">
-                            <Border Width="40" Height="40" 
-                                    CornerRadius="20" 
-                                    Background="{StaticResource SecondaryGradient}">
-                                <TextBlock Text="ОС" 
-                                         Foreground="{StaticResource ApplePrimaryBrush}" 
-                                         FontWeight="SemiBold" 
-                                         HorizontalAlignment="Center" 
-                                         VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="44" Height="44" Padding="0" Margin="16,0,24,0">
+                            <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource SecondaryGradient}">
+                                <TextBlock Text="ОС" Foreground="{StaticResource ApplePrimaryBrush}" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Button>
-
-                        <!-- Window Controls -->
-                        <StackPanel Orientation="Horizontal" 
-                                  VerticalAlignment="Center">
-                            <Button x:Name="MinimizeButton" 
-                                    Style="{StaticResource MaterialDesignIconButton}" 
-                                    Width="32" Height="32" 
-                                    Padding="0"
-                                    Click="MinimizeButton_Click">
-                                <materialDesign:PackIcon Kind="WindowMinimize" 
-                                                       Width="16" Height="16" 
-                                                       Foreground="White"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="MinimizeButton" Style="{StaticResource MaterialDesignIconButton}" Width="32" Height="32" Padding="0" Click="MinimizeButton_Click">
+                                <materialDesign:PackIcon Kind="WindowMinimize" Width="16" Height="16" Foreground="White"/>
                             </Button>
-                            <Button x:Name="MaximizeButton" 
-                                    Style="{StaticResource MaterialDesignIconButton}" 
-                                    Width="32" Height="32" 
-                                    Padding="0"
-                                    Click="MaximizeButton_Click">
-                                <materialDesign:PackIcon Kind="WindowMaximize" 
-                                                       Width="16" Height="16" 
-                                                       Foreground="White"/>
+                            <Button x:Name="MaximizeButton" Style="{StaticResource MaterialDesignIconButton}" Width="32" Height="32" Padding="0" Click="MaximizeButton_Click">
+                                <materialDesign:PackIcon Kind="WindowMaximize" Width="16" Height="16" Foreground="White"/>
                             </Button>
-                            <Button x:Name="CloseButton" 
-                                    Style="{StaticResource MaterialDesignIconButton}" 
-                                    Width="32" Height="32" 
-                                    Padding="0"
-                                    Click="CloseButton_Click">
-                                <materialDesign:PackIcon Kind="WindowClose" 
-                                                       Width="16" Height="16" 
-                                                       Foreground="White"/>
+                            <Button x:Name="CloseButton" Style="{StaticResource MaterialDesignIconButton}" Width="32" Height="32" Padding="0" Click="CloseButton_Click">
+                                <materialDesign:PackIcon Kind="WindowClose" Width="16" Height="16" Foreground="White"/>
                             </Button>
                         </StackPanel>
                     </StackPanel>
@@ -157,261 +115,192 @@
             </Border>
 
             <!-- Main Content -->
-
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="NavColumn" Width="280"/>
+                    <ColumnDefinition x:Name="NavColumn">
+                        <ColumnDefinition.Style>
+                            <Style TargetType="ColumnDefinition">
+                                <Setter Property="Width" Value="280"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsNavigationMenuExpanded}" Value="False">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <animations:GridLengthAnimation Storyboard.TargetProperty="Width" To="100" Duration="0:0:0.3">
+                                                        <animations:GridLengthAnimation.EasingFunction>
+                                                            <CubicEase EasingMode="EaseInOut"/>
+                                                        </animations:GridLengthAnimation.EasingFunction>
+                                                    </animations:GridLengthAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <animations:GridLengthAnimation Storyboard.TargetProperty="Width" To="280" Duration="0:0:0.3">
+                                                        <animations:GridLengthAnimation.EasingFunction>
+                                                            <CubicEase EasingMode="EaseInOut"/>
+                                                        </animations:GridLengthAnimation.EasingFunction>
+                                                    </animations:GridLengthAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Side Navigation -->
-                <Border Grid.Column="0" 
-                        Background="#FFFFFF" 
-                        Margin="16,16,8,16" 
-                        CornerRadius="16">
+                <Border Grid.Column="0" Background="#FFFFFF" Margin="16,16,8,16" CornerRadius="16">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
+
                         <!-- Main Menu -->
-                        <StackPanel x:Name="NavButtonsPanel" 
-                      Grid.Row="0" 
-                      Margin="0,24,0,0">
-                            <TextBlock Text="МЕНЮ" 
-                                     Margin="24,0,0,16" 
-                                     FontSize="12" 
-                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
-                                     FontWeight="SemiBold"/>
+                        <StackPanel Grid.Row="0" Margin="0,24,0,0">
+                            <Grid Margin="16,0,16,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="МЕНЮ" FontSize="12" Foreground="{StaticResource AppleTextSecondaryBrush}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8,0,0,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource NavButtonTextStyle}"/>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <ToggleButton Grid.Column="1" Style="{StaticResource MenuToggleButtonStyle}" IsChecked="{Binding IsNavigationMenuExpanded, Mode=TwoWay}"/>
+                            </Grid>
 
                             <!-- Navigation Buttons -->
-                            <Button Style="{StaticResource NavButtonActive}" 
-                                    Click="NavigateToDashboard_Click" Tag="Dashboard">
+                            <Button Style="{StaticResource NavButtonActive}" Click="NavigateToDashboard_Click" Tag="Dashboard">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="ViewDashboardOutline" 
-                                               Width="24" Height="24" 
-                                               VerticalAlignment="Center"/>
-                                    <TextBlock Text="Панель управления" 
-                                     Margin="16,0,0,0"
-                                     VerticalAlignment="Center"
-                                     x:Name="TextLabels"/>
+                                    <materialDesign:PackIcon Kind="ViewDashboardOutline" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Панель управления" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButton}" 
-                                    Click="NavigateToClients_Click"    Tag="Clients">
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToClients_Click" Tag="Clients">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="AccountMultipleOutline" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Клиенты" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="AccountMultipleOutline" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Клиенты" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButton}" 
-                                    Click="NavigateToProjects_Click" Tag="Projects">
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToProjects_Click" Tag="Projects">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="FolderMultipleOutline" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Проекты" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="FolderMultipleOutline" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Проекты" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
                             <Button Style="{StaticResource NavButton}" Tag="Documents" Click="NavigateToDocuments_Click">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="FileDocumentOutline" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Документы" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="FileDocumentOutline" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Документы" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
-                            <Separator Style="{StaticResource MaterialDesignLightSeparator}" 
-                                     Margin="24,24"/>
+                            <Separator Style="{StaticResource MaterialDesignLightSeparator}" Margin="24,24"/>
 
-                            <TextBlock Text="АНАЛИТИКА" 
-                                     Margin="24,0,0,16" 
-                                     FontSize="12" 
-                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
-                                     FontWeight="SemiBold"/>
+                            <TextBlock Text="АНАЛИТИКА" Margin="24,0,0,16" FontSize="12" Foreground="{StaticResource AppleTextSecondaryBrush}" FontWeight="SemiBold">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource NavButtonTextStyle}"/>
+                                </TextBlock.Style>
+                            </TextBlock>
 
-                            <Button Style="{StaticResource NavButton}" 
-                                    Click="NavigateToAnalytics_Click" Tag="Reports">
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToAnalytics_Click" Tag="Reports">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="ChartBarStacked" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Отчеты" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="ChartBarStacked" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Отчеты" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
                             <Button Style="{StaticResource NavButton}" Tag="Statistics" Click="NavigateToStatistics_Click">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="ChartScatterPlot" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Статистика" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="ChartScatterPlot" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Статистика" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
                         </StackPanel>
 
                         <!-- Bottom Menu -->
                         <StackPanel Grid.Row="2" Margin="0,0,0,24">
-                            <Separator Style="{StaticResource MaterialDesignLightSeparator}" 
-                                     Margin="24,0,24,24"/>
-
-                            <Button Style="{StaticResource NavButton}" 
-                                    Click="NavigateToSettings_Click" Tag="Settings">
+                            <Separator Style="{StaticResource MaterialDesignLightSeparator}" Margin="24,0,24,24"/>
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToSettings_Click" Tag="Settings">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="CogOutline" 
-                                                           Width="24" Height="24" 
-                                                           VerticalAlignment="Center" 
-                                                           Margin="0,0,16,0"/>
-                                    <TextBlock Text="Настройки" 
-                                             VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="CogOutline" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Настройки" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource NavButton}" 
-                                Click="NavigateToSupport_Click" 
-                                Tag="Support">
+                            <Button Style="{StaticResource NavButton}" Click="NavigateToSupport_Click" Tag="Support">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Robot" 
-                                 Width="24" Height="24" 
-                                 VerticalAlignment="Center" 
-                                 Margin="0,0,16,0"/>
-                                    <TextBlock Text="AI-помощник" VerticalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="Robot" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="AI-помощник" Margin="16,0,0,0" Style="{StaticResource NavButtonTextStyle}"/>
                                 </StackPanel>
                             </Button>
-
                         </StackPanel>
                     </Grid>
                 </Border>
 
                 <!-- Main Content Area -->
-                <Border Grid.Column="1" 
-                        Background="#FFFFFF" 
-                        Margin="8,16,16,16" 
-                        CornerRadius="16">
-                    <Frame x:Name="MainFrameHome" 
-                          NavigationUIVisibility="Hidden" />
+                <Border Grid.Column="1" Background="#FFFFFF" Margin="8,16,16,16" CornerRadius="16">
+                    <Frame x:Name="MainFrameHome" NavigationUIVisibility="Hidden" />
                 </Border>
             </Grid>
 
-            <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch" Background="#40FFFFFF">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                Value="0"
-                IsIndeterminate="True"
-                Width="40"
-                Height="40"
-                Foreground="{StaticResource ApplePrimaryBrush}"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"/>
+            <!-- Loading Indicator -->
+            <materialDesign:Card Grid.Row="1" Visibility="{Binding LoadingVisibility}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#40FFFFFF">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="40" Height="40" Foreground="{StaticResource ApplePrimaryBrush}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </materialDesign:Card>
-            
+
             <!-- Error Notification Bar -->
-            <Border Grid.Row="2" 
-        Style="{StaticResource ErrorNotificationBarStyle}"
-        Background="{StaticResource AppleErrorBrush}"
-        Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Grid.Row="2" Style="{StaticResource ErrorNotificationBarStyle}" Background="{StaticResource AppleErrorBrush}" Visibility="{Binding IsErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Margin="15,0" 
-                   Text="{Binding ErrorMessage}" 
-                   Foreground="White" 
-                   FontFamily="{StaticResource AppleFont}" 
-                   FontSize="12" 
-                   VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" 
-                Width="20" Height="20" 
-                Margin="0,0,15,0" 
-                Style="{StaticResource NotificationCloseButtonStyle}"
-                Command="{Binding HideErrorCommand}"
-                Foreground="White">
+                    <TextBlock Margin="15,0" Text="{Binding ErrorMessage}" Foreground="White" FontFamily="{StaticResource AppleFont}" FontSize="12" VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Width="20" Height="20" Margin="0,0,15,0" Style="{StaticResource NotificationCloseButtonStyle}" Command="{Binding HideErrorCommand}" Foreground="White">
                         <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
                     </Button>
                 </Grid>
             </Border>
+
             <!-- Success Notification Bar -->
-            <Border Grid.Row="2" 
-        Style="{StaticResource SuccessNotificationBarStyle}"
-        Background="{StaticResource AppleSuccessBrush}"
-        Visibility="{Binding IsSuccessVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Grid.Row="2" Style="{StaticResource SuccessNotificationBarStyle}" Background="{StaticResource AppleSuccessBrush}" Visibility="{Binding IsSuccessVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Margin="15,0" 
-                   Text="{Binding SuccessMessage}" 
-                   Foreground="White" 
-                   FontFamily="{StaticResource AppleFont}" 
-                   FontSize="12" 
-                   VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" 
-                Width="20" Height="20" 
-                Margin="0,0,15,0" 
-                Style="{StaticResource NotificationCloseButtonStyle}"
-                Command="{Binding HideSuccessCommand}"
-                Foreground="White">
+                    <TextBlock Margin="15,0" Text="{Binding SuccessMessage}" Foreground="White" FontFamily="{StaticResource AppleFont}" FontSize="12" VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Width="20" Height="20" Margin="0,0,15,0" Style="{StaticResource NotificationCloseButtonStyle}" Command="{Binding HideSuccessCommand}" Foreground="White">
                         <materialDesign:PackIcon Kind="Close" Width="14" Height="14"/>
                     </Button>
                 </Grid>
             </Border>
+
             <!-- Status Bar -->
-            <Border Grid.Row="2" x:Name="StatusBar"
-                    Background="#FFFFFF" Visibility="{Binding Path=IsNotificationVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+            <Border Grid.Row="2" x:Name="StatusBar" Background="#FFFFFF" Visibility="{Binding Path=IsNotificationVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <Grid Margin="28,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
-                    <!-- Version -->
-                    <TextBlock Grid.Column="0" 
-                             Text="SmartEstimate v1.0.3" 
-                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
-                             VerticalAlignment="Center" 
-                             FontSize="12"/>
-
-                    <!-- Status -->
-                    <StackPanel Grid.Column="1" 
-                              Orientation="Horizontal" 
-                              HorizontalAlignment="Center">
-                        <Ellipse Width="8" Height="8" 
-                                Fill="{StaticResource AppleSuccessBrush}" 
-                                Margin="0,0,8,0" 
-                                VerticalAlignment="Center"/>
-                        <TextBlock Text="Все системы работают нормально" 
-                                 Foreground="{StaticResource AppleTextSecondaryBrush}" 
-                                 VerticalAlignment="Center" 
-                                 FontSize="12"/>
+                    <TextBlock Grid.Column="0" Text="SmartEstimate v1.0.3" Foreground="{StaticResource AppleTextSecondaryBrush}" VerticalAlignment="Center" FontSize="12"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Ellipse Width="8" Height="8" Fill="{StaticResource AppleSuccessBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Все системы работают нормально" Foreground="{StaticResource AppleTextSecondaryBrush}" VerticalAlignment="Center" FontSize="12"/>
                     </StackPanel>
-
-                    <!-- Time -->
-                    <TextBlock Grid.Column="2" 
-                             Text="Последнее обновление: 16:16" 
-                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
-                             VerticalAlignment="Center" 
-                             FontSize="12"/>
+                    <TextBlock Grid.Column="2" Text="{Binding CurrentDateTime, StringFormat='Последнее обновление: {0}'}" Foreground="{StaticResource AppleTextSecondaryBrush}" VerticalAlignment="Center" FontSize="12"/>
                 </Grid>
             </Border>
         </Grid>

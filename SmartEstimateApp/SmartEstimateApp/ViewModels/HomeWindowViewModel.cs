@@ -39,6 +39,13 @@ namespace SmartEstimateApp.ViewModels
                     OnPropertyChanged(nameof(IsNotificationVisible));
             }
         }
+
+        private bool _isNavigationMenuExpanded = true;
+        public bool IsNavigationMenuExpanded
+        {
+            get => _isNavigationMenuExpanded;
+            set => SetProperty(ref _isNavigationMenuExpanded, value, nameof(IsNavigationMenuExpanded));
+        }
         public bool IsNotificationVisible => IsErrorVisible || IsSuccessVisible;
         public Visibility LoadingVisibility { get => _loadingVisibility; set => SetProperty(ref _loadingVisibility, value, nameof(LoadingVisibility)); }
         public string CurrentDateTime { get => _currentDateTime; set => SetProperty(ref _currentDateTime, value, nameof(CurrentDateTime)); }
@@ -47,6 +54,8 @@ namespace SmartEstimateApp.ViewModels
         public ICommand HideErrorCommand => _hideErrorCommand ??= new RelayCommand(obj => HideError());
         private ICommand _hideSuccessCommand;
         public ICommand HideSuccessCommand => _hideSuccessCommand ??= new RelayCommand(obj => HideSuccess());
+        private ICommand _toggleNavigationMenuCommand;
+        public ICommand ToggleNavigationMenuCommand => _toggleNavigationMenuCommand ??= new RelayCommand(_ => IsNavigationMenuExpanded = !IsNavigationMenuExpanded);
 
         public HomeWindowViewModel()
         {
