@@ -1,13 +1,14 @@
 ﻿using Bl.Interfaces;
 using Common.Search;
-using Entities;
 using SmartEstimateApp.Commands;
+using SmartEstimateApp.Mappings;
 using SmartEstimateApp.Models;
 using SmartEstimateApp.Navigation.Interfaces;
 using SmartEstimateApp.Views.Pages;
 using System.Windows;
 using System.Windows.Input;
 using UI.Helpers;
+using Client = SmartEstimateApp.Models.Client;
 
 namespace SmartEstimateApp.ViewModels
 {
@@ -68,7 +69,7 @@ namespace SmartEstimateApp.ViewModels
                 {
                     Items.Clear();
                     foreach (var c in result.Objects)
-                        Items.Add(c);
+                        Items.Add(Mapper.ToModel(c));
 
                     TotalCount = result.Total;
                     TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
@@ -118,11 +119,13 @@ namespace SmartEstimateApp.ViewModels
                 if (deleted)
                 {
                     AppMessenger.SendEntityDeleteMessage<Client>(client.Id);
+                    _homeWindowViewModel.ShowSuccess("Клиент успешно удален!");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                _homeWindowViewModel.ShowError("Ошибка при удалении клиента!");
             }
             finally
             {

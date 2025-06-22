@@ -10,16 +10,16 @@ namespace SmartEstimateApp.Views.Pages
     {
         private readonly ClientEditViewModel _viewModel;
 
-        public ClientsEditPage(IClientBL clientBL, INavigationService navigationService, CurrentUser currentUser)
+        public ClientsEditPage(IClientBL clientBL, INavigationService navigationService, CurrentUser currentUser, HomeWindowViewModel homeWindowViewModel)
         {
             InitializeComponent();
-            _viewModel = new ClientEditViewModel(clientBL, navigationService, currentUser);
+            _viewModel = new ClientEditViewModel(clientBL, navigationService, currentUser, homeWindowViewModel);
             this.DataContext = _viewModel;
         }
 
         public void SetParameter(object parameter)
         {
-            _viewModel.LoadClient(parameter as Entities.Client);
+            _viewModel.LoadClient(parameter as Client);
         }
     }
 }

@@ -322,6 +322,8 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"/>
             </materialDesign:Card>
+            
+            <!-- Error Notification Bar -->
             <Border Grid.Row="2" 
         Style="{StaticResource ErrorNotificationBarStyle}"
         Background="{StaticResource AppleErrorBrush}"
@@ -347,7 +349,6 @@
                     </Button>
                 </Grid>
             </Border>
-
             <!-- Success Notification Bar -->
             <Border Grid.Row="2" 
         Style="{StaticResource SuccessNotificationBarStyle}"
@@ -375,8 +376,8 @@
                 </Grid>
             </Border>
             <!-- Status Bar -->
-            <Border Grid.Row="2" 
-                    Background="#FFFFFF">
+            <Border Grid.Row="2" x:Name="StatusBar"
+                    Background="#FFFFFF" Visibility="{Binding Path=IsNotificationVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                 <Grid Margin="28,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>

@@ -23,6 +23,9 @@ namespace SmartEstimateApp.Profiles
             // Маппинг Message: Entities.Message <-> Models.Message
             CreateMap<Entities.Message, Models.Message>().ReverseMap();
 
+            // Маппинг Message: Entities.Client <-> Models.Client
+            CreateMap<Entities.Client, Models.Client>().ReverseMap();
+
             // **Маппинг Chat: Entities.Chat -> Models.Chat**
             CreateMap<Entities.Chat, Models.Chat>().ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages)).ReverseMap();
         }

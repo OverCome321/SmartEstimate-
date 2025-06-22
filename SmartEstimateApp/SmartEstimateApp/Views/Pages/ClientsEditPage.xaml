@@ -36,7 +36,7 @@
                 <StackPanel Grid.Column="1" Orientation="Vertical" 
                             VerticalAlignment="Center" 
                             Margin="24,0,0,0">
-                    <TextBlock Text="{Binding Client.Id, StringFormat={}Редактирование клиента, TargetNullValue=Новый клиент}" 
+                    <TextBlock Text="{Binding ClientForEdit.Id, StringFormat={}Редактирование клиента, TargetNullValue=Новый клиент}" 
                                FontFamily="{StaticResource AppleFont}" 
                                FontWeight="SemiBold" FontSize="28" 
                                Foreground="{StaticResource AppleTextPrimaryBrush}"/>
@@ -90,7 +90,7 @@
                                    FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
                                    Foreground="{StaticResource AppleTextPrimaryBrush}"/>
                         <Grid>
-                            <TextBox Text="{Binding Client.Name, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBox Text="{Binding ClientForEdit.Name, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{StaticResource ProjectInputField}"
                                      materialDesign:HintAssist.Hint="Введите имя клиента"
                                      materialDesign:HintAssist.HintOpacity="0.5"
@@ -111,7 +111,7 @@
                                    FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
                                    Foreground="{StaticResource AppleTextPrimaryBrush}"/>
                         <Grid>
-                            <TextBox Text="{Binding Client.Email, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBox Text="{Binding ClientForEdit.Email, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{StaticResource ProjectInputField}"
                                      materialDesign:HintAssist.Hint="Введите email клиента"
                                      materialDesign:HintAssist.HintOpacity="0.5"
@@ -132,7 +132,7 @@
                                    FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
                                    Foreground="{StaticResource AppleTextPrimaryBrush}"/>
                         <Grid>
-                            <TextBox Text="{Binding Client.Phone, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBox Text="{Binding ClientForEdit.Phone, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{StaticResource ProjectInputField}"
                                      materialDesign:HintAssist.Hint="Введите номер телефона"
                                      materialDesign:HintAssist.HintOpacity="0.5"
@@ -153,7 +153,7 @@
                                    FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"
                                    Foreground="{StaticResource AppleTextPrimaryBrush}"/>
                         <Grid>
-                            <TextBox Text="{Binding Client.Address, UpdateSourceTrigger=PropertyChanged}" 
+                            <TextBox Text="{Binding ClientForEdit.Address, UpdateSourceTrigger=PropertyChanged}" 
                                      Style="{StaticResource ProjectInputField}"
                                      materialDesign:HintAssist.Hint="Введите адрес клиента"
                                      materialDesign:HintAssist.HintOpacity="0.5"
@@ -178,7 +178,7 @@
                             <ComboBox ItemsSource="{Binding StatusOptions}"
                   DisplayMemberPath="Name"
                   SelectedValuePath="Id"
-                  SelectedValue="{Binding Client.Status, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedValue="{Binding ClientForEdit.Status, UpdateSourceTrigger=PropertyChanged}"
                   Style="{StaticResource AppleComboBoxStyle}"
                   materialDesign:HintAssist.Hint="Выберите статус"
                   IsEditable="False"

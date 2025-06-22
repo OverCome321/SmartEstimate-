@@ -195,5 +195,31 @@ namespace SmartEstimateApp.Mappings
                 throw new ArgumentNullException(nameof(entity));
             return _mapper.Map<Message>(entity);
         }
+
+        // --- Client Mappings ---
+
+        /// <summary>
+        /// Преобразует модель сообщения (UI) в сущность сообщения (Entity).
+        /// </summary>
+        /// <param name="model">Модель сообщения для преобразования.</param>
+        /// <returns>Сущность сообщения.</returns>
+        public static Entities.Client ToEntity(Client model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            return _mapper.Map<Entities.Client>(model);
+        }
+
+        /// <summary>
+        /// Преобразует сущность сообщения (Entity) в модель сообщения (UI).
+        /// </summary>
+        /// <param name="entity">Сущность сообщения для преобразования.</param>
+        /// <returns>Модель сообщения.</returns>
+        public static Client ToModel(Entities.Client entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+            return _mapper.Map<Client>(entity);
+        }
     }
 }
