@@ -2,6 +2,7 @@
 using Common.Convert;
 using Common.Search;
 using Dal.DbModels;
+using Dal.Helpers;
 using Dal.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,6 @@ namespace Dal.Layers
     public class ProjectDal : BaseDal<Dal.DbModels.Project, Entities.Project, long, ProjectSearchParams, ConvertParams>, IProjectDal
     {
         private readonly SmartEstimateDbContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger<ProjectDal> _logger;
 
         /// <summary>
@@ -24,10 +24,9 @@ namespace Dal.Layers
         /// <param name="context">Контекст базы данных</param>
         /// <param name="mapper">Маппер для преобразования между моделями</param> 
         /// /// <param name="logger">Логгер</param>
-        public ProjectDal(SmartEstimateDbContext context, IMapper mapper, ILogger<ProjectDal> logger)
+        public ProjectDal(SmartEstimateDbContext context, IMapper mapper, ILogger<ProjectDal> logger) : base(mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -101,113 +100,98 @@ namespace Dal.Layers
             }
         }
 
-        protected override async Task<long> AddOrUpdateInternalAsync(Entities.Project entity)
+        /// <summary>
+        /// Основной метод добавления или обновления проекта.
+        /// Определяет, нужно ли создавать новую запись или обновлять существующую,
+        /// и делегирует выполнение соответствующим приватным методам.
+        /// </summary>
+        protected override async Task<Dal.DbModels.Project> AddOrUpdateInternalAsync(Entities.Project entity)
         {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             try
             {
-                if (entity == null)
-                {
-                    _logger.LogWarning("Попытка добавить или обновить проект с null entity");
-                    throw new ArgumentNullException(nameof(entity));
-                }
-
-                var dbProject = MapToDbProject(entity);
-
-                var existingProject = await _context.Projects
-                    .Include(p => p.Estimates).ThenInclude(e => e.Items)
-                    .FirstOrDefaultAsync(p => p.Id == dbProject.Id);
+                var existingProject = entity.Id > 0
+                    ? await _context.Projects
+                        .Include(p => p.Estimates)
+                            .ThenInclude(e => e.Items)
+                        .FirstOrDefaultAsync(p => p.Id == entity.Id)
+                    : null;
 
                 if (existingProject != null)
                 {
-                    existingProject.Name = dbProject.Name;
-                    existingProject.Description = dbProject.Description;
-                    existingProject.Status = dbProject.Status;
-                    await UpdateBeforeSavingAsync(entity, existingProject, true);
-
-                    var existingEstimates = existingProject.Estimates.ToList();
-                    var newEstimateIds = entity.Estimates
-                        .Where(e => e.Id > 0)
-                        .Select(e => e.Id)
-                        .ToList();
-                    var estimatesToRemove = existingEstimates
-                        .Where(e => !newEstimateIds.Contains(e.Id))
-                        .ToList();
-                    _context.Estimates.RemoveRange(estimatesToRemove);
-
-                    foreach (var estimate in entity.Estimates)
-                    {
-                        var dbEstimate = _mapper.Map<Dal.DbModels.Estimate>(estimate);
-                        dbEstimate.ProjectId = dbProject.Id;
-                        dbEstimate.UpdatedAt = DateTime.UtcNow;
-
-                        if (dbEstimate.Id > 0 && existingEstimates.Any(e => e.Id == dbEstimate.Id))
-                        {
-                            var existingEstimate = existingEstimates.First(e => e.Id == dbEstimate.Id);
-                            _context.Entry(existingEstimate).CurrentValues.SetValues(dbEstimate);
-
-                            var existingItems = existingEstimate.Items.ToList();
-                            var newItemIds = estimate.Items.Where(i => i.Id > 0).Select(i => i.Id).ToList();
-                            var itemsToRemove = existingItems.Where(i => !newItemIds.Contains(i.Id)).ToList();
-                            _context.EstimateItems.RemoveRange(itemsToRemove);
-
-                            foreach (var item in estimate.Items)
-                            {
-                                var dbItem = _mapper.Map<Dal.DbModels.EstimateItem>(item);
-                                dbItem.EstimateId = dbEstimate.Id;
-                                if (dbItem.Id > 0 && existingItems.Any(i => i.Id == dbItem.Id))
-                                {
-                                    var existingItem = existingItems.First(i => i.Id == dbItem.Id);
-                                    _context.Entry(existingItem).CurrentValues.SetValues(dbItem);
-                                }
-                                else
-                                {
-                                    await _context.EstimateItems.AddAsync(dbItem);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            dbEstimate.CreatedAt = DateTime.UtcNow;
-                            await _context.Estimates.AddAsync(dbEstimate);
-                            foreach (var item in estimate.Items)
-                            {
-                                var dbItem = _mapper.Map<Dal.DbModels.EstimateItem>(item);
-                                dbItem.EstimateId = dbEstimate.Id;
-                                await _context.EstimateItems.AddAsync(dbItem);
-                            }
-                        }
-                    }
-
-                    _context.Projects.Update(existingProject);
-                    _logger.LogInformation("Проект обновлен в базе: {@Project}", existingProject);
+                    _logger.LogInformation("Обновление проекта Id={ProjectId}", entity.Id);
+                    return await UpdateExistingProjectGraphAsync(entity, existingProject);
                 }
                 else
                 {
-                    await UpdateBeforeSavingAsync(entity, dbProject, false);
-                    await _context.Projects.AddAsync(dbProject);
-
-                    foreach (var estimate in entity.Estimates)
-                    {
-                        var dbEstimate = _mapper.Map<Dal.DbModels.Estimate>(estimate);
-                        dbEstimate.ProjectId = dbProject.Id;
-                        dbEstimate.CreatedAt = DateTime.UtcNow;
-                        await _context.Estimates.AddAsync(dbEstimate);
-                        foreach (var item in estimate.Items)
-                        {
-                            var dbItem = _mapper.Map<Dal.DbModels.EstimateItem>(item);
-                            dbItem.EstimateId = dbEstimate.Id;
-                            await _context.EstimateItems.AddAsync(dbItem);
-                        }
-                    }
-                    _logger.LogInformation("Проект добавлен в базу: {@Project}", dbProject);
+                    _logger.LogInformation("Добавление нового проекта: {ProjectName}", entity.Name);
+                    return await AddNewProjectGraphAsync(entity);
                 }
-                return dbProject.Id;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при добавлении/обновлении проекта: {@Project}", entity);
+                _logger.LogError(ex, "Ошибка при добавлении/обновлении проекта: {@ProjectEntity}", entity);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Добавляет в базу данных новый проект вместе со всеми дочерними сущностями.
+        /// </summary>
+        public async Task<Dal.DbModels.Project> AddNewProjectGraphAsync(Entities.Project projectEntity)
+        {
+            var newDbProject = _mapper.Map<Dal.DbModels.Project>(projectEntity);
+
+            await UpdateBeforeSavingAsync(projectEntity, newDbProject, false);
+
+            newDbProject.Estimates = _mapper.Map<List<Dal.DbModels.Estimate>>(projectEntity.Estimates);
+
+            await _context.Projects.AddAsync(newDbProject);
+
+            return newDbProject;
+        }
+
+        /// <summary>
+        /// Обновляет существующий проект, синхронизируя его дочерние коллекции.
+        /// </summary>
+        public async Task<Dal.DbModels.Project> UpdateExistingProjectGraphAsync(Entities.Project projectEntity, Dal.DbModels.Project existingProject)
+        {
+            _mapper.Map(projectEntity, existingProject);
+            await UpdateBeforeSavingAsync(projectEntity, existingProject, true);
+
+            CollectionSyncHelper.Sync(
+                dbCollection: existingProject.Estimates,
+                dtoCollection: projectEntity.Estimates,
+                keySelector: estimate => estimate.Id,
+                updateAction: (dbEstimate, dtoEstimate) =>
+                {
+                    _mapper.Map(dtoEstimate, dbEstimate);
+                    dbEstimate.UpdatedAt = DateTime.UtcNow;
+
+                    CollectionSyncHelper.Sync(
+                        dbCollection: dbEstimate.Items,
+                        dtoCollection: dtoEstimate.Items,
+                        keySelector: item => item.Id,
+                        updateAction: (dbItem, dtoItem) => _mapper.Map(dtoItem, dbItem),
+                        addAction: dtoItem => _mapper.Map<Dal.DbModels.EstimateItem>(dtoItem),
+                        mapper: _mapper
+                    );
+                },
+                addAction: dtoEstimate =>
+                {
+                    var newDbEstimate = _mapper.Map<Dal.DbModels.Estimate>(dtoEstimate);
+                    newDbEstimate.CreatedAt = DateTime.UtcNow;
+                    newDbEstimate.UpdatedAt = DateTime.UtcNow;
+                    return newDbEstimate;
+                },
+                mapper: _mapper
+            );
+
+            return existingProject;
         }
 
         /// <summary>
@@ -215,7 +199,7 @@ namespace Dal.Layers
         /// </summary>
         /// <param name="entities">Список сущностей проектов</param>
         /// <returns>Список идентификаторов сохраненных проектов</returns>
-        protected override async Task<IList<long>> AddOrUpdateInternalAsync(IList<Entities.Project> entities)
+        protected override async Task<IList<Dal.DbModels.Project>> AddOrUpdateInternalAsync(IList<Entities.Project> entities)
         {
             try
             {
@@ -225,15 +209,15 @@ namespace Dal.Layers
                     throw new ArgumentNullException(nameof(entities));
                 }
                 if (!entities.Any())
-                    return new List<long>();
+                    return new List<Dal.DbModels.Project>();
 
-                var ids = new List<long>();
+                var projects = new List<Dal.DbModels.Project>();
                 foreach (var entity in entities)
                 {
-                    ids.Add(await AddOrUpdateInternalAsync(entity));
+                    projects.Add(await AddOrUpdateInternalAsync(entity));
                 }
-                _logger.LogInformation("Массовое добавление/обновление проектов завершено. Всего: {Count}", ids.Count);
-                return ids;
+                _logger.LogInformation("Массовое добавление/обновление проектов завершено. Всего: {Count}", projects.Count);
+                return projects;
             }
             catch (Exception ex)
             {
@@ -278,7 +262,7 @@ namespace Dal.Layers
                                  .ThenInclude(e => e.Items);
                 }
                 var dbProjects = await query.ToListAsync();
-                var entities = dbProjects.Select(MapToEntityProject).ToList();
+                var entities = dbProjects.Select(MapToEntity).ToList();
                 _logger.LogDebug("Построен список проектов, количество: {Count}", entities.Count);
                 return entities;
             }
@@ -463,19 +447,5 @@ namespace Dal.Layers
             _logger.LogDebug("Применена сортировка по CreatedAt");
             return sorted;
         }
-
-        /// <summary>
-        /// Преобразует сущность в DB модель
-        /// </summary>
-        /// <param name="entity">Сущность проекта</param>
-        /// <returns>DB модель проекта</returns>
-        private Dal.DbModels.Project MapToDbProject(Entities.Project entity) => _mapper.Map<Dal.DbModels.Project>(entity);
-
-        /// <summary>
-        /// Преобразует DB модель в сущность
-        /// </summary>
-        /// <param name="dbProject">DB модель проекта</param>
-        /// <returns>Сущность проекта</returns>
-        private Entities.Project MapToEntityProject(Dal.DbModels.Project dbProject) => _mapper.Map<Entities.Project>(dbProject);
     }
 }

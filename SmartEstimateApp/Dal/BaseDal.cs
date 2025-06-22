@@ -1,4 +1,5 @@
-﻿using Common.Search;
+﻿using AutoMapper;
+using Common.Search;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -21,13 +22,20 @@ namespace Dal
         /// <summary>
         /// Определяет, требуются ли дополнительные обновления после сохранения объекта
         /// </summary>
+
         protected abstract bool RequiresUpdatesAfterObjectSaving { get; }
+        /// <summary>
+        /// Экземпляр IMapper для преобразования между моделями.
+        /// </summary>
+        protected readonly IMapper _mapper;
 
         /// <summary>
-        /// Конструктор базового класса DAL
+        /// Конструктор базового класса DAL.
         /// </summary>
-        protected BaseDal()
+        /// <param name="mapper">Экземпляр AutoMapper.</param>
+        protected BaseDal(IMapper mapper)
         {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
@@ -39,9 +47,9 @@ namespace Dal
         {
             return await ExecuteWithTransactionAsync(async () =>
             {
-                var result = await AddOrUpdateInternalAsync(entity);
+                var dbObjectResult = await AddOrUpdateInternalAsync(entity);
                 await SaveChangesAsync();
-                return result;
+                return GetIdByDbObject(dbObjectResult);
             });
         }
 
@@ -54,9 +62,11 @@ namespace Dal
         {
             return await ExecuteWithTransactionAsync(async () =>
             {
-                var result = await AddOrUpdateInternalAsync(entities);
+                var dbObjectResults = await AddOrUpdateInternalAsync(entities);
+
                 await SaveChangesAsync();
-                return result;
+
+                return dbObjectResults.Select(GetIdByDbObject).ToList();
             });
         }
 
@@ -127,14 +137,14 @@ namespace Dal
         /// </summary>
         /// <param name="entity">Сущность для добавления или обновления</param>
         /// <returns>Идентификатор сохраненной сущности</returns>
-        protected abstract Task<TObjectId> AddOrUpdateInternalAsync(TEntity entity);
+        protected abstract Task<TDbObject> AddOrUpdateInternalAsync(TEntity entity);
 
         /// <summary>
         /// Внутренний метод для добавления или обновления списка сущностей
         /// </summary>
         /// <param name="entities">Список сущностей для добавления или обновления</param>
         /// <returns>Список идентификаторов сохраненных сущностей</returns>
-        protected abstract Task<IList<TObjectId>> AddOrUpdateInternalAsync(IList<TEntity> entities);
+        protected abstract Task<IList<TDbObject>> AddOrUpdateInternalAsync(IList<TEntity> entities);
 
         /// <summary>
         /// Обновляет объект перед сохранением
@@ -259,6 +269,26 @@ namespace Dal
                     return propertyInfo;
             }
             throw new InvalidOperationException("Invalid ID expression; expected a property.");
+        }
+
+        /// <summary>
+        /// Преобразует сущность (Entity) в модель базы данных (DbObject).
+        /// </summary>
+        /// <param name="entity">Сущность для преобразования.</param>
+        /// <returns>Модель базы данных.</returns>
+        protected virtual TDbObject MapToDbObject(TEntity entity)
+        {
+            return _mapper.Map<TDbObject>(entity);
+        }
+
+        /// <summary>
+        /// Преобразует модель базы данных (DbObject) в сущность (Entity).
+        /// </summary>
+        /// <param name="dbObject">Модель базы данных для преобразования.</param>
+        /// <returns>Сущность.</returns>
+        protected virtual TEntity MapToEntity(TDbObject dbObject)
+        {
+            return _mapper.Map<TEntity>(dbObject);
         }
     }
 }
