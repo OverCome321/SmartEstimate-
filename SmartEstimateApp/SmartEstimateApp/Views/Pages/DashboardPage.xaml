@@ -1,0 +1,549 @@
+﻿<Page x:Class="SmartEstimateApp.Views.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:local="clr-namespace:SmartEstimateApp.Views.Pages"
+    mc:Ignorable="d" 
+    d:DesignHeight="1080" d:DesignWidth="1920">
+
+    <Border Grid.Column="1" Background="Transparent" CornerRadius="20">
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Section -->
+            <Grid Grid.Row="0" Margin="0,0,0,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Welcome Message -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="TitleText"
+                             FontSize="16" 
+                             Foreground="{StaticResource AppleTextSecondaryBrush}"
+                             FontFamily="{StaticResource AppleFont}"/>
+                    <TextBlock Text="Панель управления" 
+                             FontSize="32" 
+                             FontWeight="Bold" 
+                             Foreground="{StaticResource AppleTextPrimaryBrush}"
+                             FontFamily="{StaticResource AppleFont}" 
+                             Margin="0,8,0,0"/>
+                </StackPanel>
+
+                <!-- Quick Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}" 
+                            Height="44"
+                            Margin="8,0"
+                            BorderBrush="{StaticResource ApplePrimaryBrush}"
+                            Foreground="{StaticResource ApplePrimaryBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="FileExportOutline" 
+                                                   Width="20" 
+                                                   Height="20" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="Экспорт данных"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource AppleButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" 
+                                                   Width="20" 
+                                                   Height="20" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="Новый проект"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Statistics Cards -->
+            <Grid Grid.Row="1" Margin="0,0,0,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Active Projects Card -->
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}" Margin="0,0,16,0">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Icon Header -->
+                        <Border Grid.Row="0" 
+                                Background="#673AB715" 
+                                Width="48" Height="48" 
+                                CornerRadius="12">
+                            <materialDesign:PackIcon Kind="CalendarClock" 
+                                                   Width="24" Height="24" 
+                                                   Foreground="#673AB7" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Main Stat -->
+                        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                            <TextBlock Text="Активные проекты" 
+                                     FontSize="14" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                            <TextBlock Text="14" 
+                                     FontSize="32" 
+                                     FontWeight="Bold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}" 
+                                     Margin="0,8,0,0"/>
+                        </StackPanel>
+
+                        <!-- Trend -->
+                        <StackPanel Grid.Row="2" 
+                                  Orientation="Horizontal" 
+                                  Margin="0,16,0,0">
+                            <materialDesign:PackIcon Kind="TrendingUp" 
+                                                   Width="16" Height="16" 
+                                                   Foreground="{StaticResource AppleSuccessBrush}" 
+                                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="+3.2%" 
+                                     Foreground="{StaticResource AppleSuccessBrush}" 
+                                     Margin="4,0,0,0" 
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="с прошлого месяца" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                     Margin="8,0,0,0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Total Revenue Card -->
+                <Border Grid.Column="1" Style="{StaticResource DashboardCard}" Margin="0,0,16,0">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Icon Header -->
+                        <Border Grid.Row="0" 
+                                Background="#9C27B015" 
+                                Width="48" Height="48" 
+                                CornerRadius="12">
+                            <materialDesign:PackIcon Kind="CurrencyUsd" 
+                                                   Width="24" Height="24" 
+                                                   Foreground="#9C27B0" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Main Stat -->
+                        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                            <TextBlock Text="Общий доход" 
+                                     FontSize="14" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                            <TextBlock Text="674.842₽" 
+                                     FontSize="32" 
+                                     FontWeight="Bold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}" 
+                                     Margin="0,8,0,0"/>
+                        </StackPanel>
+
+                        <!-- Trend -->
+                        <StackPanel Grid.Row="2" 
+                                  Orientation="Horizontal" 
+                                  Margin="0,16,0,0">
+                            <materialDesign:PackIcon Kind="TrendingUp" 
+                                                   Width="16" Height="16" 
+                                                   Foreground="{StaticResource AppleSuccessBrush}" 
+                                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="+12.4%" 
+                                     Foreground="{StaticResource AppleSuccessBrush}" 
+                                     Margin="4,0,0,0" 
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="с прошлого месяца" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                     Margin="8,0,0,0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Documents Card -->
+                <Border Grid.Column="2" Style="{StaticResource DashboardCard}" Margin="0,0,16,0">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Icon Header -->
+                        <Border Grid.Row="0" 
+                                Background="#FF980015" 
+                                Width="48" Height="48" 
+                                CornerRadius="12">
+                            <materialDesign:PackIcon Kind="FileDocumentOutline" 
+                                                   Width="24" Height="24" 
+                                                   Foreground="#FF9800" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Main Stat -->
+                        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                            <TextBlock Text="Всего документов" 
+                                     FontSize="14" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                            <TextBlock Text="346" 
+                                     FontSize="32" 
+                                     FontWeight="Bold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}" 
+                                     Margin="0,8,0,0"/>
+                        </StackPanel>
+
+                        <!-- Trend -->
+                        <StackPanel Grid.Row="2" 
+                                  Orientation="Horizontal" 
+                                  Margin="0,16,0,0">
+                            <materialDesign:PackIcon Kind="TrendingUp" 
+                                                   Width="16" Height="16" 
+                                                   Foreground="{StaticResource AppleSuccessBrush}" 
+                                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="+8.7%" 
+                                     Foreground="{StaticResource AppleSuccessBrush}" 
+                                     Margin="4,0,0,0" 
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="с прошлого месяца" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                     Margin="8,0,0,0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Completed Projects Card -->
+                <Border Grid.Column="3" Style="{StaticResource DashboardCard}" Margin="0,0,0,0">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Icon Header -->
+                        <Border Grid.Row="0" 
+                                Background="#4CAF5015" 
+                                Width="48" Height="48" 
+                                CornerRadius="12">
+                            <materialDesign:PackIcon Kind="CheckCircleOutline" 
+                                                   Width="24" Height="24" 
+                                                   Foreground="#4CAF50" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Main Stat -->
+                        <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                            <TextBlock Text="Завершенные проекты" 
+                                     FontSize="14" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                            <TextBlock Text="95" 
+                                     FontSize="32" 
+                                     FontWeight="Bold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}" 
+                                     Margin="0,8,0,0"/>
+                        </StackPanel>
+
+                        <!-- Trend -->
+                        <StackPanel Grid.Row="2" 
+                                  Orientation="Horizontal" 
+                                  Margin="0,16,0,0">
+                            <materialDesign:PackIcon Kind="TrendingUp" 
+                                                   Width="16" Height="16" 
+                                                   Foreground="{StaticResource AppleSuccessBrush}" 
+                                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="+14.2%" 
+                                     Foreground="{StaticResource AppleSuccessBrush}" 
+                                     Margin="4,0,0,0" 
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Text="с прошлого месяца" 
+                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                     Margin="8,0,0,0" 
+                                     VerticalAlignment="Center" 
+                                     FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Charts and Recent Projects -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Revenue Chart -->
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}" Margin="0,0,16,0">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Chart Header -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Аналитика доходов" 
+                                     FontSize="20" 
+                                     FontWeight="SemiBold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+
+                            <ComboBox Grid.Column="1" 
+                                    Width="160"
+                                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                    materialDesign:HintAssist.Hint="Период"
+                                    BorderBrush="{StaticResource AppleBorderBrush}"
+                                    Foreground="{StaticResource AppleTextPrimaryBrush}">
+                                <ComboBoxItem Content="Текущий месяц" IsSelected="True"/>
+                                <ComboBoxItem Content="Прошлый месяц"/>
+                                <ComboBoxItem Content="Последние 3 месяца"/>
+                                <ComboBoxItem Content="Этот год"/>
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Chart Area -->
+                        <Border Grid.Row="1" 
+                                Margin="0,24,0,0" 
+                                Height="300"
+                                Background="#F5F5F7"
+                                CornerRadius="12">
+                            <!-- Chart Content -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Chart Visual -->
+                                <Path Stroke="{StaticResource PrimaryGradient}" 
+                                      StrokeThickness="3"
+                                      Margin="40,20,40,0">
+                                    <Path.Data>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="0,150">
+                                                <BezierSegment Point1="100,120" 
+                                                             Point2="200,140" 
+                                                             Point3="300,80"/>
+                                                <LineSegment Point="400,50"/>
+                                                <BezierSegment Point1="500,30" 
+                                                             Point2="600,60" 
+                                                             Point3="700,20"/>
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </Path.Data>
+                                </Path>
+
+                                <!-- Data Points -->
+                                <Canvas Margin="40,20,40,0">
+                                    <Ellipse Canvas.Left="0" Canvas.Top="150" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="100" Canvas.Top="120" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="200" Canvas.Top="140" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="300" Canvas.Top="80" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="400" Canvas.Top="50" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="500" Canvas.Top="30" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="600" Canvas.Top="60" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                    <Ellipse Canvas.Left="700" Canvas.Top="20" 
+                                             Width="8" Height="8" 
+                                             Fill="White" 
+                                             Stroke="{StaticResource ApplePrimaryBrush}" 
+                                             StrokeThickness="2"/>
+                                </Canvas>
+
+                                <!-- Month Labels -->
+                                <StackPanel Grid.Row="1" 
+                                          Orientation="Horizontal" 
+                                          HorizontalAlignment="Center" 
+                                          Margin="0,16,0,0">
+                                    <TextBlock Text="Янв" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                    <TextBlock Text="Фев" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                    <TextBlock Text="Мар" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                    <TextBlock Text="Апр" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                    <TextBlock Text="Май" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                    <TextBlock Text="Июн" 
+                                             Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                             Margin="40,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Recent Projects -->
+                <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                    <Grid Margin="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Недавние проекты" 
+                                     FontSize="20" 
+                                     FontWeight="SemiBold" 
+                                     Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+
+                            <Button Grid.Column="1" 
+                                    Style="{StaticResource MaterialDesignIconButton}">
+                                <materialDesign:PackIcon Kind="DotsHorizontal" 
+                                                       Width="20" Height="20" 
+                                                       Foreground="{StaticResource AppleTextSecondaryBrush}"/>
+                            </Button>
+                        </Grid>
+
+                        <!-- Projects List -->
+                        <ScrollViewer Grid.Row="1" 
+                                    Margin="0,24,0,0" 
+                                    VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Project Items -->
+                                <Border Background="#F5F5F7" 
+                                        CornerRadius="12" 
+                                        Margin="0,0,0,12" 
+                                        Padding="16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Project Icon -->
+                                        <Border Width="40" Height="40" 
+                                                Background="#673AB715" 
+                                                CornerRadius="8" 
+                                                Margin="0,0,16,0">
+                                            <materialDesign:PackIcon Kind="Web" 
+                                                                   Width="20" Height="20" 
+                                                                   Foreground="#673AB7" 
+                                                                   HorizontalAlignment="Center" 
+                                                                   VerticalAlignment="Center"/>
+                                        </Border>
+
+                                        <!-- Project Info -->
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="Веб-сайт для ABC Corp" 
+                                                     FontSize="14" 
+                                                     FontWeight="Medium" 
+                                                     Foreground="{StaticResource AppleTextPrimaryBrush}"/>
+                                            <TextBlock Text="Срок: 20 мая" 
+                                                     FontSize="12" 
+                                                     Foreground="{StaticResource AppleTextSecondaryBrush}" 
+                                                     Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <!-- Progress -->
+                                        <Border Grid.Column="2" 
+                                                Background="#673AB715" 
+                                                CornerRadius="6" 
+                                                Padding="8,4">
+                                            <TextBlock Text="85%" 
+                                                     FontSize="12" 
+                                                     FontWeight="Medium" 
+                                                     Foreground="#673AB7"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Add more project items with similar structure -->
+                                <!-- You can copy the above Border element and modify the content -->
+
+                                <!-- Add New Project Button -->
+                                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                        Height="48" 
+                                        Margin="0,12,0,0" 
+                                        HorizontalAlignment="Stretch"
+                                        BorderThickness="1"
+                                        BorderBrush="{StaticResource AppleBorderBrush}"
+                                        Foreground="{StaticResource AppleTextPrimaryBrush}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Plus" 
+                                                               Width="20" Height="20" 
+                                                               VerticalAlignment="Center" 
+                                                               Margin="0,0,8,0"/>
+                                        <TextBlock Text="Добавить новый проект" 
+                                                 VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Page>
