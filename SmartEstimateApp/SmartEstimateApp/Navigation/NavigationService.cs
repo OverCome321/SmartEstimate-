@@ -54,6 +54,14 @@ namespace SmartEstimateApp.Navigation
             _frame.Navigate(page, null);
         }
 
+        public void NavigateTo(Page page, object parameter = null)
+        {
+            if (_frame == null)
+                throw new InvalidOperationException("Navigation service not initialized. Call Initialize first.");
+
+            _frame.Navigate(page, parameter);
+        }
+
         public void NavigateTo<TPage>(object parameter) where TPage : Page
         {
             if (_frame == null)
@@ -68,6 +76,20 @@ namespace SmartEstimateApp.Navigation
             if (_frame?.CanGoBack == true)
             {
                 _frame.GoBack();
+            }
+        }
+
+        public void NavigateAsRoot<TPage>() where TPage : Page
+        {
+            if (_frame == null)
+                throw new InvalidOperationException("Navigation service not initialized. Call Initialize first.");
+
+            var page = _serviceProvider.GetService<TPage>();
+            _frame.Navigate(page);
+
+            while (_frame.CanGoBack)
+            {
+                _frame.RemoveBackEntry();
             }
         }
     }

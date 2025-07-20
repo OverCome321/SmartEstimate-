@@ -49,7 +49,7 @@ namespace SmartEstimateApp.ViewModels
                 obj => !string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword)
             );
 
-            GoBackCommand = new RelayCommand(obj => GoBack());
+            GoBackCommand = new RelayCommand(obj => CancelAndGoToLoginCommand());
         }
 
         public void SetEmail(string email)
@@ -75,7 +75,7 @@ namespace SmartEstimateApp.ViewModels
 
                 _mainViewModel.ShowSuccess("Пароль успешно изменен");
 
-                _navigationService.NavigateTo<LoginPage>();
+                _navigationService.NavigateAsRoot<LoginPage>();
 
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace SmartEstimateApp.ViewModels
             }
         }
 
-        private void GoBack()
+        private void CancelAndGoToLoginCommand()
         {
             _navigationService.NavigateTo<LoginPage>();
         }
