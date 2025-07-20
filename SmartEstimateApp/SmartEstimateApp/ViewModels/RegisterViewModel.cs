@@ -109,7 +109,7 @@ namespace SmartEstimateApp.ViewModels
                     }
                 };
                 _storedPassword = Password;
-                _ctx.NavigationService.NavigateTo<VerificationPage>();
+                _ctx.NavigationService.NavigateTo(verificationPage);
             }
             catch (Exception ex)
             {

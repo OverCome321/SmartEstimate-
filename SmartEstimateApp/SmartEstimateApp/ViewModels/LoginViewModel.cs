@@ -103,18 +103,16 @@ namespace SmartEstimateApp.ViewModels
                 var verificationViewModel = (VerificationPageViewModel)verificationPage.DataContext;
 
                 verificationViewModel.ClearVerificationHandlers();
-
                 verificationViewModel.SetEmail(Email, VerificationPurpose.Login);
-
                 var modelUser = Mapper.ToModel(user);
                 verificationViewModel.VerificationSuccess += () =>
                 {
                     CompleteLogin(modelUser);
-
                     verificationViewModel.ClearVerificationHandlers();
                 };
                 _storedPassword = Password;
-                _ctx.NavigationService.NavigateTo<VerificationPage>();
+
+                _ctx.NavigationService.NavigateTo(verificationPage);
             }
             catch (Exception ex)
             {

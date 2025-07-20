@@ -62,12 +62,11 @@ namespace SmartEstimateApp.ViewModels
                     var passwordResetPage = _serviceProvider.GetRequiredService<PasswordResetPage>();
                     var passwordResetViewModel = (PasswordResetViewModel)passwordResetPage.DataContext;
                     passwordResetViewModel.SetEmail(Email);
-                    _navigationService.NavigateTo<PasswordResetPage>();
-
+                    _navigationService.NavigateTo(passwordResetPage);
                     verificationViewModel.ClearVerificationHandlers();
                 };
 
-                _navigationService.NavigateTo<VerificationPage>();
+                _navigationService.NavigateTo(verificationPage);
             }
             catch (Exception ex)
             {

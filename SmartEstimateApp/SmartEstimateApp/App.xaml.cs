@@ -137,11 +137,11 @@ namespace SmartEstimateApp
             services.AddTransient<ProjectsViewModel>();
 
             // Регистрация страниц
-            services.AddScoped<LoginPage>();
-            services.AddScoped<RegisterPage>();
-            services.AddScoped<VerificationPage>();
-            services.AddScoped<PasswordResetPage>();
-            services.AddScoped<ResetEmailPage>();
+            services.AddTransient<LoginPage>();
+            services.AddTransient<RegisterPage>();
+            services.AddTransient<VerificationPage>();
+            services.AddTransient<PasswordResetPage>();
+            services.AddTransient<ResetEmailPage>();
             services.AddTransient<DashboardPage>();
             services.AddTransient<ProjectsPage>();
             services.AddTransient<ClientsPage>();
